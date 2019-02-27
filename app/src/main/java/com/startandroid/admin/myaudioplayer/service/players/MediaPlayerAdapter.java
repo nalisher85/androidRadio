@@ -21,8 +21,6 @@ public class MediaPlayerAdapter extends PlayerAdapter {
     private int mState;
     private boolean mCurrentMediaPlayedToCompletion;
 
-    // Work-around for a MediaPlayer bug related to the behavior of MediaPlayer.seekTo()
-    // while not playing.
     private int mSeekWhileNotPlaying = -1;
 
     public MediaPlayerAdapter(@NonNull Context context) {
