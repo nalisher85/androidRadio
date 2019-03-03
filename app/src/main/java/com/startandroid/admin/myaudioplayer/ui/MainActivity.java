@@ -16,6 +16,10 @@ import com.startandroid.admin.myaudioplayer.client.MediaBrowserClient;
 import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
 
+import org.reactivestreams.Subscription;
+
+import io.reactivex.disposables.Disposable;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -26,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private MediaSeekBar mMediaSeekBar;
 
     private MediaBrowserClient mMediaBrowserClient;
+    private MediaControllerCompat mMediaController;
     private boolean mIsPlaying;
-    private MediaControllerCallback mMediaControllerCallback;
-
-
+    Disposable onMetadataChangedSubscription;
+    Disposable onPlaybackStateChangedSubscription;
+    Disposable onMediaBrowserConnectedSubscription;
 
 
     @Override
@@ -43,13 +48,7 @@ public class MainActivity extends AppCompatActivity {
         mChannelTitle = findViewById(R.id.channel_title);
         mMediaSeekBar = findViewById(R.id.seekBar);
 
-        MediaButtonClickListener mediaButtonClickListener = new MediaButtonClickListener();
-        findViewById(R.id.btn_previous).setOnClickListener(mediaButtonClickListener);
-        findViewById(R.id.btn_play_pause).setOnClickListener(mediaButtonClickListener);
-        findViewById(R.id.btn_next).setOnClickListener(mediaButtonClickListener);
-
         mMediaBrowserClient = new MediaBrowserClient(this, MediaService.class);
-        mMediaControllerCallback = new MediaControllerCallback();
 
     }
 
@@ -58,21 +57,52 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mMediaBrowserClient.connect();
+        onMetadataChangedSubscription = mMediaBrowserClient.
+                getMediaMetadataObservable().subscribe(this::onMetadataChanged);
+        onMetadataChangedSubscription = mMediaBrowserClient.
+                getPlaybackStateObservable().subscribe(this::onPlaybackStateChanged);
+        onMediaBrowserConnectedSubscription = mMediaBrowserClient.
+                getMediaBrowserConnectionObservable().subscribe(this::onMediaBrowserConnected);
 
-        if (mMediaBrowserClient.getMediaController() != null) {
-            mMediaBrowserClient.getMediaController().registerCallback(mMediaControllerCallback);
-            mMediaSeekBar.setMediaController(mMediaBrowserClient.getMediaController());
-        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mMediaSeekBar.disconnectController();
-
-        if (mMediaBrowserClient.getMediaController() != null)
-            mMediaBrowserClient.getMediaController().unregisterCallback(mMediaControllerCallback);
         mMediaBrowserClient.disconnect();
+        onMetadataChangedSubscription.dispose();
+        onPlaybackStateChangedSubscription.dispose();
+    }
+
+    private void onMediaBrowserConnected(MediaControllerCompat mediaController) {
+        mMediaController = mediaController;
+        MediaButtonClickListener mediaButtonClickListener = new MediaButtonClickListener();
+        findViewById(R.id.btn_previous).setOnClickListener(mediaButtonClickListener);
+        findViewById(R.id.btn_play_pause).setOnClickListener(mediaButtonClickListener);
+        findViewById(R.id.btn_next).setOnClickListener(mediaButtonClickListener);
+
+        mMediaSeekBar.setMediaController(mediaController);
+
+
+    }
+
+    public void onPlaybackStateChanged(PlaybackStateCompat state) {
+        mIsPlaying = state != null &&
+                state.getState() == PlaybackStateCompat.STATE_PLAYING;
+    }
+
+    public void onMetadataChanged(MediaMetadataCompat metadata) {
+        if (metadata == null) {
+            return;
+        }
+        mSongName.setText(
+                metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
+        mSongArtist.setText(
+                metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST));
+        mAlbumArt.setImageBitmap(MusicLibrary.getAlbumBitmap(
+                MainActivity.this,
+                metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)));
     }
 
     private class MediaButtonClickListener implements View.OnClickListener {
@@ -80,43 +110,21 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_previous:
-                    mMediaBrowserClient.getTransportControls().skipToPrevious();
+                    mMediaController.getTransportControls().skipToPrevious();
                     break;
                 case R.id.btn_play_pause:
                     if (mIsPlaying) {
-                        mMediaBrowserClient.getTransportControls().pause();
+                        mMediaController.getTransportControls().pause();
                     } else {
-                        mMediaBrowserClient.getTransportControls().play();
+                        mMediaController.getTransportControls().play();
                     }
                     break;
                 case R.id.btn_next:
-                    mMediaBrowserClient.getTransportControls().skipToNext();
+                    mMediaController.getTransportControls().skipToNext();
                     break;
             }
         }
     }
 
-    private class MediaControllerCallback extends MediaControllerCompat.Callback {
-        @Override
-        public void onPlaybackStateChanged(PlaybackStateCompat state) {
-            mIsPlaying = state != null &&
-                    state.getState() == PlaybackStateCompat.STATE_PLAYING;
-        }
-
-        @Override
-        public void onMetadataChanged(MediaMetadataCompat metadata) {
-            if (metadata == null) {
-                return;
-            }
-            mSongName.setText(
-                    metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
-            mSongArtist.setText(
-                    metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST));
-            mAlbumArt.setImageBitmap(MusicLibrary.getAlbumBitmap(
-                    MainActivity.this,
-                    metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)));
-        }
-
-    }
 
 }

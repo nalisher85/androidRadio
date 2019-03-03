@@ -1,8 +1,5 @@
 package com.startandroid.admin.myaudioplayer.client;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.RemoteException;
@@ -15,7 +12,10 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
+
 import java.util.List;
+
+import io.reactivex.Observable;
 
 public class MediaBrowserClient {
 
@@ -28,6 +28,9 @@ public class MediaBrowserClient {
 
     private MediaBrowserCompat mMediaBrowser;
     private MediaControllerCompat mMediaController;
+    private Observable<PlaybackStateCompat> mPlaybackStateObservable;
+    private Observable<MediaMetadataCompat> mMediaMetadataObservable;
+    private Observable<MediaControllerCompat> mMediaBrowserConnectionObservable;
 
 
     public MediaBrowserClient(Context ctx,
@@ -38,7 +41,6 @@ public class MediaBrowserClient {
         mMediaBrowserConnectionCallbacks = new MediaBrowserConnectionCallback();
         mMediaBrowserSubscriptionCallback = new MediaBrowserSubscriptionCallback();
 
-
     }
 
     public MediaControllerCompat getMediaController(){
@@ -48,6 +50,22 @@ public class MediaBrowserClient {
     public MediaControllerCompat.TransportControls getTransportControls () {
         return mMediaController.getTransportControls();
     }
+
+    public Observable<PlaybackStateCompat> getPlaybackStateObservable(){
+        if (mPlaybackStateObservable != null) return mPlaybackStateObservable;
+        else return mPlaybackStateObservable = Observable.empty();
+    }
+
+    public Observable<MediaMetadataCompat> getMediaMetadataObservable() {
+        if (mMediaMetadataObservable != null) return mMediaMetadataObservable;
+        else return mMediaMetadataObservable = Observable.empty();
+    }
+
+    public Observable<MediaControllerCompat> getMediaBrowserConnectionObservable() {
+        if (mMediaBrowserConnectionObservable != null) return mMediaBrowserConnectionObservable;
+        else return mMediaBrowserConnectionObservable = Observable.empty();
+    }
+
 
     public void connect() {
         if (mMediaBrowser == null) {
@@ -82,6 +100,7 @@ public class MediaBrowserClient {
             } catch (RemoteException e) {
                 Log.d(LOG_TAG, "Variable Context is null \n" + e.toString());
             }
+            mMediaBrowserConnectionObservable = Observable.just(mMediaController);
             mMediaBrowser.subscribe(mMediaBrowser.getRoot(), mMediaBrowserSubscriptionCallback);
         }
 
@@ -110,5 +129,20 @@ public class MediaBrowserClient {
             mMediaController.getTransportControls().prepare();
         }
     }
+
+    private class MediaControllerCallback extends MediaControllerCompat.Callback {
+        @Override
+        public void onPlaybackStateChanged(PlaybackStateCompat state) {
+            mPlaybackStateObservable = Observable.just(state);
+        }
+
+        @Override
+        public void onMetadataChanged(MediaMetadataCompat metadata) {
+            if (metadata == null) return;
+            mMediaMetadataObservable = Observable.just(metadata);
+        }
+
+    }
+
 
 }
