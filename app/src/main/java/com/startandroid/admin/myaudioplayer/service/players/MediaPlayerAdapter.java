@@ -10,6 +10,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
+import com.startandroid.admin.myaudioplayer.service.PlaybackInfoListener;
 import com.startandroid.admin.myaudioplayer.service.PlayerAdapter;
 
 public class MediaPlayerAdapter extends PlayerAdapter {
@@ -20,22 +21,22 @@ public class MediaPlayerAdapter extends PlayerAdapter {
     private MediaMetadataCompat mCurrentMedia;
     private int mState;
     private boolean mCurrentMediaPlayedToCompletion;
+    private PlaybackInfoListener mPlaybackInfoListener;
 
     private int mSeekWhileNotPlaying = -1;
 
-    public MediaPlayerAdapter(@NonNull Context context) {
+    public MediaPlayerAdapter(@NonNull Context context, PlaybackInfoListener listener) {
         super(context);
         mContext = context.getApplicationContext();
+        mPlaybackInfoListener = listener;
     }
 
     private void initializeMediaPlayer(){
         if(mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    setNewState(PlaybackStateCompat.STATE_PAUSED);
-                }
+            mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
+                mPlaybackInfoListener.onPlaybackCompleted();
+                setNewState(PlaybackStateCompat.STATE_PAUSED);
             });
         }
     }
@@ -65,7 +66,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
                             reportPosition,
                             1.0f,
                             SystemClock.elapsedRealtime());
-
+        mPlaybackInfoListener.onPlaybackStateChange(stateBuilder.build());
     }
 
     private long getAvailableActions() {

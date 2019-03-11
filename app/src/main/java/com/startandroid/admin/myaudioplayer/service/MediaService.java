@@ -1,9 +1,11 @@
 package com.startandroid.admin.myaudioplayer.service;
 
-import android.arch.lifecycle.Observer;
+import android.app.Notification;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaBrowserServiceCompat;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -12,10 +14,10 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
-import com.startandroid.admin.myaudioplayer.client.MediaBrowserClient;
 import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
 import com.startandroid.admin.myaudioplayer.service.notifications.MediaNotificationManager;
 import com.startandroid.admin.myaudioplayer.service.players.MediaPlayerAdapter;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,7 @@ public class MediaService extends MediaBrowserServiceCompat {
 
         mMediaNotificationManager = new MediaNotificationManager(this);
 
-        mMediaPayer = new MediaPlayerAdapter(this);
+        mMediaPayer = new MediaPlayerAdapter(this, new MediaPlayerListener());
 
         /*
         mPlayBackStateBuilder = new PlaybackStateCompat.Builder()
@@ -164,6 +166,70 @@ public class MediaService extends MediaBrowserServiceCompat {
         }
 
     }
+
+    // MediaPlayerAdapter Callback: MediaPlayerAdapter state -> MusicService.
+    public class MediaPlayerListener extends PlaybackInfoListener {
+
+        private final ServiceManager mServiceManager;
+
+        MediaPlayerListener() {
+            mServiceManager = new ServiceManager();
+        }
+
+        @Override
+        public void onPlaybackStateChange(PlaybackStateCompat state) {
+            // Report the state to the MediaSession.
+            mMediaSession.setPlaybackState(state);
+
+            // Manage the started state of this service.
+            switch (state.getState()) {
+                case PlaybackStateCompat.STATE_PLAYING:
+                    mServiceManager.moveServiceToStartedState(state);
+                    break;
+                case PlaybackStateCompat.STATE_PAUSED:
+                    mServiceManager.updateNotificationForPause(state);
+                    break;
+                case PlaybackStateCompat.STATE_STOPPED:
+                    mServiceManager.moveServiceOutOfStartedState(state);
+                    break;
+            }
+        }
+
+        class ServiceManager {
+
+            private void moveServiceToStartedState(PlaybackStateCompat state) {
+                Notification notification =
+                        mMediaNotificationManager.getNotification(
+                                mMediaPayer.getCurrentMedia(), state, getSessionToken());
+
+                if (!mServiceInStartedState) {
+                    ContextCompat.startForegroundService(
+                            MediaService.this,
+                            new Intent(MediaService.this, MediaService.class));
+                    mServiceInStartedState = true;
+                }
+
+                startForeground(MediaNotificationManager.NOTIFICATION_ID, notification);
+            }
+
+            private void updateNotificationForPause(PlaybackStateCompat state) {
+                stopForeground(false);
+                Notification notification =
+                        mMediaNotificationManager.getNotification(
+                                mMediaPayer.getCurrentMedia(), state, getSessionToken());
+                mMediaNotificationManager.getNotificationManager()
+                        .notify(MediaNotificationManager.NOTIFICATION_ID, notification);
+            }
+
+            private void moveServiceOutOfStartedState(PlaybackStateCompat state) {
+                stopForeground(true);
+                stopSelf();
+                mServiceInStartedState = false;
+            }
+        }
+
+    }
+
 
 
 }

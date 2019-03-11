@@ -78,7 +78,7 @@ public class MediaNotificationManager {
         Log.d(TAG, "onDestroy: ");
     }
 
-    public NotificationManager getmNotificationManager() {
+    public NotificationManager getNotificationManager() {
         return mNotificationManager;
     }
 
