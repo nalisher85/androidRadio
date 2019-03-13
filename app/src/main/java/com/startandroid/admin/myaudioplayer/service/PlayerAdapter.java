@@ -1,6 +1,5 @@
 package com.startandroid.admin.myaudioplayer.service;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +38,8 @@ public abstract class PlayerAdapter {
     private final AudioFocusHelper mAudioFocusHelper;
 
     private boolean mPlayOnAudioFocus = false;
+    private boolean playbackDelayed = false;
+    private boolean playbackNowAuthorized = false;
 
     public PlayerAdapter(@NonNull Context context) {
         mApplicationContext = context.getApplicationContext();
@@ -53,19 +54,37 @@ public abstract class PlayerAdapter {
     public abstract void setVolume(float volume);
 
     protected void play() {
-        if (!mAudioFocusHelper.requestAudioFocus()) return;
-        registerAudioNoisyReceiver();
+        int res = mAudioFocusHelper.requestAudioFocus();
+
+        if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+            playbackNowAuthorized = false;
+        } else if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            playbackNowAuthorized = true;
+            onPlay();
+            registerAudioNoisyReceiver();
+        } else if (res == AudioManager.AUDIOFOCUS_REQUEST_DELAYED) {
+            playbackNowAuthorized = false;
+            playbackDelayed = true;
+        }
     }
+
+    protected abstract void onPlay();
 
     protected void pause(){
         if (!mPlayOnAudioFocus) mAudioFocusHelper.abandonAudioFocus();
         unregisterAudioNoisyReceiver();
+        onPause();
     }
+
+    protected abstract void onPause();
 
     protected void stop(){
         mAudioFocusHelper.abandonAudioFocus();
         unregisterAudioNoisyReceiver();
+        onStop();
     }
+
+    protected abstract void onStop();
 
     private void registerAudioNoisyReceiver() {
         if (!mAudioNoisyReceiverRegistered) {
@@ -99,6 +118,7 @@ public abstract class PlayerAdapter {
 
         @RequiresApi(Build.VERSION_CODES.O)
         public void setAudioFocusRequest(AudioFocusRequest afr) {
+            if (audioAttributes == null) setAudioAttributes(null);
             if (afr != null) audioFocusRequest = afr;
             else {
                 audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
@@ -109,26 +129,23 @@ public abstract class PlayerAdapter {
             }
         }
 
-        private boolean requestAudioFocus() {
+        private int requestAudioFocus() {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
                 return requestAudioFocusForPreApi26();
             else return requestAudioFocusForApi26();
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        private boolean requestAudioFocusForApi26() {
-            if (audioAttributes == null) setAudioAttributes(null);
+        private int requestAudioFocusForApi26() {
             if (audioFocusRequest == null) setAudioFocusRequest(null);
-            final int result = mAudioManager.requestAudioFocus(audioFocusRequest);
-            return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+            return mAudioManager.requestAudioFocus(audioFocusRequest);
         }
 
         @RequiresApi(Build.VERSION_CODES.KITKAT)
-        private boolean requestAudioFocusForPreApi26() {
-            final int result = mAudioManager.requestAudioFocus(this,
+        private int requestAudioFocusForPreApi26() {
+            return mAudioManager.requestAudioFocus(this,
                     AudioManager.STREAM_MUSIC,
                     AudioManager.AUDIOFOCUS_GAIN);
-            return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
         }
 
 
@@ -152,11 +169,12 @@ public abstract class PlayerAdapter {
         public void onAudioFocusChange(int focusChange) {
             switch (focusChange) {
                 case AudioManager.AUDIOFOCUS_GAIN:
-                    if (mPlayOnAudioFocus && !isPlaying()) {
+                    if ((playbackDelayed || mPlayOnAudioFocus) && !isPlaying()) {
                         play();
                     } else if (isPlaying()) {
                         setVolume(MEDIA_VOLUME_DEFAULT);
                     }
+                    playbackDelayed = false;
                     mPlayOnAudioFocus = false;
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
@@ -165,13 +183,14 @@ public abstract class PlayerAdapter {
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                     if (isPlaying()) {
                         mPlayOnAudioFocus = true;
+                        playbackDelayed = false;
                         pause();
                     }
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS:
-                    mAudioManager.abandonAudioFocus(this);
                     mPlayOnAudioFocus = false;
-                    stop();
+                    playbackDelayed = false;
+                    pause();
                     break;
             }
         }

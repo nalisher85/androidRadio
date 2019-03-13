@@ -1,12 +1,11 @@
 package com.startandroid.admin.myaudioplayer.ui;
 
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,8 +14,6 @@ import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.client.MediaBrowserClient;
 import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
-
-import org.reactivestreams.Subscription;
 
 import io.reactivex.disposables.Disposable;
 
@@ -57,13 +54,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mMediaBrowserClient.connect();
-        onMetadataChangedSubscription = mMediaBrowserClient.
-                getMediaMetadataObservable().subscribe(this::onMetadataChanged);
-        onMetadataChangedSubscription = mMediaBrowserClient.
-                getPlaybackStateObservable().subscribe(this::onPlaybackStateChanged);
-        onMediaBrowserConnectedSubscription = mMediaBrowserClient.
-                getMediaBrowserConnectionObservable().subscribe(this::onMediaBrowserConnected);
-
+        mMediaBrowserClient.getOnConnectedObservable().subscribe(this::onMediaBrowserConnected);
+        mMediaBrowserClient.getMediaMetadataObservable().subscribe(this::onMetadataChanged);
+        mMediaBrowserClient.getPlaybackStateObservable().subscribe(this::onPlaybackStateChanged);
     }
 
     @Override
@@ -71,18 +64,17 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         mMediaSeekBar.disconnectController();
         mMediaBrowserClient.disconnect();
-        onMetadataChangedSubscription.dispose();
-        onPlaybackStateChangedSubscription.dispose();
     }
 
-    private void onMediaBrowserConnected(MediaControllerCompat mediaController) {
-        mMediaController = mediaController;
+    private void onMediaBrowserConnected(Boolean isConnected) {
+        if (!isConnected) return;;
+        mMediaController = mMediaBrowserClient.getMediaController();
         MediaButtonClickListener mediaButtonClickListener = new MediaButtonClickListener();
         findViewById(R.id.btn_previous).setOnClickListener(mediaButtonClickListener);
         findViewById(R.id.btn_play_pause).setOnClickListener(mediaButtonClickListener);
         findViewById(R.id.btn_next).setOnClickListener(mediaButtonClickListener);
 
-        mMediaSeekBar.setMediaController(mediaController);
+        mMediaSeekBar.setMediaController(mMediaController);
 
 
     }
@@ -108,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private class MediaButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            Log.d("myLog", "onClickView v.getId" + v.getId());
             switch (v.getId()) {
                 case R.id.btn_previous:
                     mMediaController.getTransportControls().skipToPrevious();

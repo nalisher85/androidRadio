@@ -98,8 +98,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
         return actions;    }
 
     @Override
-    public void play(){
-        super.play();
+    protected void onPlay() {
         if(mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
             mMediaPlayer.start();
             setNewState(PlaybackStateCompat.STATE_PLAYING);
@@ -107,8 +106,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
     }
 
     @Override
-    public void pause(){
-        super.pause();
+    protected void onPause() {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             setNewState(PlaybackStateCompat.STATE_PAUSED);
@@ -116,8 +114,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
     }
 
     @Override
-    public void stop(){
-        super.stop();
+    protected void onStop() {
         setNewState(PlaybackStateCompat.STATE_STOPPED);
         release();
     }

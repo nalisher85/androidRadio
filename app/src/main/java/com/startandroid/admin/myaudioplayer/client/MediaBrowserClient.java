@@ -15,7 +15,7 @@ import android.util.Log;
 
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 
 public class MediaBrowserClient {
 
@@ -26,12 +26,14 @@ public class MediaBrowserClient {
     private final Context mContext;
     private final Class<? extends MediaBrowserServiceCompat> mMediaBrowserServiceClass;
 
+    final private BehaviorSubject<Boolean> mOnConnectedObservable = BehaviorSubject.create();
+    final private BehaviorSubject<PlaybackStateCompat> mPlaybackStateObservable = BehaviorSubject.create();
+    final private BehaviorSubject<MediaMetadataCompat> mMediaMetadataObservable = BehaviorSubject.create();
+
+
     private MediaBrowserCompat mMediaBrowser;
     private MediaControllerCompat mMediaController;
-    private Observable<PlaybackStateCompat> mPlaybackStateObservable;
-    private Observable<MediaMetadataCompat> mMediaMetadataObservable;
-    private Observable<MediaControllerCompat> mMediaBrowserConnectionObservable;
-
+    private MediaControllerCallback mMediaControllerCallback;
 
     public MediaBrowserClient(Context ctx,
                               Class<? extends MediaBrowserServiceCompat> serviceClss) {
@@ -40,6 +42,7 @@ public class MediaBrowserClient {
 
         mMediaBrowserConnectionCallbacks = new MediaBrowserConnectionCallback();
         mMediaBrowserSubscriptionCallback = new MediaBrowserSubscriptionCallback();
+        mMediaControllerCallback = new MediaControllerCallback();
 
     }
 
@@ -51,23 +54,20 @@ public class MediaBrowserClient {
         return mMediaController.getTransportControls();
     }
 
-    public Observable<PlaybackStateCompat> getPlaybackStateObservable(){
-        if (mPlaybackStateObservable != null) return mPlaybackStateObservable;
-        else return mPlaybackStateObservable = Observable.empty();
+    public BehaviorSubject<Boolean> getOnConnectedObservable() {
+        return mOnConnectedObservable;
     }
 
-    public Observable<MediaMetadataCompat> getMediaMetadataObservable() {
-        if (mMediaMetadataObservable != null) return mMediaMetadataObservable;
-        else return mMediaMetadataObservable = Observable.empty();
+    public BehaviorSubject<PlaybackStateCompat> getPlaybackStateObservable() {
+        return mPlaybackStateObservable;
     }
 
-    public Observable<MediaControllerCompat> getMediaBrowserConnectionObservable() {
-        if (mMediaBrowserConnectionObservable != null) return mMediaBrowserConnectionObservable;
-        else return mMediaBrowserConnectionObservable = Observable.empty();
+    public BehaviorSubject<MediaMetadataCompat> getMediaMetadataObservable() {
+        return mMediaMetadataObservable;
     }
-
 
     public void connect() {
+        Log.d("myLog", "BediaBrowser -> connect");
         if (mMediaBrowser == null) {
             mMediaBrowser = new MediaBrowserCompat(
                     mContext,
@@ -80,6 +80,7 @@ public class MediaBrowserClient {
 
     public void disconnect() {
         if (mMediaController != null) {
+            mMediaController.unregisterCallback(mMediaControllerCallback);
             mMediaController = null;
         }
         if (mMediaBrowser != null && mMediaBrowser.isConnected()) {
@@ -93,26 +94,29 @@ public class MediaBrowserClient {
         @Override
         public void onConnected() {
             MediaSessionCompat.Token token = mMediaBrowser.getSessionToken();
-
             try {
                 mMediaController =
                         new MediaControllerCompat(mContext, token);
+                mMediaController.registerCallback(mMediaControllerCallback);
             } catch (RemoteException e) {
                 Log.d(LOG_TAG, "Variable Context is null \n" + e.toString());
             }
-            mMediaBrowserConnectionObservable = Observable.just(mMediaController);
             mMediaBrowser.subscribe(mMediaBrowser.getRoot(), mMediaBrowserSubscriptionCallback);
+            mOnConnectedObservable.onNext(true);
         }
 
         @Override
         public void onConnectionSuspended() {
             super.onConnectionSuspended();
+            mOnConnectedObservable.onNext(false);
             Log.d(LOG_TAG, "onConnectionSuspended");
+
         }
 
         @Override
         public void onConnectionFailed() {
             super.onConnectionFailed();
+            mOnConnectedObservable.onNext(false);
             Log.d(LOG_TAG, "onConnectionFailed");
 
         }
@@ -133,13 +137,13 @@ public class MediaBrowserClient {
     private class MediaControllerCallback extends MediaControllerCompat.Callback {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
-            mPlaybackStateObservable = Observable.just(state);
+            mPlaybackStateObservable.onNext(state);
         }
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata == null) return;
-            mMediaMetadataObservable = Observable.just(metadata);
+            mMediaMetadataObservable.onNext(metadata);
         }
 
     }
