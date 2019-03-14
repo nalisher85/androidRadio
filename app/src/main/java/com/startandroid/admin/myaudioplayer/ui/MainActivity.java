@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("myLog", "MainActivity -> onCreate");
 
         mAlbumArt = findViewById(R.id.album_art);
         mSongName = findViewById(R.id.song_name);
@@ -49,42 +50,67 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d("myLog", "MainActivity -> onStart");
+
         mMediaBrowserClient.connect();
-        mMediaBrowserClient.getOnConnectedObservable().subscribe(this::onMediaBrowserConnected);
-        mMediaBrowserClient.getMediaMetadataObservable().subscribe(this::onMetadataChanged);
-        mMediaBrowserClient.getPlaybackStateObservable().subscribe(this::onPlaybackStateChanged);
+
+        onMediaBrowserConnectedSubscription =
+                mMediaBrowserClient.getOnConnectedObservable()
+                        .subscribe(this::onMediaBrowserConnected, this::onConnectionError);
+        onMetadataChangedSubscription =
+                mMediaBrowserClient.getMediaMetadataObservable()
+                        .subscribe(this::onMetadataChanged, this::onMetadataError);
+        onPlaybackStateChangedSubscription =
+                mMediaBrowserClient.getPlaybackStateObservable().
+                        subscribe(this::onPlaybackStateChanged, this::onPlaybackStateError);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d("myLog", "MainActivity -> onStop");
+
         mMediaSeekBar.disconnectController();
         mMediaBrowserClient.disconnect();
+        onMediaBrowserConnectedSubscription.dispose();
+        onMetadataChangedSubscription.dispose();
+        onPlaybackStateChangedSubscription.dispose();
+    }
+
+    private void onConnectionError (Throwable e) {
+        Log.d("myLog", "Ошибка onConnectionError " + e.getMessage());
+    }
+
+    private void onMetadataError (Throwable e) {
+        Log.d("myLog", "Ошибка onMetadataError " + e.getMessage());
+    }
+
+    private void onPlaybackStateError (Throwable e) {
+        Log.d("myLog", "Ошибка onPlaybackStateError " + e.getMessage());
     }
 
     private void onMediaBrowserConnected(Boolean isConnected) {
-        if (!isConnected) return;;
+        if (!isConnected) return;
+        Log.d("myLog", "MainActivity -> onMediaBrowserConnected");
         mMediaController = mMediaBrowserClient.getMediaController();
         MediaButtonClickListener mediaButtonClickListener = new MediaButtonClickListener();
         findViewById(R.id.btn_previous).setOnClickListener(mediaButtonClickListener);
         findViewById(R.id.btn_play_pause).setOnClickListener(mediaButtonClickListener);
         findViewById(R.id.btn_next).setOnClickListener(mediaButtonClickListener);
-
         mMediaSeekBar.setMediaController(mMediaController);
-
-
     }
 
     public void onPlaybackStateChanged(PlaybackStateCompat state) {
+        Log.d("myLog", "MainActivity -> onPlaybackStateChanged");
         mIsPlaying = state != null &&
                 state.getState() == PlaybackStateCompat.STATE_PLAYING;
     }
 
     public void onMetadataChanged(MediaMetadataCompat metadata) {
+        Log.d("myLog", "MainActivity -> onMetadataChanged");
         if (metadata == null) {
             return;
         }

@@ -67,7 +67,7 @@ public class MediaBrowserClient {
     }
 
     public void connect() {
-        Log.d("myLog", "BediaBrowser -> connect");
+        Log.d("myLog", "MediaBrowser -> connect");
         if (mMediaBrowser == null) {
             mMediaBrowser = new MediaBrowserCompat(
                     mContext,
@@ -79,6 +79,8 @@ public class MediaBrowserClient {
     }
 
     public void disconnect() {
+        Log.d("myLog", "MediaBrowser -> disconnect");
+
         if (mMediaController != null) {
             mMediaController.unregisterCallback(mMediaControllerCallback);
             mMediaController = null;
@@ -93,6 +95,8 @@ public class MediaBrowserClient {
     private class MediaBrowserConnectionCallback extends MediaBrowserCompat.ConnectionCallback {
         @Override
         public void onConnected() {
+            Log.d("myLog", "MediaBrowser -> MediaBrowserConnectionCallback -> onConnected");
+
             MediaSessionCompat.Token token = mMediaBrowser.getSessionToken();
             try {
                 mMediaController =
@@ -107,6 +111,8 @@ public class MediaBrowserClient {
 
         @Override
         public void onConnectionSuspended() {
+            Log.d("myLog", "MediaBrowser -> MediaBrowserConnectionCallback -> onConnectionSuspended");
+
             super.onConnectionSuspended();
             mOnConnectedObservable.onNext(false);
             Log.d(LOG_TAG, "onConnectionSuspended");

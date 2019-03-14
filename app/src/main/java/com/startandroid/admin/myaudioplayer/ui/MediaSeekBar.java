@@ -79,7 +79,7 @@ public class MediaSeekBar extends AppCompatSeekBar {
     public void setMediaController (final MediaControllerCompat mediaController) {
         if (mediaController != null) {
             mMediaControllerCallback = new MediaControllerCallback();
-            mMediaController.registerCallback(mMediaControllerCallback);
+            mediaController.registerCallback(mMediaControllerCallback);
         }
         mMediaController = mediaController;
     }
