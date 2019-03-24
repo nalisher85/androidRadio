@@ -1,29 +1,40 @@
 package com.startandroid.admin.myaudioplayer.ui;
 
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.client.MediaBrowserClient;
-import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends AppCompatActivity {
 
 
-    private ImageView mAlbumArt;
-    private TextView mSongName;
-    private TextView mSongArtist;
-    private TextView mChannelTitle;
+    @BindView(R.id.toolbar)
+    private Toolbar mToolbar;
+    @BindView(R.id.bottom_sheet)
+    private LinearLayout mBottomSheet;
+    @BindView(R.id.bottom_navigation)
+    private BottomNavigationView mBottomNavigationView;
+
     private MediaSeekBar mMediaSeekBar;
 
     private MediaBrowserClient mMediaBrowserClient;
@@ -37,16 +48,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
         Log.d("myLog", "MainActivity -> onCreate");
 
-        mAlbumArt = findViewById(R.id.album_art);
-        mSongName = findViewById(R.id.song_name);
-        mSongArtist = findViewById(R.id.song_artist);
-        mChannelTitle = findViewById(R.id.channel_title);
+        setSupportActionBar(mToolbar);
+        ButterKnife.bind(this);
         mMediaSeekBar = findViewById(R.id.seekBar);
-
         mMediaBrowserClient = new MediaBrowserClient(this, MediaService.class);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new NavigationItemSelectedListner());
 
     }
 
@@ -114,13 +123,12 @@ public class MainActivity extends AppCompatActivity {
         if (metadata == null) {
             return;
         }
-        mSongName.setText(
-                metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
-        mSongArtist.setText(
-                metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST));
-        mAlbumArt.setImageBitmap(MusicLibrary.getAlbumBitmap(
-                MainActivity.this,
-                metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)));
+
+    }
+
+    private void setFragment(Fragment fragment) {
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction().replace(R.id.bnav_container, fragment).commit();
     }
 
     private class MediaButtonClickListener implements View.OnClickListener {
@@ -142,6 +150,28 @@ public class MainActivity extends AppCompatActivity {
                     mMediaController.getTransportControls().skipToNext();
                     break;
             }
+        }
+    }
+
+    private class NavigationItemSelectedListner implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            switch (menuItem.getItemId()){
+                case R.id.channels:
+                    Log.d("myTag", "onNavigationItemSelected->channels");
+                    setFragment(new RadioFragment());
+                    break;
+                case R.id.favorites:
+                    Log.d("myTag", "onNavigationItemSelected->favorites");
+                    setFragment(new FavoritesFragment());
+                    break;
+                case R.id.device_tracks:
+                    Log.d("myTag", "onNavigationItemSelected->favorites");
+                    setFragment(new DevicesTrackFragment());
+                    break;
+            }
+            return false;
         }
     }
 
