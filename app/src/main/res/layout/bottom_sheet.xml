@@ -6,18 +6,31 @@
     android:padding="15dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:behavior_peekHeight="100dp"
+    app:behavior_peekHeight="150dp"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-    android:layout_gravity="center|top"
-    app:layout_anchor="@id/bottom_navigation"
-    app:layout_anchorGravity="top|center_vertical"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=",dndf,nv,fdvdf,"/>
+        android:layout_height="100dp"
+        tools:text="Tools text1"
+        android:text="TextView1"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="TextView2"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="TextView3"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="TextView4"/>
+
 
 
 </LinearLayout>

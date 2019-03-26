@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.widget.AppCompatSeekBar;
+import androidx.appcompat.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
 import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;

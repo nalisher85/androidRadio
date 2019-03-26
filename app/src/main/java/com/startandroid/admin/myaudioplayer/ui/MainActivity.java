@@ -1,22 +1,22 @@
 package com.startandroid.admin.myaudioplayer.ui;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.client.MediaBrowserClient;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
@@ -29,11 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     @BindView(R.id.toolbar)
-    private Toolbar mToolbar;
+    Toolbar mToolbar;
     @BindView(R.id.bottom_sheet)
-    private LinearLayout mBottomSheet;
+    LinearLayout mBottomSheet;
     @BindView(R.id.bottom_navigation)
-    private BottomNavigationView mBottomNavigationView;
+    BottomNavigationView mBottomNavigationView;
 
     private MediaSeekBar mMediaSeekBar;
 
@@ -50,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         Log.d("myLog", "MainActivity -> onCreate");
-
         setSupportActionBar(mToolbar);
         ButterKnife.bind(this);
+
+        final BottomSheetBehavior bsBehavior = BottomSheetBehavior.from(mBottomSheet);
+        bsBehavior.setBottomSheetCallback(new BottomSheetCallback());
         mMediaSeekBar = findViewById(R.id.seekBar);
         mMediaBrowserClient = new MediaBrowserClient(this, MediaService.class);
         mBottomNavigationView.setOnNavigationItemSelectedListener(new NavigationItemSelectedListner());
@@ -175,5 +177,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class BottomSheetCallback extends BottomSheetBehavior.BottomSheetCallback {
+
+        @Override
+        public void onStateChanged(@NonNull View view, int i) {
+
+        }
+
+        @Override
+        public void onSlide(@NonNull View view, float v) {
+
+        }
+    }
 
 }

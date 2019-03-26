@@ -8,8 +8,8 @@ import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import android.support.v4.media.MediaMetadataCompat;
 
 public abstract class PlayerAdapter {
@@ -106,7 +106,7 @@ public abstract class PlayerAdapter {
         private AudioFocusRequest audioFocusRequest;
 
         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-        public void setAudioAttributes (AudioAttributes atr) {
+        void setAudioAttributes (AudioAttributes atr) {
             if (atr != null) audioAttributes = atr;
             else {
                 audioAttributes = new AudioAttributes.Builder()
@@ -117,7 +117,7 @@ public abstract class PlayerAdapter {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
-        public void setAudioFocusRequest(AudioFocusRequest afr) {
+        private void setAudioFocusRequest(AudioFocusRequest afr) {
             if (audioAttributes == null) setAudioAttributes(null);
             if (afr != null) audioFocusRequest = afr;
             else {

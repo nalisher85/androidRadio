@@ -3,18 +3,18 @@ package com.startandroid.admin.myaudioplayer.service.notifications;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.graphics.Color;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaButtonReceiver;
+import androidx.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
@@ -101,7 +101,7 @@ public class MediaNotificationManager {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mService, CHANNEL_ID);
         builder.setStyle(
-                new android.support.v4.media.app.NotificationCompat.MediaStyle().
+                new androidx.media.app.NotificationCompat.MediaStyle().
                         setMediaSession(token).
                         setShowActionsInCompactView(0, 1, 2).
                         setShowCancelButton(true).
