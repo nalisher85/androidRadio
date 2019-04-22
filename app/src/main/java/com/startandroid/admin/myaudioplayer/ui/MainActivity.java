@@ -3,6 +3,8 @@ package com.startandroid.admin.myaudioplayer.ui;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.support.v4.media.MediaMetadataCompat;
@@ -14,7 +16,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.startandroid.admin.myaudioplayer.R;
@@ -31,11 +35,29 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.bottom_sheet)
-    LinearLayout mBottomSheet;
+    ConstraintLayout mBottomSheet;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView mBottomNavigationView;
-
-    private MediaSeekBar mMediaSeekBar;
+    @BindView(R.id.bottomsheet_peek_logo)
+    ImageView mBottomsheetPeekLogo;
+    @BindView(R.id.bottomsheet_peek_title)
+    TextView mBottomsheetPeekTitle;
+    @BindView(R.id.bottomsheet_peek_subtitle)
+    TextView mBottomsheetPeekSubtitle;
+    @BindView(R.id.bottomsheet_peek_button)
+    ImageButton mBottomsheetPeekBtn;
+    @BindView(R.id.bottomsheet_rec_button)
+    ImageButton mBottomsheetRecBtn;
+    @BindView(R.id.bottomsheet_prev_button)
+    ImageButton mBottomsheetPrevBtn;
+    @BindView(R.id.bottomsheet_play_button)
+    ImageButton mBottomsheetPlayBtn;
+    @BindView(R.id.bottomsheet_next_button)
+    ImageButton mBottomsheetNextBtn;
+    @BindView(R.id.bottomsheet_favorite_button)
+    ImageButton mBottomsheetFavoriteBtn;
+    @BindView(R.id.mediaSeekBar)
+    MediaSeekBar mMediaSeekBar;
 
     private MediaBrowserClient mMediaBrowserClient;
     private MediaControllerCompat mMediaController;
@@ -48,18 +70,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
         Log.d("myLog", "MainActivity -> onCreate");
         setSupportActionBar(mToolbar);
         ButterKnife.bind(this);
 
+        if (savedInstanceState == null)
+            setFragment(new StationFragment());
+
+        mMediaBrowserClient = new MediaBrowserClient(this, MediaService.class);
+
         final BottomSheetBehavior bsBehavior = BottomSheetBehavior.from(mBottomSheet);
         bsBehavior.setBottomSheetCallback(new BottomSheetCallback());
-        mMediaSeekBar = findViewById(R.id.seekBar);
-        mMediaBrowserClient = new MediaBrowserClient(this, MediaService.class);
         mBottomNavigationView.setOnNavigationItemSelectedListener(new NavigationItemSelectedListner());
 
+        ViewCompat.setElevation(mBottomSheet, 21);
     }
+
 
     @Override
     protected void onStart() {
@@ -108,9 +135,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d("myLog", "MainActivity -> onMediaBrowserConnected");
         mMediaController = mMediaBrowserClient.getMediaController();
         MediaButtonClickListener mediaButtonClickListener = new MediaButtonClickListener();
-        findViewById(R.id.btn_previous).setOnClickListener(mediaButtonClickListener);
-        findViewById(R.id.btn_play_pause).setOnClickListener(mediaButtonClickListener);
-        findViewById(R.id.btn_next).setOnClickListener(mediaButtonClickListener);
+        mBottomsheetPrevBtn.setOnClickListener(mediaButtonClickListener);
+        mBottomsheetPlayBtn.setOnClickListener(mediaButtonClickListener);
+        mBottomsheetNextBtn.setOnClickListener(mediaButtonClickListener);
         mMediaSeekBar.setMediaController(mMediaController);
     }
 
@@ -138,17 +165,17 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             Log.d("myLog", "onClickView v.getId" + v.getId());
             switch (v.getId()) {
-                case R.id.btn_previous:
+                case R.id.bottomsheet_prev_button:
                     mMediaController.getTransportControls().skipToPrevious();
                     break;
-                case R.id.btn_play_pause:
+                case R.id.bottomsheet_play_button:
                     if (mIsPlaying) {
                         mMediaController.getTransportControls().pause();
                     } else {
                         mMediaController.getTransportControls().play();
                     }
                     break;
-                case R.id.btn_next:
+                case R.id.bottomsheet_next_button:
                     mMediaController.getTransportControls().skipToNext();
                     break;
             }
@@ -162,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             switch (menuItem.getItemId()){
                 case R.id.channels:
                     Log.d("myTag", "onNavigationItemSelected->channels");
-                    setFragment(new RadioFragment());
+                    setFragment(new StationFragment());
                     break;
                 case R.id.favorites:
                     Log.d("myTag", "onNavigationItemSelected->favorites");
@@ -170,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.device_tracks:
                     Log.d("myTag", "onNavigationItemSelected->favorites");
-                    setFragment(new DevicesTrackFragment());
+                    setFragment(new DevicesTracksFragment());
                     break;
             }
             return false;
@@ -181,11 +208,32 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStateChanged(@NonNull View view, int i) {
-
+            switch (i) {
+                case BottomSheetBehavior.STATE_COLLAPSED:
+                    mBottomsheetPeekBtn.setVisibility(View.VISIBLE);
+                    break;
+                case BottomSheetBehavior.STATE_EXPANDED:
+                    mBottomsheetPeekBtn.setVisibility(View.GONE);
+                    break;
+                case BottomSheetBehavior.STATE_DRAGGING:
+                    mBottomsheetPeekBtn.setVisibility(View.GONE);
+                    break;
+                case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                    mBottomsheetPeekBtn.setVisibility(View.GONE);
+                    break;
+                case BottomSheetBehavior.STATE_HIDDEN:
+                    mBottomsheetPeekBtn.setVisibility(View.VISIBLE);
+                    break;
+                case BottomSheetBehavior.STATE_SETTLING:
+                    break;
+                default:
+                    break;
+            }
         }
 
         @Override
         public void onSlide(@NonNull View view, float v) {
+            //Log.d("myLog", "onSlide: v -> " + v);
 
         }
     }

@@ -4,24 +4,36 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.startandroid.admin.myaudioplayer.R;
+import com.startandroid.admin.myaudioplayer.model.AudioModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RadioFragment.OnFragmentInteractionListener} interface
+ * {@link StationFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RadioFragment#//newInstance} factory method to
+ * Use the {@link StationFragment#//newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RadioFragment extends Fragment {
+public class StationFragment extends Fragment {
 
 
-    public RadioFragment() {
+    @BindView(R.id.station_list)
+    RecyclerView mStationListRecyclerView;
+
+    public StationFragment() {
     }
 
 
@@ -33,7 +45,24 @@ public class RadioFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_radio, container, false);
+        View view = inflater.inflate(R.layout.fragment_radio, container, false);
+        ButterKnife.bind(this, view);
+        List<AudioModel> stationList = new ArrayList<>();
+
+        for (int i = 0; i <= 10; i++){
+            AudioModel station = new AudioModel("station " + i, "singer " + i,
+                    "song " + i, R.drawable.logo_europe_plus);
+            stationList.add(station);
+        }
+
+        mStationListRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        mStationListRecyclerView.setLayoutManager(linearLayoutManager);
+
+        StationAdapter stationAdapter = new StationAdapter(getActivity(), stationList);
+        mStationListRecyclerView.setAdapter(stationAdapter);
+
+        return view;
     }
 
 

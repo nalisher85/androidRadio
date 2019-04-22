@@ -2,8 +2,6 @@ package com.startandroid.admin.myaudioplayer.ui;
 
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,33 +18,32 @@ import com.startandroid.admin.myaudioplayer.model.AudioModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoritesFragment extends Fragment {
+public class DevicesTracksFragment extends Fragment {
 
-    @BindView(R.id.station_list)
-    RecyclerView mStationRecycleView;
+    @BindView(R.id.track_list_recyclerview)
+    RecyclerView mTrackListRecyclerView;
 
-    public FavoritesFragment() {
+    public DevicesTracksFragment() {
     }
 
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_radio, container, false);
+        View view = inflater.inflate(R.layout.fragment_devices_track, container, false);
         ButterKnife.bind(this, view);
-        List<AudioModel> stationlList = new ArrayList<>();
+        List<AudioModel> trackList = new ArrayList<>();
 
         for (int i = 0; i <= 10; i++) {
-            AudioModel station = new AudioModel("favorite station " + i, "singer " + i,
+            AudioModel audioTrack = new AudioModel("track name " + i, "singer " + i,
                     "song " + i, R.drawable.ic_audiotrack);
-            stationlList.add(station);
+            trackList.add(audioTrack);
         }
 
-        mStationRecycleView.setHasFixedSize(true);
+        mTrackListRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        mStationRecycleView.setLayoutManager(linearLayoutManager);
-
-        mStationRecycleView.setAdapter(new StationAdapter(getActivity(), stationlList));
+        mTrackListRecyclerView.setLayoutManager(linearLayoutManager);
+        mTrackListRecyclerView.setAdapter(new DevicesTracksAdapter(getActivity(), trackList));
         return view;
     }
 
