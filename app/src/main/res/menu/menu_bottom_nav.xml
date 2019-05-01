@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/channels"
+        android:id="@+id/btm_nav_channels"
         android:enabled="true"
         android:icon="@drawable/ic_channels"
         android:title="@string/bottom_nav_menu_radio"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/favorites"
+        android:id="@+id/btm_nav_favorites"
         android:enabled="true"
         android:icon="@drawable/ic_favorite"
         android:title="@string/bottom_nav_menu_favorites"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/device_tracks"
+        android:id="@+id/btm_nav_device_tracks"
         android:enabled="true"
         android:icon="@drawable/ic_device_audio_file"
         android:title="@string/bottom_nav_menu_device_files"

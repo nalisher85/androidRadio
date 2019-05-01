@@ -1,7 +1,6 @@
 package com.startandroid.admin.myaudioplayer.ui;
 
 import android.content.Context;
-import android.media.AudioFocusRequest;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.model.AudioModel;
+import com.startandroid.admin.myaudioplayer.data.AudioModel;
 
 import java.util.List;
 
@@ -41,10 +40,9 @@ public class DevicesTracksAdapter extends RecyclerView.Adapter<DevicesTracksAdap
 
     @Override
     public void onBindViewHolder(@NonNull DevicesTracksViewHolder holder, int position) {
-        String singerAndSong = mTrackList.get(position).getSinger() + " - "
-                + mTrackList.get(position).getSong();
+
         holder.mTrackName.setText(mTrackList.get(position).getName());
-        holder.mSingerSong.setText(singerAndSong);
+        holder.mSinger.setText(mTrackList.get(position).getArtist());
         holder.trackCardView.setOnClickListener(view ->
                 Toast.makeText(mContext, "track " + position + " clicked", Toast.LENGTH_SHORT).show());
     }
@@ -62,8 +60,8 @@ public class DevicesTracksAdapter extends RecyclerView.Adapter<DevicesTracksAdap
         ImageView mTrackIcon;
         @BindView(R.id.track_name)
         TextView mTrackName;
-        @BindView(R.id.singer_song)
-        TextView mSingerSong;
+        @BindView(R.id.artist)
+        TextView mSinger;
         @BindView(R.id.btn_track_options)
         ImageButton mBtnTrackOptions;
 

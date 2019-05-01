@@ -3,6 +3,8 @@
     <string name="bottom_nav_menu_radio">Радио</string>
     <string name="bottom_nav_menu_favorites">Избранные</string>
     <string name="bottom_nav_menu_device_files">Треки с устройства</string>
+    <string name="add">Добавить</string>
+    <string name="shuffle">Перемешать</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

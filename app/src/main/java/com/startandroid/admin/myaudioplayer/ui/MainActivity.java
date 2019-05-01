@@ -4,9 +4,14 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -14,16 +19,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.client.MediaBrowserClient;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
     private MediaBrowserClient mMediaBrowserClient;
     private MediaControllerCompat mMediaController;
     private boolean mIsPlaying;
-    Disposable onMetadataChangedSubscription;
-    Disposable onPlaybackStateChangedSubscription;
-    Disposable onMediaBrowserConnectedSubscription;
+    private Disposable onMetadataChangedSubscription;
+    private Disposable onPlaybackStateChangedSubscription;
+    private Disposable onMediaBrowserConnectedSubscription;
 
 
     @Override
@@ -72,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("myLog", "MainActivity -> onCreate");
-        setSupportActionBar(mToolbar);
         ButterKnife.bind(this);
-
+        setSupportActionBar(mToolbar);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationItemSelectedListner());
         if (savedInstanceState == null)
             setFragment(new StationFragment());
 
@@ -82,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         final BottomSheetBehavior bsBehavior = BottomSheetBehavior.from(mBottomSheet);
         bsBehavior.setBottomSheetCallback(new BottomSheetCallback());
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new NavigationItemSelectedListner());
 
         ViewCompat.setElevation(mBottomSheet, 21);
     }
@@ -116,6 +124,13 @@ public class MainActivity extends AppCompatActivity {
         onMediaBrowserConnectedSubscription.dispose();
         onMetadataChangedSubscription.dispose();
         onPlaybackStateChangedSubscription.dispose();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d("myLog", "MainActivity -> onCreateOptionsMenu");
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void onConnectionError (Throwable e) {
@@ -152,12 +167,33 @@ public class MainActivity extends AppCompatActivity {
         if (metadata == null) {
             return;
         }
-
     }
 
     private void setFragment(Fragment fragment) {
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.bnav_container, fragment).commit();
+    }
+
+    private boolean isReadWriteStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.d("myLog", "PERMISSION_GRANTED");
+                return true;
+            } else return false;
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            return true;
+        }
+    }
+
+    private boolean requestStoragePermission() {
+        Log.d("myLog", "REQUEST PERMISSION");
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE}, 3);
+        return isReadWriteStoragePermissionGranted();
     }
 
     private class MediaButtonClickListener implements View.OnClickListener {
@@ -182,22 +218,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class NavigationItemSelectedListner implements BottomNavigationView.OnNavigationItemSelectedListener {
+    private class BottomNavigationItemSelectedListner implements BottomNavigationView.OnNavigationItemSelectedListener {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()){
-                case R.id.channels:
+                case R.id.btm_nav_channels:
                     Log.d("myTag", "onNavigationItemSelected->channels");
                     setFragment(new StationFragment());
                     break;
-                case R.id.favorites:
+                case R.id.btm_nav_favorites:
                     Log.d("myTag", "onNavigationItemSelected->favorites");
                     setFragment(new FavoritesFragment());
                     break;
-                case R.id.device_tracks:
+                case R.id.btm_nav_device_tracks:
                     Log.d("myTag", "onNavigationItemSelected->favorites");
-                    setFragment(new DevicesTracksFragment());
+
+                    if(requestStoragePermission())
+                        setFragment(new DevicesTracksFragment());
+                    else Toast.makeText(MainActivity.this, "Need access to storage",
+                            Toast.LENGTH_SHORT).show();
                     break;
             }
             return false;

@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.model.AudioModel;
+import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,19 +34,21 @@ public class FavoritesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_radio, container, false);
         ButterKnife.bind(this, view);
-        List<AudioModel> stationlList = new ArrayList<>();
+        List<RadioStationModel> stationList = new ArrayList<>();
+
+
 
         for (int i = 0; i <= 10; i++) {
-            AudioModel station = new AudioModel("favorite station " + i, "singer " + i,
-                    "song " + i, R.drawable.ic_audiotrack);
-            stationlList.add(station);
+            RadioStationModel station = new RadioStationModel();
+            station.setStationName("Favorite Station " + i);
+            stationList.add(station);
         }
 
         mStationRecycleView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mStationRecycleView.setLayoutManager(linearLayoutManager);
 
-        mStationRecycleView.setAdapter(new StationAdapter(getActivity(), stationlList));
+        mStationRecycleView.setAdapter(new StationAdapter(getActivity(), stationList));
         return view;
     }
 

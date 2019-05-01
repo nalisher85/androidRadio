@@ -12,5 +12,4 @@
         android:layout_height="wrap_content"
         app:layout_behavior="androidx.design.widget.AppBarLayout$ScrollingViewBehavior"/>
 
-
 </FrameLayout>

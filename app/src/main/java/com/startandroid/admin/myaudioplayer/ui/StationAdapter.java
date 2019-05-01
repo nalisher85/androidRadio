@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.model.AudioModel;
+import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 
 import java.util.List;
 
@@ -23,9 +23,9 @@ import butterknife.ButterKnife;
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
 
     private Context mContext;
-    private List<AudioModel> mStationList;
+    private List<RadioStationModel> mStationList;
 
-    public StationAdapter(Context ctx, List<AudioModel> stationList) {
+    public StationAdapter(Context ctx, List<RadioStationModel> stationList) {
         mContext = ctx;
         mStationList = stationList;
     }
@@ -40,15 +40,10 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
 
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
-        String singerAndSong = mStationList.get(position).getSinger() + " - "
-                + mStationList.get(position).getSinger();
-        String stationName = mStationList.get(position).getName();
-
-        holder.mStationName.setText(stationName);
-        holder.mSingerSong.setText(singerAndSong);
+        holder.mStationName.setText(mStationList.get(position).getStationName());
 
         holder.mStationCardView.setOnClickListener(view -> {
-            Toast.makeText(mContext, stationName, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, mStationList.get(position).getStationName(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -65,8 +60,6 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         ImageView mStationIcon;
         @BindView(R.id.station_name)
         TextView mStationName;
-        @BindView(R.id.singer_song)
-        TextView mSingerSong;
         @BindView(R.id.btn_play_pause)
         ImageButton mBtnPlayPause;
         @BindView(R.id.btn_favorite)

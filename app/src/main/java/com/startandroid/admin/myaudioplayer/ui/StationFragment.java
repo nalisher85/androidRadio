@@ -3,6 +3,9 @@ package com.startandroid.admin.myaudioplayer.ui;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,14 +13,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.model.AudioModel;
+import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,18 +46,19 @@ public class StationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_radio, container, false);
         ButterKnife.bind(this, view);
-        List<AudioModel> stationList = new ArrayList<>();
+        List<RadioStationModel> stationList = new ArrayList<>();
 
         for (int i = 0; i <= 10; i++){
-            AudioModel station = new AudioModel("station " + i, "singer " + i,
-                    "song " + i, R.drawable.logo_europe_plus);
+            RadioStationModel station = new RadioStationModel();
+            station.setStationName("Station " + i);
             stationList.add(station);
         }
 
@@ -65,6 +72,12 @@ public class StationFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.action_bar_menu, menu);
+        menu.findItem(R.id.action_add).setVisible(true);
+        menu.findItem(R.id.action_shuffle).setVisible(false);
+    }
 
     @Override
     public void onAttach(Context context) {
