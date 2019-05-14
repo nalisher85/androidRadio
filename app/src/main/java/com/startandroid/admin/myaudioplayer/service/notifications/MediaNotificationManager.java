@@ -85,6 +85,7 @@ public class MediaNotificationManager {
     public Notification getNotification(MediaMetadataCompat metadata,
                                         @NonNull PlaybackStateCompat state,
                                         MediaSessionCompat.Token token) {
+
         boolean isPlaying = state.getState() == PlaybackStateCompat.STATE_PLAYING;
         MediaDescriptionCompat description = metadata.getDescription();
         NotificationCompat.Builder builder = buildNotification(state, token, isPlaying, description);

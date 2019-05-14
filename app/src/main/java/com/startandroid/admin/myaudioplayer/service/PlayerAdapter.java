@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -49,7 +50,9 @@ public abstract class PlayerAdapter {
 
     public abstract boolean isPlaying();
     public abstract void playFromMedia(MediaMetadataCompat metadata);
+    public abstract void playFromUri(Uri uri);
     public abstract MediaMetadataCompat getCurrentMedia();
+    public abstract void setCurrentMedia(MediaMetadataCompat currentMedia);
     public abstract void seekTo(long position);
     public abstract void setVolume(float volume);
 
@@ -135,13 +138,12 @@ public abstract class PlayerAdapter {
             else return requestAudioFocusForApi26();
         }
 
-        @RequiresApi(Build.VERSION_CODES.O)
+        @RequiresApi(api = Build.VERSION_CODES.O)
         private int requestAudioFocusForApi26() {
             if (audioFocusRequest == null) setAudioFocusRequest(null);
             return mAudioManager.requestAudioFocus(audioFocusRequest);
         }
 
-        @RequiresApi(Build.VERSION_CODES.KITKAT)
         private int requestAudioFocusForPreApi26() {
             return mAudioManager.requestAudioFocus(this,
                     AudioManager.STREAM_MUSIC,

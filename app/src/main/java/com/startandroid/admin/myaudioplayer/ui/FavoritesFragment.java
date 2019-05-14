@@ -1,6 +1,7 @@
 package com.startandroid.admin.myaudioplayer.ui;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,21 +10,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.startandroid.admin.myaudioplayer.data.MyDataBase;
+import com.startandroid.admin.myaudioplayer.data.MyDbHelper;
 
 public class FavoritesFragment extends Fragment {
 
     @BindView(R.id.station_list)
     RecyclerView mStationRecycleView;
+
+    private MyDbHelper mDb;
+    private FragmentListener mFragmentListner;
+    private Disposable stationsSubscriber;
 
     public FavoritesFragment() {
     }
@@ -34,22 +38,29 @@ public class FavoritesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_radio, container, false);
         ButterKnife.bind(this, view);
-        List<RadioStationModel> stationList = new ArrayList<>();
-
-
-
-        for (int i = 0; i <= 10; i++) {
-            RadioStationModel station = new RadioStationModel();
-            station.setStationName("Favorite Station " + i);
-            stationList.add(station);
-        }
 
         mStationRecycleView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mStationRecycleView.setLayoutManager(linearLayoutManager);
 
-        mStationRecycleView.setAdapter(new StationAdapter(getActivity(), stationList));
+        stationsSubscriber = mDb.getRadioStationsByField("is_favorite", "true")
+                .subscribe(stations ->
+                        mStationRecycleView.setAdapter(new StationAdapter(getActivity(), stations)),
+                        err -> err.printStackTrace());
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mDb = new MyDbHelper(context.getApplicationContext());
+        mFragmentListner = (FragmentListener)getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mFragmentListner = null;
     }
 
 }

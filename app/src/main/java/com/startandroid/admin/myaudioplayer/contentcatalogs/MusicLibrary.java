@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 
 import com.startandroid.admin.myaudioplayer.BuildConfig;
@@ -91,6 +92,10 @@ public class MusicLibrary {
     public static List<MediaBrowserCompat.MediaItem> getMediaItems() {
         List<MediaBrowserCompat.MediaItem> result = new ArrayList<>();
         for (MediaMetadataCompat metadata : music.values()) {
+            TreeMap<String, MediaMetadataCompat> m = music;
+            MediaMetadataCompat md = metadata;
+            MediaDescriptionCompat desc = metadata.getDescription();
+            int a = 1+2;
             result.add(
                     new MediaBrowserCompat.MediaItem(
                             metadata.getDescription(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE));

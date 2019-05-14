@@ -45,6 +45,7 @@
         app:itemIconTint="@color/colorWhite"
         app:itemTextColor="@color/colorWhite"
         android:background="@color/colorPrimary"
+        android:elevation="30dp"
         app:menu="@menu/menu_bottom_nav" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

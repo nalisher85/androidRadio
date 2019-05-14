@@ -1,14 +1,46 @@
 package com.startandroid.admin.myaudioplayer.data;
 
+import android.support.v4.media.MediaMetadataCompat;
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "radio_station")
 public class RadioStationModel {
 
+    @PrimaryKey(autoGenerate = true)
+     private int id;
+
+    @ColumnInfo(name = "station_name")
     private String stationName;
-    private String stationLink;
+
+    @ColumnInfo(name = "path")
+    private String path;
+
+    @ColumnInfo(name = "is_favorite")
     private boolean isFavorite;
+
+    @Ignore
     private int stationIcon;
 
-    public RadioStationModel (){
+    public RadioStationModel(){}
 
+    public RadioStationModel (String stationName,
+                              @NonNull String path, boolean isFavorite){
+        this.stationName = stationName;
+        this.path = path;
+        this.isFavorite = isFavorite;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getStationName() {
@@ -19,12 +51,13 @@ public class RadioStationModel {
         this.stationName = stationName;
     }
 
-    public String getStationLink() {
-        return stationLink;
+    @NonNull
+    public String getPath() {
+        return path;
     }
 
-    public void setStationLink(String stationLink) {
-        this.stationLink = stationLink;
+    public void setPath(@NonNull String uri) {
+        this.path = uri;
     }
 
     public boolean isFavorite() {
@@ -35,6 +68,7 @@ public class RadioStationModel {
         isFavorite = favorite;
     }
 
+
     public int getStationIcon() {
         return stationIcon;
     }
@@ -43,5 +77,12 @@ public class RadioStationModel {
         this.stationIcon = stationIcon;
     }
 
+    public MediaMetadataCompat convertToMetadata(){
+        return new MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, ""+id)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, path)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, stationName)
+                .build();
+    }
 
 }

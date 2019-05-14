@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.data.AudioModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -23,10 +23,12 @@ import butterknife.ButterKnife;
 public class DevicesTracksAdapter extends RecyclerView.Adapter<DevicesTracksAdapter.DevicesTracksViewHolder> {
 
     private Context mContext;
+    private FragmentListener mFragmentListner;
     private List<AudioModel> mTrackList;
 
     public DevicesTracksAdapter (Context context, List<AudioModel> trackList) {
         mContext = context;
+        mFragmentListner = (FragmentListener)context;
         mTrackList = trackList;
     }
 
@@ -43,8 +45,11 @@ public class DevicesTracksAdapter extends RecyclerView.Adapter<DevicesTracksAdap
 
         holder.mTrackName.setText(mTrackList.get(position).getName());
         holder.mSinger.setText(mTrackList.get(position).getArtist());
-        holder.trackCardView.setOnClickListener(view ->
-                Toast.makeText(mContext, "track " + position + " clicked", Toast.LENGTH_SHORT).show());
+        holder.trackCardView.setOnClickListener((view) -> {
+                List<AudioModel> queueList = new ArrayList<>();
+                queueList.add(mTrackList.get(position));
+                mFragmentListner.onAddQueueItems(queueList, true);
+        });
     }
 
     @Override

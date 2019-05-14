@@ -13,7 +13,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,19 +25,25 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.client.MediaBrowserClient;
+import com.startandroid.admin.myaudioplayer.data.AudioModel;
+import com.startandroid.admin.myaudioplayer.data.MyDbHelper;
+import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FragmentListener {
 
 
     @BindView(R.id.toolbar)
@@ -54,26 +59,39 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.bottomsheet_peek_subtitle)
     TextView mBottomsheetPeekSubtitle;
     @BindView(R.id.bottomsheet_peek_button)
-    ImageButton mBottomsheetPeekBtn;
+    ToggleButton mBottomsheetPeekBtn;
     @BindView(R.id.bottomsheet_rec_button)
     ImageButton mBottomsheetRecBtn;
     @BindView(R.id.bottomsheet_prev_button)
     ImageButton mBottomsheetPrevBtn;
     @BindView(R.id.bottomsheet_play_button)
-    ImageButton mBottomsheetPlayBtn;
+    ToggleButton mBottomsheetPlayBtn;
     @BindView(R.id.bottomsheet_next_button)
     ImageButton mBottomsheetNextBtn;
     @BindView(R.id.bottomsheet_favorite_button)
-    ImageButton mBottomsheetFavoriteBtn;
+    ToggleButton mBottomsheetFavoriteBtn;
     @BindView(R.id.mediaSeekBar)
     MediaSeekBar mMediaSeekBar;
 
     private MediaBrowserClient mMediaBrowserClient;
-    private MediaControllerCompat mMediaController;
-    private boolean mIsPlaying;
     private Disposable onMetadataChangedSubscription;
     private Disposable onPlaybackStateChangedSubscription;
     private Disposable onMediaBrowserConnectedSubscription;
+
+    boolean mIsPlaying = false;
+
+    private static String[][] testData = {
+            {"Record radio", "http://air2.radiorecord.ru:9003/rr_320", "false"},
+            {"Record bighits", "http://air2.radiorecord.ru:9003/bighits_320", "false"},
+            {"Record gold", "http://air2.radiorecord.ru:9003/gold_320", "false"},
+            {"Record rap", "http://air2.radiorecord.ru:9003/rap_320 ", "false"},
+            {"Record russianhits", "http://air2.radiorecord.ru:9003/russianhits_320 ", "false"},
+            {"Record darkside", "http://air2.radiorecord.ru:9003/darkside_320", "false"},
+            {"Record маятник фуко", "http://air2.radiorecord.ru:9003/mf_320", "false"},
+            {"Record tecktonik", "http://air2.radiorecord.ru:9003/tecktonik_320", "false"},
+            {"Record 2step", "http://air2.radiorecord.ru:9003/2step_320", "false"},
+            {"Record discofunk", "http://air2.radiorecord.ru:9003/discofunk_320", "false"}
+    };
 
 
     @Override
@@ -93,6 +111,20 @@ public class MainActivity extends AppCompatActivity {
         bsBehavior.setBottomSheetCallback(new BottomSheetCallback());
 
         ViewCompat.setElevation(mBottomSheet, 21);
+        ViewCompat.setElevation(mBottomNavigationView, 21);
+
+        MyDbHelper db = new MyDbHelper(this.getApplicationContext());
+        List<RadioStationModel> stationModels = new ArrayList<>();
+        Disposable disposable = db.getRadioStationList().subscribe(stations -> {
+            if (stations.isEmpty()) {
+                for (String[] aData : testData) {
+                    RadioStationModel station = new RadioStationModel(aData[0], aData[1],
+                            Boolean.parseBoolean(aData[2]));
+                    stationModels.add(station);
+                }
+                db.insert(stationModels);
+            }
+        }, e -> e.printStackTrace());
     }
 
 
@@ -147,26 +179,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void onMediaBrowserConnected(Boolean isConnected) {
         if (!isConnected) return;
-        Log.d("myLog", "MainActivity -> onMediaBrowserConnected");
-        mMediaController = mMediaBrowserClient.getMediaController();
-        MediaButtonClickListener mediaButtonClickListener = new MediaButtonClickListener();
-        mBottomsheetPrevBtn.setOnClickListener(mediaButtonClickListener);
-        mBottomsheetPlayBtn.setOnClickListener(mediaButtonClickListener);
-        mBottomsheetNextBtn.setOnClickListener(mediaButtonClickListener);
-        mMediaSeekBar.setMediaController(mMediaController);
+        mBottomsheetPrevBtn.setOnClickListener(v -> mMediaBrowserClient.onMediaButtonClicked(v.getId()));
+        mBottomsheetNextBtn.setOnClickListener(v -> mMediaBrowserClient.onMediaButtonClicked(v.getId()));
+        mBottomsheetPlayBtn.setOnClickListener(v -> {
+            mMediaBrowserClient.onMediaButtonClicked(v.getId());
+            mBottomsheetPlayBtn.setChecked(mIsPlaying);
+        });
+        mBottomsheetPeekBtn.setOnClickListener(v -> {
+            mMediaBrowserClient.onMediaButtonClicked(v.getId());
+            mBottomsheetPeekBtn.setChecked(mIsPlaying);
+        });
+        mMediaSeekBar.setMediaController(mMediaBrowserClient.getMediaController());
     }
 
     public void onPlaybackStateChanged(PlaybackStateCompat state) {
-        Log.d("myLog", "MainActivity -> onPlaybackStateChanged");
+        Log.d("myLog", "MainActivity -> onPlaybackStateChanged." +
+                "state="+state.getState()+" thread="+Thread.currentThread().getName());
         mIsPlaying = state != null &&
                 state.getState() == PlaybackStateCompat.STATE_PLAYING;
+        mBottomsheetPeekBtn.setChecked(mIsPlaying);
+        mBottomsheetPlayBtn.setChecked(mIsPlaying);
     }
 
     public void onMetadataChanged(MediaMetadataCompat metadata) {
-        Log.d("myLog", "MainActivity -> onMetadataChanged");
-        if (metadata == null) {
-            return;
-        }
+        if (metadata == null) return;
+        mBottomsheetPeekTitle.setText(metadata.getDescription().getTitle());
+        mBottomsheetPeekSubtitle.setText(metadata.getDescription().getSubtitle());
     }
 
     private void setFragment(Fragment fragment) {
@@ -196,27 +234,17 @@ public class MainActivity extends AppCompatActivity {
         return isReadWriteStoragePermissionGranted();
     }
 
-    private class MediaButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Log.d("myLog", "onClickView v.getId" + v.getId());
-            switch (v.getId()) {
-                case R.id.bottomsheet_prev_button:
-                    mMediaController.getTransportControls().skipToPrevious();
-                    break;
-                case R.id.bottomsheet_play_button:
-                    if (mIsPlaying) {
-                        mMediaController.getTransportControls().pause();
-                    } else {
-                        mMediaController.getTransportControls().play();
-                    }
-                    break;
-                case R.id.bottomsheet_next_button:
-                    mMediaController.getTransportControls().skipToNext();
-                    break;
-            }
-        }
+    @Override
+    public void onAddQueueItems(List<AudioModel> queueItems, boolean clearOldQueue) {
+        mMediaBrowserClient.addToQueueItems(queueItems, clearOldQueue);
     }
+
+    @Override
+    public void onAddQueueItems(RadioStationModel radioStationModel) {
+        mMediaBrowserClient.addToQueueItems(radioStationModel);
+    }
+
+    //--------------------------------
 
     private class BottomNavigationItemSelectedListner implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -251,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
             switch (i) {
                 case BottomSheetBehavior.STATE_COLLAPSED:
                     mBottomsheetPeekBtn.setVisibility(View.VISIBLE);
+                    mBottomsheetPeekBtn.setChecked(mIsPlaying);
                     break;
                 case BottomSheetBehavior.STATE_EXPANDED:
                     mBottomsheetPeekBtn.setVisibility(View.GONE);
@@ -263,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case BottomSheetBehavior.STATE_HIDDEN:
                     mBottomsheetPeekBtn.setVisibility(View.VISIBLE);
+                    mBottomsheetPeekBtn.setChecked(mIsPlaying);
                     break;
                 case BottomSheetBehavior.STATE_SETTLING:
                     break;

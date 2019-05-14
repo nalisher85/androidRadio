@@ -23,17 +23,19 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="@null"
         app:srcCompat="@drawable/logo_europe_plus" />
 
     <TextView
         android:id="@+id/bottomsheet_peek_title"
         android:layout_width="0dp"
-        android:layout_height="14dp"
+        android:layout_height="22dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Title"
-        android:textSize="12dp"
+        android:textSize="14dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/bottomsheet_peek_button"
         app:layout_constraintStart_toEndOf="@+id/bottomsheet_peek_logo"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,9 +43,8 @@
     <TextView
         android:id="@+id/bottomsheet_peek_subtitle"
         android:layout_width="0dp"
-        android:layout_height="15dp"
+        android:layout_height="18dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="kjnlkjhkj"
         android:textSize="10dp"
@@ -51,7 +52,7 @@
         app:layout_constraintStart_toEndOf="@+id/bottomsheet_peek_logo"
         app:layout_constraintTop_toBottomOf="@+id/bottomsheet_peek_title" />
 
-    <ImageButton
+    <ToggleButton
         android:id="@+id/bottomsheet_peek_button"
         android:layout_width="35dp"
         android:layout_height="35dp"
@@ -59,7 +60,10 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play" />
+        android:background="@drawable/ic_play_pause_toggle"
+        android:text=""
+        android:textOff=""
+        android:textOn=""/>
 
     <ImageView
         android:id="@+id/bottomsheet_media_img"
@@ -69,6 +73,7 @@
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomsheet_play_button"
         app:layout_constraintTop_toBottomOf="@+id/bottomsheet_peek_logo"
+        android:background="@null"
         app:srcCompat="@drawable/europaplus"
         tools:layout_editor_absoluteX="8dp" />
 
@@ -77,51 +82,70 @@
         android:id="@+id/bottomsheet_rec_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="15dp"
+        android:background="@null"
         app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
         app:layout_constraintEnd_toStartOf="@+id/bottomsheet_prev_button"
-        app:srcCompat="@android:drawable/presence_audio_online" />
+        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_media_img"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_rec" />
 
     <ImageButton
         android:id="@+id/bottomsheet_prev_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="15dp"
+        android:background="@null"
         app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
         app:layout_constraintEnd_toStartOf="@+id/bottomsheet_play_button"
-        app:srcCompat="@android:drawable/ic_media_previous" />
+        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_media_img"
+        app:srcCompat="@drawable/ic_previos" />
 
-    <ImageButton
+    <ToggleButton
         android:id="@+id/bottomsheet_play_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/ic_play_pause_bottomsheet_toggle"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
         app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_next_button"
-        app:srcCompat="@android:drawable/ic_media_play" />
+        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_next_button" />
 
     <ImageButton
         android:id="@+id/bottomsheet_next_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="15dp"
+        android:background="@null"
         app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
         app:layout_constraintEnd_toStartOf="@+id/bottomsheet_favorite_button"
-        app:srcCompat="@android:drawable/ic_media_next" />
+        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_media_img"
+        app:srcCompat="@drawable/ic_next" />
 
-    <ImageButton
+    <ToggleButton
         android:id="@+id/bottomsheet_favorite_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="15dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/ic_favorrite_toggle"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
         app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_favorite" />
+        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_media_img"
+        app:layout_constraintVertical_bias="0.651" />
 
     <com.startandroid.admin.myaudioplayer.ui.MediaSeekBar
         android:id="@+id/mediaSeekBar"
@@ -159,181 +183,3 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-    <!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/bottom_sheet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="false"
-        android:background="@color/colorWhite"
-        android:fitsSystemWindows="false"
-        android:orientation="vertical"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="50dp"
-        app:behavior_peekHeight="100dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp">
-
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.444"
-                app:srcCompat="@drawable/logo_europe_plus" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="14dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:text="TextView"
-                android:textSize="12dp"
-                app:layout_constraintBottom_toTopOf="@+id/textView3"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.342" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="15dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="8dp"
-                android:text="kjnlkjhkj"
-                android:textSize="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView" />
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="2.5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="2.5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.955"
-                app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/ic_play" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:srcCompat="@drawable/europaplus" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:addStatesFromChildren="false"
-            tools:layout_editor_absoluteX="15dp"
-            tools:layout_editor_absoluteY="240dp">
-
-            <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="13dp"
-                app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/presence_audio_online" />
-
-            <ImageButton
-                android:id="@+id/imageButton3"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="13dp"
-                app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton4"
-                app:layout_constraintStart_toEndOf="@+id/imageButton2"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_media_previous" />
-
-            <ImageButton
-                android:id="@+id/imageButton4"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="13dp"
-                app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton5"
-                app:layout_constraintStart_toEndOf="@+id/imageButton3"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_media_play" />
-
-            <ImageButton
-                android:id="@+id/imageButton5"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="13dp"
-                app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-                app:layout_constraintEnd_toStartOf="@+id/imageButton6"
-                app:layout_constraintStart_toEndOf="@+id/imageButton4"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_media_next" />
-
-            <ImageButton
-                android:id="@+id/imageButton6"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="13dp"
-                app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageButton5"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_favorite" />
-
-            <com.startandroid.admin.myaudioplayer.ui.MediaSeekBar
-                android:id="@+id/mediaSeekBar"
-                android:layout_width="360dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.904" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </LinearLayout> -->

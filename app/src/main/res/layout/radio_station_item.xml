@@ -26,43 +26,57 @@
 
         <TextView
             android:id="@+id/station_name"
-            android:layout_width="wrap_content"
+            android:layout_width="244dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="59dp"
             android:layout_marginTop="4dp"
-            android:text="text1" />
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/btn_favorite"
+            android:text="text1"
+            android:textSize="14dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/artist"
-            android:layout_width="wrap_content"
+            android:layout_width="247dp"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/station_name"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="60dp"
-            android:layout_marginBottom="10dp"
-            android:text="text2" />
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="14dp"
+            android:layout_toStartOf="@+id/btn_favorite"
+            android:text="text2"
+            android:textSize="12dp" />
 
         <ImageButton
-            android:id="@+id/btn_play_pause"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:id="@+id/btn_station_options"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp" />
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="9dp"
+            android:layout_marginBottom="13dp"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_vert_dots" />
 
         <ImageButton
             android:id="@+id/btn_favorite"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_toStartOf="@+id/btn_play_pause"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="11dp"
+            android:layout_marginBottom="13dp"
+            android:layout_toStartOf="@+id/btn_station_options"
+            android:background="@null"
             app:srcCompat="@drawable/ic_favorite" />
 
     </RelativeLayout>

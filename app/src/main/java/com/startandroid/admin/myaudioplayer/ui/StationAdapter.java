@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
@@ -24,10 +23,12 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
 
     private Context mContext;
     private List<RadioStationModel> mStationList;
+    private FragmentListener mFragmentListener;
 
     public StationAdapter(Context ctx, List<RadioStationModel> stationList) {
         mContext = ctx;
         mStationList = stationList;
+        mFragmentListener = (FragmentListener)ctx;
     }
 
 
@@ -41,10 +42,8 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
         holder.mStationName.setText(mStationList.get(position).getStationName());
-
-        holder.mStationCardView.setOnClickListener(view -> {
-            Toast.makeText(mContext, mStationList.get(position).getStationName(), Toast.LENGTH_SHORT).show();
-        });
+        holder.mStationCardView.setOnClickListener(view ->
+                mFragmentListener.onAddQueueItems(mStationList.get(position)));
     }
 
     @Override
@@ -60,7 +59,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         ImageView mStationIcon;
         @BindView(R.id.station_name)
         TextView mStationName;
-        @BindView(R.id.btn_play_pause)
+        @BindView(R.id.btn_station_options)
         ImageButton mBtnPlayPause;
         @BindView(R.id.btn_favorite)
         ImageButton mBtnFavorite;

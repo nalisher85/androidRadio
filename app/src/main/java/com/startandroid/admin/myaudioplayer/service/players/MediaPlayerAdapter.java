@@ -4,6 +4,7 @@ package com.startandroid.admin.myaudioplayer.service.players;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.SystemClock;
 import androidx.annotation.NonNull;
 import android.support.v4.media.MediaMetadataCompat;
@@ -13,12 +14,16 @@ import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
 import com.startandroid.admin.myaudioplayer.service.PlaybackInfoListener;
 import com.startandroid.admin.myaudioplayer.service.PlayerAdapter;
 
+import java.io.IOException;
+import java.util.Objects;
+
 public class MediaPlayerAdapter extends PlayerAdapter {
 
     private final Context mContext;
     private MediaPlayer mMediaPlayer;
     private String mFileName;
     private MediaMetadataCompat mCurrentMedia;
+    private String mMediaUri;
     private int mState;
     private boolean mCurrentMediaPlayedToCompletion;
     private PlaybackInfoListener mPlaybackInfoListener;
@@ -38,13 +43,13 @@ public class MediaPlayerAdapter extends PlayerAdapter {
                 mPlaybackInfoListener.onPlaybackCompleted();
                 setNewState(PlaybackStateCompat.STATE_PAUSED);
             });
+            mMediaPlayer.setOnPreparedListener(listener -> play());
         }
     }
 
 
     private void setNewState(@PlaybackStateCompat.State int newState) {
         mState = newState;
-
         if(mState == PlaybackStateCompat.STATE_STOPPED) {
             mCurrentMediaPlayedToCompletion = true;
         }
@@ -125,6 +130,26 @@ public class MediaPlayerAdapter extends PlayerAdapter {
     }
 
     @Override
+    public void playFromUri(@NonNull Uri uri) {
+        boolean  mediaChanged = !(mMediaUri != null && mMediaUri.equals(uri.getPath()));
+        if ( !mediaChanged) {
+            if (!isPlaying()) {
+                play();
+            }
+            return;
+        }
+        release();
+        initializeMediaPlayer();
+        mMediaUri = uri.toString();
+        try {
+            mMediaPlayer.setDataSource(mMediaUri);
+            mMediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void playFromMedia(MediaMetadataCompat metadata) {
         mCurrentMedia = metadata;
         final String mediaId = metadata.getDescription().getMediaId();
@@ -185,6 +210,11 @@ public class MediaPlayerAdapter extends PlayerAdapter {
     }
 
     @Override
+    public void setCurrentMedia(MediaMetadataCompat currentMedia) {
+        mCurrentMedia = currentMedia;
+    }
+
+    @Override
     public void seekTo(long position) {
         if (mMediaPlayer != null) {
             if(!mMediaPlayer.isPlaying()) {
@@ -201,6 +231,19 @@ public class MediaPlayerAdapter extends PlayerAdapter {
             mMediaPlayer.setVolume(volume, volume);
         }
 
+    }
+
+    class MediaPlayerOnPrepereListner implements MediaPlayer.OnPreparedListener {
+
+        /**
+         * Called when the media file is ready for playback.
+         *
+         * @param mp the MediaPlayer that is ready for playback
+         */
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            play();
+        }
     }
 }
 

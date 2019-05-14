@@ -2,25 +2,32 @@ package com.startandroid.admin.myaudioplayer.service;
 
 import android.app.Notification;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
 import android.support.v4.media.MediaBrowserCompat;
 import androidx.media.MediaBrowserServiceCompat;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
-import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
+import com.startandroid.admin.myaudioplayer.data.MyDbHelper;
+import com.startandroid.admin.myaudioplayer.data.StorageAudioFiles;
 import com.startandroid.admin.myaudioplayer.service.notifications.MediaNotificationManager;
 import com.startandroid.admin.myaudioplayer.service.players.MediaPlayerAdapter;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MediaService extends MediaBrowserServiceCompat {
@@ -33,12 +40,14 @@ public class MediaService extends MediaBrowserServiceCompat {
     private PlayerAdapter mMediaPayer;
     private MediaNotificationManager mMediaNotificationManager;
     private boolean mServiceInStartedState;
+    private StorageAudioFiles storageAudioFiles;
+    private Disposable audioMetadataFromStorageSubscribtion;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        storageAudioFiles = new StorageAudioFiles(this);
         mMediaSession = new MediaSessionCompat(this, LOG_TAG);
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                 MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS |
@@ -66,6 +75,7 @@ public class MediaService extends MediaBrowserServiceCompat {
         Log.d(LOG_TAG, "onDestroy: MediaPlayerAdapter stopped, and MediaSession released");
     }
 
+
     @Nullable
     @Override
     public BrowserRoot onGetRoot(@NonNull String s, int i, @Nullable Bundle bundle) {
@@ -74,19 +84,20 @@ public class MediaService extends MediaBrowserServiceCompat {
 
     @Override
     public void onLoadChildren(@NonNull String s, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
-        result.sendResult(MusicLibrary.getMediaItems());
+        result.sendResult(null);
     }
-
 
     public class MediaSessionCallback extends MediaSessionCompat.Callback {
         private final List<MediaSessionCompat.QueueItem> mPlayList = new ArrayList<>();
         private int mQueueIndex = -1;
         private MediaMetadataCompat mPreparedMedia;
+        private Disposable mediaMetadataSubscription;
+        boolean playOnPreparedMedia;
+        boolean playPressed = false;
 
         public MediaSessionCallback() {
             super();
         }
-
 
         @Override
         public void onSkipToNext() {
@@ -117,7 +128,12 @@ public class MediaService extends MediaBrowserServiceCompat {
 
         @Override
         public void onRemoveQueueItem(MediaDescriptionCompat description) {
-            mPlayList.remove(new MediaSessionCompat.QueueItem(description, description.hashCode()));
+            for (MediaSessionCompat.QueueItem item : mPlayList) {
+                if (Objects.equals(item.getDescription().getMediaId(), description.getMediaId())){
+                    mPlayList.remove(item);
+                    break;
+                }
+            }
             mQueueIndex = (mPlayList.isEmpty()) ? -1 : mQueueIndex;
             mMediaSession.setQueue(mPlayList);
         }
@@ -128,44 +144,74 @@ public class MediaService extends MediaBrowserServiceCompat {
                 return;
             }
 
-            final String mediaId = mPlayList.get(mQueueIndex).getDescription().getMediaId();
-            mPreparedMedia = MusicLibrary.getMetadata(MediaService.this, mediaId);
-            mMediaSession.setMetadata(mPreparedMedia);
-
+            playPressed = false;
+            MediaDescriptionCompat mediaDescription = mPlayList.get(mQueueIndex).getDescription();
+            final String mediaId = mediaDescription.getMediaId();
+            Uri uri = mediaDescription.getMediaUri();
+            if(uri != null && !Objects.equals(uri.getScheme(), "http")) {
+                audioMetadataFromStorageSubscribtion = storageAudioFiles.getAudioMetadataByIdAsync(mediaId)
+                        .subscribeOn(AndroidSchedulers.mainThread()).
+                        subscribe(metadata -> {
+                            mPreparedMedia = metadata;
+                            mMediaPayer.setCurrentMedia(mPreparedMedia);
+                            mMediaSession.setMetadata(mPreparedMedia);
+                            if(playOnPreparedMedia) onPlay();
+                            playOnPreparedMedia = false;
+                        }, err -> err.printStackTrace());
+            } else {
+                mediaMetadataSubscription = new MyDbHelper(MediaService.this.getApplicationContext())
+                        .getRadioStationById(Long.parseLong(mediaId))
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                radioStationModel -> {
+                                    mPreparedMedia = radioStationModel.convertToMetadata();
+                                    mMediaPayer.setCurrentMedia(mPreparedMedia);
+                                    mMediaSession.setMetadata(mPreparedMedia);
+                                    if(playOnPreparedMedia) onPlay();
+                                    playOnPreparedMedia = false;
+                                }
+                        );
+            }
             if(!mMediaSession.isActive()) mMediaSession.setActive(true);
         }
 
         @Override
         public void onPlay() {
+            Log.d("myLog", "service -> try to press OnPlay from "
+                    +Thread.currentThread().getName()+" thread");
+            if (playPressed) return;
             if (!isReadyToPlay()) {
-                // Nothing to play.
+                playOnPreparedMedia = true;
                 return;
-            }
+            } else playPressed = true;
 
-            if (mPreparedMedia == null) {
-                onPrepare();
-            }
-
-            mMediaPayer.playFromMedia(mPreparedMedia);
-            Log.d(LOG_TAG, "onPlayFromMediaId: MediaSession active");
+            MediaMetadataCompat m = mPreparedMedia;
+            int a = 4+4;
+            Log.d("myLog", "service -> OnPlay pressed from "
+                    +Thread.currentThread().getName()+" thread");
+            Uri currentMediaUri = mPlayList.get(mQueueIndex).getDescription().getMediaUri();
+            mMediaPayer.playFromUri(currentMediaUri);
         }
 
         @Override
         public void onPause() {
             mMediaPayer.pause();
+            playPressed = false;
         }
 
         @Override
         public void onStop() {
             mMediaPayer.stop();
             mMediaSession.setActive(false);
+            audioMetadataFromStorageSubscribtion.dispose();
         }
 
         private boolean isReadyToPlay() {
-            return !mPlayList.isEmpty();
+            return !mPlayList.isEmpty() && mPreparedMedia != null;
         }
 
     }
+
 
     // MediaPlayerAdapter Callback: MediaPlayerAdapter state -> MusicService.
     public class MediaPlayerListener extends PlaybackInfoListener {
@@ -177,8 +223,10 @@ public class MediaService extends MediaBrowserServiceCompat {
         }
 
         @Override
-        public void onPlaybackStateChange(PlaybackStateCompat state) {
+        synchronized public void onPlaybackStateChange(PlaybackStateCompat state) {
             // Report the state to the MediaSession.
+            Log.d("myLog", "service -> call mMediaSession.setPlaybackState="+state.getState()+"+ from "
+                    +Thread.currentThread().getName()+" thread");
             mMediaSession.setPlaybackState(state);
 
             // Manage the started state of this service.
@@ -208,7 +256,6 @@ public class MediaService extends MediaBrowserServiceCompat {
                             new Intent(MediaService.this, MediaService.class));
                     mServiceInStartedState = true;
                 }
-
                 startForeground(MediaNotificationManager.NOTIFICATION_ID, notification);
             }
 
@@ -227,9 +274,5 @@ public class MediaService extends MediaBrowserServiceCompat {
                 mServiceInStartedState = false;
             }
         }
-
     }
-
-
-
 }
