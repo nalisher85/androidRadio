@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,16 +52,20 @@ public class FavoritesFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        FragmentListener fragmentListener = (FragmentListener) getActivity();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mDb = new MyDbHelper(context.getApplicationContext());
-        mFragmentListner = (FragmentListener)getActivity();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mFragmentListner = null;
     }
 
 }

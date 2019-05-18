@@ -36,12 +36,14 @@ public class MediaPlayerAdapter extends PlayerAdapter {
         mPlaybackInfoListener = listener;
     }
 
+
     private void initializeMediaPlayer(){
         if(mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
                 mPlaybackInfoListener.onPlaybackCompleted();
                 setNewState(PlaybackStateCompat.STATE_PAUSED);
+                mCurrentMediaPlayedToCompletion = true;
             });
             mMediaPlayer.setOnPreparedListener(listener -> play());
         }
@@ -49,6 +51,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
 
 
     private void setNewState(@PlaybackStateCompat.State int newState) {
+
         mState = newState;
         if(mState == PlaybackStateCompat.STATE_STOPPED) {
             mCurrentMediaPlayedToCompletion = true;
@@ -100,11 +103,15 @@ public class MediaPlayerAdapter extends PlayerAdapter {
                         | PlaybackStateCompat.ACTION_STOP
                         | PlaybackStateCompat.ACTION_PAUSE;
         }
-        return actions;    }
+        return actions;
+    }
 
     @Override
     protected void onPlay() {
         if(mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
+            if(mSeekWhileNotPlaying > 0) {
+                mMediaPlayer.seekTo(mSeekWhileNotPlaying);
+            }
             mMediaPlayer.start();
             setNewState(PlaybackStateCompat.STATE_PLAYING);
         }
@@ -132,6 +139,10 @@ public class MediaPlayerAdapter extends PlayerAdapter {
     @Override
     public void playFromUri(@NonNull Uri uri) {
         boolean  mediaChanged = !(mMediaUri != null && mMediaUri.equals(uri.getPath()));
+        if(mCurrentMediaPlayedToCompletion){
+            mediaChanged = true;
+            mCurrentMediaPlayedToCompletion = false;
+        }
         if ( !mediaChanged) {
             if (!isPlaying()) {
                 play();
@@ -216,13 +227,14 @@ public class MediaPlayerAdapter extends PlayerAdapter {
 
     @Override
     public void seekTo(long position) {
-        if (mMediaPlayer != null) {
+        if (mMediaPlayer != null && !mCurrentMediaPlayedToCompletion) {
             if(!mMediaPlayer.isPlaying()) {
                 mSeekWhileNotPlaying = (int)position;
             }
             mMediaPlayer.seekTo((int)position);
             setNewState(mState);
-        }
+            mSeekWhileNotPlaying = -1;
+        } else mSeekWhileNotPlaying = (int)position;
     }
 
     @Override

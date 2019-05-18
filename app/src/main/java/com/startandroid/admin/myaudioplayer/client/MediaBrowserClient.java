@@ -22,16 +22,15 @@ import android.util.Log;
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.data.AudioModel;
 import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
+import com.startandroid.admin.myaudioplayer.ui.PlayerState;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.subjects.BehaviorSubject;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MediaBrowserClient {
 
@@ -41,16 +40,12 @@ public class MediaBrowserClient {
     private final MediaBrowserSubscriptionCallback mMediaBrowserSubscriptionCallback;
     private Context mContext;
     private final Class<? extends MediaBrowserServiceCompat> mMediaBrowserServiceClass;
-
-    final private BehaviorSubject<Boolean> mOnConnectedObservable = BehaviorSubject.create();
-    final private BehaviorSubject<PlaybackStateCompat> mPlaybackStateObservable = BehaviorSubject.create();
-    final private BehaviorSubject<MediaMetadataCompat> mMediaMetadataObservable = BehaviorSubject.create();
-
+    private final List<MediaBrowserCallbacks> mCallbackList = new CopyOnWriteArrayList<>();
 
     private MediaBrowserCompat mMediaBrowser;
     private MediaControllerCompat mMediaController;
     private MediaControllerCallback mMediaControllerCallback;
-    private boolean mIsPlaying;
+    private PlayerState mPlayerState;
 
     public MediaBrowserClient(Context ctx,
                               Class<? extends MediaBrowserServiceCompat> serviceClss) {
@@ -60,7 +55,29 @@ public class MediaBrowserClient {
         mMediaBrowserConnectionCallbacks = new MediaBrowserConnectionCallback();
         mMediaBrowserSubscriptionCallback = new MediaBrowserSubscriptionCallback();
         mMediaControllerCallback = new MediaControllerCallback();
+        mPlayerState = new PlayerState();
 
+    }
+
+    private boolean isPlayerHasState(){
+        return mMediaController != null && mMediaController.getMetadata() != null;
+    }
+
+    private void setPlayerState(){
+        if (mMediaController.getMetadata() != null) {
+            mPlayerState.setMetadata(mMediaController.getMetadata());
+        }
+        if (mMediaController.getPlaybackState() != null)
+            mPlayerState.setPlaybackState(mMediaController.getPlaybackState());
+        else mPlayerState.setPlaying(false);
+    }
+
+    public PlayerState getPlayerState() {
+        return mPlayerState;
+    }
+
+    public void registerCallback(MediaBrowserCallbacks callback){
+        mCallbackList.add(callback);
     }
 
     public MediaControllerCompat getMediaController(){
@@ -69,18 +86,6 @@ public class MediaBrowserClient {
 
     public MediaControllerCompat.TransportControls getTransportControls () {
         return mMediaController.getTransportControls();
-    }
-
-    public BehaviorSubject<Boolean> getOnConnectedObservable() {
-        return mOnConnectedObservable;
-    }
-
-    public BehaviorSubject<PlaybackStateCompat> getPlaybackStateObservable() {
-        return mPlaybackStateObservable;
-    }
-
-    public BehaviorSubject<MediaMetadataCompat> getMediaMetadataObservable() {
-        return mMediaMetadataObservable;
     }
 
     public void connect() {
@@ -180,8 +185,9 @@ public class MediaBrowserClient {
                 mMediaController.getTransportControls().skipToPrevious();
                 break;
             case R.id.bottomsheet_peek_button:
-            case R.id.bottomsheet_play_button:
-                if (mIsPlaying) {
+            case R.id.audio_mediapanel_play_btn:
+            case R.id.radio_mediapanel_play_btn:
+                if (mPlayerState.isPlaying()) {
                     mMediaController.getTransportControls().pause();
                 } else {
                     mMediaController.getTransportControls().play();
@@ -201,6 +207,7 @@ public class MediaBrowserClient {
             Log.d("myLog", "MediaBrowser -> MediaBrowserConnectionCallback -> onConnected");
 
             MediaSessionCompat.Token token = mMediaBrowser.getSessionToken();
+
             try {
                 mMediaController =
                         new MediaControllerCompat(mContext, token);
@@ -209,25 +216,36 @@ public class MediaBrowserClient {
                 Log.d(LOG_TAG, "Variable Context is null \n" + e.toString());
             }
             mMediaBrowser.subscribe(mMediaBrowser.getRoot(), mMediaBrowserSubscriptionCallback);
-            mOnConnectedObservable.onNext(true);
+
+            if (isPlayerHasState()) setPlayerState();
+            if (!mCallbackList.isEmpty()) {
+                for (MediaBrowserCallbacks callback : mCallbackList) {
+                    callback.onConnected();
+                }
+            }
         }
 
         @Override
         public void onConnectionSuspended() {
             Log.d("myLog", "MediaBrowser -> MediaBrowserConnectionCallback -> onConnectionSuspended");
-
             super.onConnectionSuspended();
-            mOnConnectedObservable.onNext(false);
-            Log.d(LOG_TAG, "onConnectionSuspended");
+            if (!mCallbackList.isEmpty()) {
+                for (MediaBrowserCallbacks callback : mCallbackList) {
+                    callback.onConnectionSuspended();
+                }
+            }
 
         }
 
         @Override
         public void onConnectionFailed() {
             super.onConnectionFailed();
-            mOnConnectedObservable.onNext(false);
             Log.d(LOG_TAG, "onConnectionFailed");
-
+            for (MediaBrowserCallbacks callback : mCallbackList) {
+                if (callback != null) {
+                    callback.onConnectionFailed();
+                }
+            }
         }
     }
 
@@ -235,8 +253,14 @@ public class MediaBrowserClient {
         @Override
         public void onChildrenLoaded(@NonNull String parentId,
                                      @NonNull List<MediaBrowserCompat.MediaItem> children) {
+
             for (final MediaBrowserCompat.MediaItem mediaItem : children) {
                 addToQueueItems(mediaItem.getDescription());
+            }
+            for (MediaBrowserCallbacks callback : mCallbackList) {
+                if (callback != null) {
+                    callback.onChildrenLoaded(children);
+                }
             }
             mMediaController.getTransportControls().prepare();
         }
@@ -246,15 +270,24 @@ public class MediaBrowserClient {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             if (state != null) {
-                mIsPlaying = state.getState() == PlaybackStateCompat.STATE_PLAYING;
-                mPlaybackStateObservable.onNext(state);
+                mPlayerState.setPlaybackState(state);
+                for (MediaBrowserCallbacks callback : mCallbackList) {
+                    if (callback != null) {
+                        callback.onPlaybackStateChanged(state);
+                    }
+                }
             }
         }
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             if (metadata == null) return;
-            mMediaMetadataObservable.onNext(metadata);
+            mPlayerState.setMetadata(metadata);
+            for (MediaBrowserCallbacks callback : mCallbackList) {
+                if (callback != null) {
+                    callback.onMetadataChanged(metadata);
+                }
+            }
         }
 
         /**
@@ -385,5 +418,42 @@ public class MediaBrowserClient {
             super.binderDied();
         }
     }
+
+    public interface MediaBrowserCallbacks {
+
+        void onConnected();
+
+        void onConnectionSuspended();
+
+        void onConnectionFailed();
+
+        void onChildrenLoaded(@NonNull List<MediaBrowserCompat.MediaItem> children);
+
+        void onPlaybackStateChanged(PlaybackStateCompat state);
+
+        void onMetadataChanged(MediaMetadataCompat metadata);
+
+        void onSessionReady();
+
+        void onSessionDestroyed();
+
+        void onSessionEvent(String event, Bundle extras);
+
+        void onQueueChanged(List<MediaSessionCompat.QueueItem> queue);
+
+       void onQueueTitleChanged(CharSequence title);
+
+       void onExtrasChanged(Bundle extras);
+
+        void onAudioInfoChanged(MediaControllerCompat.PlaybackInfo info);
+
+       void onCaptioningEnabledChanged(boolean enabled);
+
+       void onRepeatModeChanged(int repeatMode);
+
+       void onShuffleModeChanged(int shuffleMode);
+
+    }
+
 
 }

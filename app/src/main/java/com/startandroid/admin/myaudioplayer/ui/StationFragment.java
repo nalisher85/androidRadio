@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +35,7 @@ public class StationFragment extends Fragment {
     @BindView(R.id.station_list)
     RecyclerView mStationListRecyclerView;
     private MyDbHelper mDb;
+    FragmentListener fragmentListener;
     private Disposable stationsSubscription;
 
     public StationFragment() {
@@ -51,6 +53,8 @@ public class StationFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_radio, container, false);
         ButterKnife.bind(this, view);
+
+
         List<RadioStationModel> stationList;
 
         mStationListRecyclerView.setHasFixedSize(true);
@@ -63,6 +67,7 @@ public class StationFragment extends Fragment {
             mStationListRecyclerView.setAdapter(stationAdapter);
             }
         );
+
         return view;
     }
 
@@ -71,6 +76,35 @@ public class StationFragment extends Fragment {
         inflater.inflate(R.menu.action_bar_menu, menu);
         menu.findItem(R.id.action_add).setVisible(true);
         menu.findItem(R.id.action_shuffle).setVisible(false);
+    }
+
+    /**
+     * Called when the Fragment is visible to the user.  This is generally
+     * tied to {@link Activity#onStart() Activity.onStart} of the containing
+     * Activity's lifecycle.
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    /**
+     * Called when the fragment's activity has been created and this
+     * fragment's view hierarchy instantiated.  It can be used to do final
+     * initialization once these pieces are in place, such as retrieving
+     * views or restoring state.  It is also useful for fragments that use
+     * {@link #setRetainInstance(boolean)} to retain their instance,
+     * as this callback tells the fragment when it is fully associated with
+     * the new activity instance.  This is called after {@link #onCreateView}
+     * and before {@link #onViewStateRestored(Bundle)}.
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     *                           a previous saved state, this is the state.
+     */
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        fragmentListener = (FragmentListener)getActivity();
     }
 
     @Override

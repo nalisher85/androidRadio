@@ -36,6 +36,8 @@ public class MediaService extends MediaBrowserServiceCompat {
     private static final String MY_EMPTY_MEDIA_ROOT_ID = "empty_root_id";
     private static final String LOG_TAG = MediaService.class.getSimpleName();
 
+    private final List<MediaSessionCompat.QueueItem> mPlayList = new ArrayList<>();
+
     private MediaSessionCompat mMediaSession;
     private PlayerAdapter mMediaPayer;
     private MediaNotificationManager mMediaNotificationManager;
@@ -84,11 +86,23 @@ public class MediaService extends MediaBrowserServiceCompat {
 
     @Override
     public void onLoadChildren(@NonNull String s, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
-        result.sendResult(null);
+        if (!mPlayList.isEmpty()) {
+            List<MediaBrowserCompat.MediaItem> mItems = new ArrayList<>();
+
+            for (MediaSessionCompat.QueueItem qItem : mPlayList){
+                MediaBrowserCompat.MediaItem mItem =
+                        new MediaBrowserCompat.MediaItem(qItem.getDescription(),
+                                MediaBrowserCompat.MediaItem.FLAG_PLAYABLE);
+                mItems.add(mItem);
+            }
+            result.sendResult(mItems);
+
+        } else {
+            result.sendResult(null);
+        }
     }
 
     public class MediaSessionCallback extends MediaSessionCompat.Callback {
-        private final List<MediaSessionCompat.QueueItem> mPlayList = new ArrayList<>();
         private int mQueueIndex = -1;
         private MediaMetadataCompat mPreparedMedia;
         private Disposable mediaMetadataSubscription;
@@ -103,6 +117,7 @@ public class MediaService extends MediaBrowserServiceCompat {
         public void onSkipToNext() {
            mQueueIndex = mQueueIndex == (mPlayList.size()-1) ? 0 : ++mQueueIndex;
             mPreparedMedia = null;
+            onPrepare();
             onPlay();
         }
 
@@ -110,6 +125,7 @@ public class MediaService extends MediaBrowserServiceCompat {
         public void onSkipToPrevious() {
             mQueueIndex = mQueueIndex <= 0 ? mPlayList.size() - 1 : --mQueueIndex;
             mPreparedMedia = null;
+            onPrepare();
             onPlay();
         }
 
@@ -179,18 +195,19 @@ public class MediaService extends MediaBrowserServiceCompat {
         public void onPlay() {
             Log.d("myLog", "service -> try to press OnPlay from "
                     +Thread.currentThread().getName()+" thread");
+
             if (playPressed) return;
             if (!isReadyToPlay()) {
                 playOnPreparedMedia = true;
                 return;
             } else playPressed = true;
 
-            MediaMetadataCompat m = mPreparedMedia;
-            int a = 4+4;
             Log.d("myLog", "service -> OnPlay pressed from "
                     +Thread.currentThread().getName()+" thread");
+
             Uri currentMediaUri = mPlayList.get(mQueueIndex).getDescription().getMediaUri();
             mMediaPayer.playFromUri(currentMediaUri);
+            playPressed = false;
         }
 
         @Override
@@ -220,6 +237,10 @@ public class MediaService extends MediaBrowserServiceCompat {
 
         MediaPlayerListener() {
             mServiceManager = new ServiceManager();
+        }
+
+        @Override
+        public void onPlaybackCompleted() {
         }
 
         @Override

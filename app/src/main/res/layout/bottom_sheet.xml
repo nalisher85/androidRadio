@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
+    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
@@ -69,117 +70,23 @@
         android:id="@+id/bottomsheet_media_img"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomsheet_play_button"
-        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_peek_logo"
+        android:layout_marginTop="5dp"
         android:background="@null"
+        app:layout_constraintBottom_toTopOf="@+id/media_panel"
+        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_peek_subtitle"
         app:srcCompat="@drawable/europaplus"
         tools:layout_editor_absoluteX="8dp" />
 
 
-    <ImageButton
-        android:id="@+id/bottomsheet_rec_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="15dp"
-        android:background="@null"
-        app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_prev_button"
-        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_media_img"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_rec" />
-
-    <ImageButton
-        android:id="@+id/bottomsheet_prev_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="15dp"
-        android:background="@null"
-        app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_play_button"
-        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_media_img"
-        app:srcCompat="@drawable/ic_previos" />
-
-    <ToggleButton
-        android:id="@+id/bottomsheet_play_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/ic_play_pause_bottomsheet_toggle"
-        android:text=""
-        android:textOff=""
-        android:textOn=""
-        app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_next_button" />
-
-    <ImageButton
-        android:id="@+id/bottomsheet_next_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="15dp"
-        android:background="@null"
-        app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_favorite_button"
-        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_media_img"
-        app:srcCompat="@drawable/ic_next" />
-
-    <ToggleButton
-        android:id="@+id/bottomsheet_favorite_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/ic_favorrite_toggle"
-        android:text=""
-        android:textOff=""
-        android:textOn=""
-        app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_media_img"
-        app:layout_constraintVertical_bias="0.651" />
-
-    <com.startandroid.admin.myaudioplayer.ui.MediaSeekBar
-        android:id="@+id/mediaSeekBar"
-        android:layout_width="0dp"
+    <FrameLayout
+        android:id="@+id/media_panel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/seconds_left_txt"
-        app:layout_constraintStart_toEndOf="@+id/seconds_passed_txt" />
-
-    <TextView
-        android:id="@+id/seconds_passed_txt"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="8dp"
-        android:text="00:00"
-        android:textAlignment="center"
-        android:textSize="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/seconds_left_txt"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="00:00"
-        android:textAlignment="center"
-        android:textSize="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        tools:layout_editor_absoluteX="10dp">
+        <include layout="@layout/radio_media_panel"/>
+        <include layout="@layout/audio_media_panel"/>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -66,7 +66,7 @@ public class MediaNotificationManager {
                         mService, PlaybackStateCompat.ACTION_SKIP_TO_NEXT));
 
         mPrevAction = new NotificationCompat.Action(
-                R.drawable.ic_previos,
+                R.drawable.ic_previous,
                 "Previous",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
                         mService, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));

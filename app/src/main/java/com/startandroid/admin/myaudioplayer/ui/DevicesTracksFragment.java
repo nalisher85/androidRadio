@@ -35,9 +35,9 @@ public class DevicesTracksFragment extends Fragment {
     RecyclerView mTrackListRecyclerView;
     private List<AudioModel> mAudioList;
     Observable<List<AudioModel>> audioListObservable;
-    Disposable mAudioListSubscriber;
+    private Disposable mAudioListSubscriber;
     private MenuItem mMenuItem;
-    private FragmentListener fragmentListner;
+    private FragmentListener fragmentListener;
 
     public DevicesTracksFragment() {
     }
@@ -48,16 +48,20 @@ public class DevicesTracksFragment extends Fragment {
         super.onAttach(ctx);
         Log.d("myLog", "DevicesTracksFragment -> onAttach");
         //mAudioList = new StorageAudioFiles(ctx).getStorageAudios(null, null);
-        audioListObservable = new StorageAudioFiles(ctx).getAudiosAsync(null, null)
-                .observeOn(AndroidSchedulers.mainThread());
-        fragmentListner = (FragmentListener)getActivity();
+        mAudioListSubscriber = new StorageAudioFiles(ctx).getAudiosAsync(null, null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(audioList -> {
+                            mAudioList = audioList;
+                            mTrackListRecyclerView.setAdapter(new DevicesTracksAdapter(getActivity(), audioList));
+                        },
+                        err -> err.printStackTrace());
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         Log.d("myLog", "DevicesTracksFragment -> onDetach");
-        fragmentListner = null;
+        fragmentListener = null;
     }
 
     @Override
@@ -78,11 +82,10 @@ public class DevicesTracksFragment extends Fragment {
         mTrackListRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mTrackListRecyclerView.setLayoutManager(linearLayoutManager);
-        mAudioListSubscriber = audioListObservable.subscribe(audioList ->
-                mTrackListRecyclerView.setAdapter(new DevicesTracksAdapter(getActivity(), audioList)),
-                err -> err.printStackTrace());
         return view;
     }
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -90,27 +93,16 @@ public class DevicesTracksFragment extends Fragment {
         menu.findItem(R.id.action_add).setVisible(false);
         mMenuItem = menu.findItem(R.id.action_shuffle).setVisible(true);
         mMenuItem.setOnMenuItemClickListener(item -> {
-            fragmentListner.onAddQueueItems(mAudioList, true);
+            //Log.d("myLog", "DeviceTrackFragment->onCreateOptionsMenu->setOnMenuItemClickListener");
+            fragmentListener.onAddQueueItems(mAudioList, true);
             return true;
         });
     }
 
-    /**
-     * Called when the fragment's activity has been created and this
-     * fragment's view hierarchy instantiated.  It can be used to do final
-     * initialization once these pieces are in place, such as retrieving
-     * views or restoring state.  It is also useful for fragments that use
-     * {@link #setRetainInstance(boolean)} to retain their instance,
-     * as this callback tells the fragment when it is fully associated with
-     * the new activity instance.  This is called after {@link #onCreateView}
-     * and before {@link #onViewStateRestored(Bundle)}.
-     *
-     * @param savedInstanceState If the fragment is being re-created from
-     *                           a previous saved state, this is the state.
-     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        fragmentListener = (FragmentListener) getActivity();
     }
 
 }

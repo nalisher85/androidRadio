@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaMetadataCompat;
 
+import com.startandroid.admin.myaudioplayer.ui.MainActivity;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,11 @@ import androidx.fragment.app.FragmentManager;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +25,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,7 +41,9 @@ import com.startandroid.admin.myaudioplayer.data.MyDbHelper;
 import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,8 +51,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 
-public class MainActivity extends AppCompatActivity implements FragmentListener {
+public class MainActivity extends AppCompatActivity implements FragmentListener, MediaSeekBar.MediaSeekBarListener {
 
+
+    public static final int MEDIA_PANEL_RADIO_TYPE = 1;
+    public static final int MEDIA_PANEL_AUDIO_TYPE = 2;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -52,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
     ConstraintLayout mBottomSheet;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView mBottomNavigationView;
+    @BindView(R.id.bnav_container)
+    FrameLayout mFragmentContainer;
+
     @BindView(R.id.bottomsheet_peek_logo)
     ImageView mBottomsheetPeekLogo;
     @BindView(R.id.bottomsheet_peek_title)
@@ -60,25 +74,38 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
     TextView mBottomsheetPeekSubtitle;
     @BindView(R.id.bottomsheet_peek_button)
     ToggleButton mBottomsheetPeekBtn;
+    @BindView(R.id.media_panel)
+    FrameLayout mMediaPanel;
+                            //------------
+    @BindView(R.id.radio_media_panel)
+    ConstraintLayout mRadioMediaPanel;
     @BindView(R.id.bottomsheet_rec_button)
     ImageButton mBottomsheetRecBtn;
-    @BindView(R.id.bottomsheet_prev_button)
-    ImageButton mBottomsheetPrevBtn;
-    @BindView(R.id.bottomsheet_play_button)
-    ToggleButton mBottomsheetPlayBtn;
-    @BindView(R.id.bottomsheet_next_button)
-    ImageButton mBottomsheetNextBtn;
+    @BindView(R.id.radio_mediapanel_play_btn)
+    ToggleButton mRadioMediaPanelPlayBtn;
     @BindView(R.id.bottomsheet_favorite_button)
     ToggleButton mBottomsheetFavoriteBtn;
+    @BindView(R.id.rec_time)
+    TextView mRecTime;
+    @BindView(R.id.media_panel_save_btn)
+    ImageButton mMediaSaveBtn;
+
+    @BindView(R.id.audio_media_panel)
+    ConstraintLayout mAudioMediaPanel;
+    @BindView(R.id.audio_mediapanel_play_btn)
+    ToggleButton mAudioMediaPanelPlayBtn;
+    @BindView(R.id.bottomsheet_prev_button)
+    ImageButton mBottomsheetPrevBtn;
+    @BindView(R.id.bottomsheet_next_button)
+    ImageButton mBottomsheetNextBtn;
     @BindView(R.id.mediaSeekBar)
     MediaSeekBar mMediaSeekBar;
+    @BindView(R.id.currant_time_progress)
+    TextView mCurrantTimeProgress;
+    @BindView(R.id.progress_duration_time)
+    TextView mProgressDurationTime;
 
     private MediaBrowserClient mMediaBrowserClient;
-    private Disposable onMetadataChangedSubscription;
-    private Disposable onPlaybackStateChangedSubscription;
-    private Disposable onMediaBrowserConnectedSubscription;
-
-    boolean mIsPlaying = false;
 
     private static String[][] testData = {
             {"Record radio", "http://air2.radiorecord.ru:9003/rr_320", "false"},
@@ -93,26 +120,25 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
             {"Record discofunk", "http://air2.radiorecord.ru:9003/discofunk_320", "false"}
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("myLog", "MainActivity -> onCreate");
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationItemSelectedListner());
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationItemSelectedListener());
         if (savedInstanceState == null)
             setFragment(new StationFragment());
 
         mMediaBrowserClient = new MediaBrowserClient(this, MediaService.class);
+        mMediaBrowserClient.registerCallback(new MediaBrowserClientCallback());
 
         final BottomSheetBehavior bsBehavior = BottomSheetBehavior.from(mBottomSheet);
         bsBehavior.setBottomSheetCallback(new BottomSheetCallback());
 
         ViewCompat.setElevation(mBottomSheet, 21);
-        ViewCompat.setElevation(mBottomNavigationView, 21);
 
+        //test data
         MyDbHelper db = new MyDbHelper(this.getApplicationContext());
         List<RadioStationModel> stationModels = new ArrayList<>();
         Disposable disposable = db.getRadioStationList().subscribe(stations -> {
@@ -134,16 +160,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
         Log.d("myLog", "MainActivity -> onStart");
 
         mMediaBrowserClient.connect();
-
-        onMediaBrowserConnectedSubscription =
-                mMediaBrowserClient.getOnConnectedObservable()
-                        .subscribe(this::onMediaBrowserConnected, this::onConnectionError);
-        onMetadataChangedSubscription =
-                mMediaBrowserClient.getMediaMetadataObservable()
-                        .subscribe(this::onMetadataChanged, this::onMetadataError);
-        onPlaybackStateChangedSubscription =
-                mMediaBrowserClient.getPlaybackStateObservable().
-                        subscribe(this::onPlaybackStateChanged, this::onPlaybackStateError);
     }
 
     @Override
@@ -153,9 +169,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
 
         mMediaSeekBar.disconnectController();
         mMediaBrowserClient.disconnect();
-        onMediaBrowserConnectedSubscription.dispose();
-        onMetadataChangedSubscription.dispose();
-        onPlaybackStateChangedSubscription.dispose();
     }
 
     @Override
@@ -163,48 +176,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
         Log.d("myLog", "MainActivity -> onCreateOptionsMenu");
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    private void onConnectionError (Throwable e) {
-        Log.d("myLog", "Ошибка onConnectionError " + e.getMessage());
-    }
-
-    private void onMetadataError (Throwable e) {
-        Log.d("myLog", "Ошибка onMetadataError " + e.getMessage());
-    }
-
-    private void onPlaybackStateError (Throwable e) {
-        Log.d("myLog", "Ошибка onPlaybackStateError " + e.getMessage());
-    }
-
-    private void onMediaBrowserConnected(Boolean isConnected) {
-        if (!isConnected) return;
-        mBottomsheetPrevBtn.setOnClickListener(v -> mMediaBrowserClient.onMediaButtonClicked(v.getId()));
-        mBottomsheetNextBtn.setOnClickListener(v -> mMediaBrowserClient.onMediaButtonClicked(v.getId()));
-        mBottomsheetPlayBtn.setOnClickListener(v -> {
-            mMediaBrowserClient.onMediaButtonClicked(v.getId());
-            mBottomsheetPlayBtn.setChecked(mIsPlaying);
-        });
-        mBottomsheetPeekBtn.setOnClickListener(v -> {
-            mMediaBrowserClient.onMediaButtonClicked(v.getId());
-            mBottomsheetPeekBtn.setChecked(mIsPlaying);
-        });
-        mMediaSeekBar.setMediaController(mMediaBrowserClient.getMediaController());
-    }
-
-    public void onPlaybackStateChanged(PlaybackStateCompat state) {
-        Log.d("myLog", "MainActivity -> onPlaybackStateChanged." +
-                "state="+state.getState()+" thread="+Thread.currentThread().getName());
-        mIsPlaying = state != null &&
-                state.getState() == PlaybackStateCompat.STATE_PLAYING;
-        mBottomsheetPeekBtn.setChecked(mIsPlaying);
-        mBottomsheetPlayBtn.setChecked(mIsPlaying);
-    }
-
-    public void onMetadataChanged(MediaMetadataCompat metadata) {
-        if (metadata == null) return;
-        mBottomsheetPeekTitle.setText(metadata.getDescription().getTitle());
-        mBottomsheetPeekSubtitle.setText(metadata.getDescription().getSubtitle());
     }
 
     private void setFragment(Fragment fragment) {
@@ -244,9 +215,78 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
         mMediaBrowserClient.addToQueueItems(radioStationModel);
     }
 
+    private void updateBottomSheet(){
+        PlayerState playerState = mMediaBrowserClient.getPlayerState();
+        MediaDescriptionCompat desc = playerState.getMetadata().getDescription();
+        long mediaDuration = playerState.getMetadata().getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+        String durationMMSS = new SimpleDateFormat("mm:ss").format(new Date(mediaDuration));
+
+        mProgressDurationTime.setText(durationMMSS);
+        mBottomsheetPeekTitle.setText(desc.getTitle());
+        mBottomsheetPeekSubtitle.setText(desc.getSubtitle());
+
+        mBottomsheetPeekBtn.setChecked(playerState.isPlaying());
+        mRadioMediaPanelPlayBtn.setChecked(playerState.isPlaying());
+        mAudioMediaPanelPlayBtn.setChecked(playerState.isPlaying());
+    }
+
+    private void setBottomSheet(){
+        PlayerState playerState = mMediaBrowserClient.getPlayerState();
+        if (mBottomSheet.getVisibility() == View.VISIBLE &&
+                playerState.getMetadata() != null) {
+            updateBottomSheet();
+        } else if(playerState.getMetadata() != null) {
+            updateBottomSheet();
+            mBottomsheetPrevBtn.setOnClickListener(v -> mMediaBrowserClient.onMediaButtonClicked(v.getId()));
+            mBottomsheetNextBtn.setOnClickListener(v -> mMediaBrowserClient.onMediaButtonClicked(v.getId()));
+            mRadioMediaPanelPlayBtn.setOnClickListener(v -> {
+                mMediaBrowserClient.onMediaButtonClicked(v.getId());
+                mRadioMediaPanelPlayBtn.setChecked(playerState.isPlaying());
+            });
+            mAudioMediaPanelPlayBtn.setOnClickListener(v -> {
+                mMediaBrowserClient.onMediaButtonClicked(v.getId());
+                mAudioMediaPanelPlayBtn.setChecked(playerState.isPlaying());
+            });
+            mBottomsheetPeekBtn.setOnClickListener(v -> {
+                mMediaBrowserClient.onMediaButtonClicked(v.getId());
+                mBottomsheetPeekBtn.setChecked(playerState.isPlaying());
+            });
+
+            ((ViewGroup.MarginLayoutParams) mFragmentContainer.getLayoutParams()).bottomMargin += 150;
+            mBottomSheet.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void changeMediaPanel(@NonNull MediaMetadataCompat metadata) {
+        String uriScheme = Objects.requireNonNull(metadata.getDescription().getMediaUri()).getScheme();
+        if(uriScheme != null && uriScheme.equals("http")){
+            setMediaPanel(MEDIA_PANEL_RADIO_TYPE);
+        } else {
+            setMediaPanel(MEDIA_PANEL_AUDIO_TYPE);
+        }
+    }
+
+    private void setMediaPanel(int type) {
+
+        if (type == MEDIA_PANEL_RADIO_TYPE){
+            mAudioMediaPanel.setVisibility(View.GONE);
+            mRadioMediaPanel.setVisibility(View.VISIBLE);
+
+        } else if (type == MEDIA_PANEL_AUDIO_TYPE){
+            mRadioMediaPanel.setVisibility(View.GONE);
+            mAudioMediaPanel.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onProgressChanged(int progress) {
+        String currentProgressTime = new SimpleDateFormat("mm:ss").format(new Date(progress));
+        mCurrantTimeProgress.setText(currentProgressTime);
+    }
+
     //--------------------------------
 
-    private class BottomNavigationItemSelectedListner implements BottomNavigationView.OnNavigationItemSelectedListener {
+    private class BottomNavigationItemSelectedListener implements BottomNavigationView.OnNavigationItemSelectedListener {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -279,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
             switch (i) {
                 case BottomSheetBehavior.STATE_COLLAPSED:
                     mBottomsheetPeekBtn.setVisibility(View.VISIBLE);
-                    mBottomsheetPeekBtn.setChecked(mIsPlaying);
+                    mBottomsheetPeekBtn.setChecked(mMediaBrowserClient.getPlayerState().isPlaying());
                     break;
                 case BottomSheetBehavior.STATE_EXPANDED:
                     mBottomsheetPeekBtn.setVisibility(View.GONE);
@@ -292,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
                     break;
                 case BottomSheetBehavior.STATE_HIDDEN:
                     mBottomsheetPeekBtn.setVisibility(View.VISIBLE);
-                    mBottomsheetPeekBtn.setChecked(mIsPlaying);
+                    mBottomsheetPeekBtn.setChecked(mMediaBrowserClient.getPlayerState().isPlaying());
                     break;
                 case BottomSheetBehavior.STATE_SETTLING:
                     break;
@@ -304,6 +344,95 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
         @Override
         public void onSlide(@NonNull View view, float v) {
             //Log.d("myLog", "onSlide: v -> " + v);
+
+        }
+    }
+
+    private class MediaBrowserClientCallback implements MediaBrowserClient.MediaBrowserCallbacks {
+
+        @Override
+        public void onConnected() {
+            Log.d("myLog", "MainActivity->MediaBrowserClientCallback->onConnected");
+            mMediaSeekBar.initializeMediaSeekBar(mMediaBrowserClient, MainActivity.this);
+            setBottomSheet();
+        }
+
+        @Override
+        public void onConnectionSuspended() {
+            Log.d("myLog", "MainActivity->MediaBrowserClientCallback->onConnectionSuspended");
+        }
+
+        @Override
+        public void onConnectionFailed() {
+            Log.d("myLog", "MainActivity->MediaBrowserClientCallback->onConnectionFailed");
+        }
+
+        @Override
+        public void onChildrenLoaded(@NonNull List<MediaBrowserCompat.MediaItem> children) {
+            Log.d("myLog", "MainActivity->MediaBrowserClientCallback->onChildrenLoaded");
+        }
+
+        @Override
+        public void onPlaybackStateChanged(PlaybackStateCompat state) {
+            Log.d("myLog", "MainActivity -> onPlaybackStateChanged." +
+                    "state="+state.getState());
+            updateBottomSheet();
+        }
+
+        @Override
+        public void onMetadataChanged(MediaMetadataCompat metadata) {
+            Log.d("myLog", "MainActivity->MediaBrowserClientCallback->onMetadataChanged");
+            changeMediaPanel(metadata);
+            setBottomSheet();
+        }
+
+        @Override
+        public void onSessionReady() {
+
+        }
+
+        @Override
+        public void onSessionDestroyed() {
+
+        }
+
+        @Override
+        public void onSessionEvent(String event, Bundle extras) {
+
+        }
+
+        @Override
+        public void onQueueChanged(List<MediaSessionCompat.QueueItem> queue) {
+
+        }
+
+        @Override
+        public void onQueueTitleChanged(CharSequence title) {
+
+        }
+
+        @Override
+        public void onExtrasChanged(Bundle extras) {
+
+        }
+
+        @Override
+        public void onAudioInfoChanged(MediaControllerCompat.PlaybackInfo info) {
+
+        }
+
+        @Override
+        public void onCaptioningEnabledChanged(boolean enabled) {
+
+        }
+
+        @Override
+        public void onRepeatModeChanged(int repeatMode) {
+
+        }
+
+        @Override
+        public void onShuffleModeChanged(int shuffleMode) {
 
         }
     }
