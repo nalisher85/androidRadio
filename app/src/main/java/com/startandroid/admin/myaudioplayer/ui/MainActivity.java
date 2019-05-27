@@ -5,13 +5,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
+import android.provider.Settings;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -41,6 +48,7 @@ import com.startandroid.admin.myaudioplayer.data.MyDbHelper;
 import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     public static final int MEDIA_PANEL_RADIO_TYPE = 1;
     public static final int MEDIA_PANEL_AUDIO_TYPE = 2;
+    public static final String IS_FAVORITE_FRAGMENT_KEY = "is_favorite_fragment_key";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -120,15 +129,22 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
             {"Record discofunk", "http://air2.radiorecord.ru:9003/discofunk_320", "false"}
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationItemSelectedListener());
-        if (savedInstanceState == null)
-            setFragment(new StationFragment());
+        if (savedInstanceState == null) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(IS_FAVORITE_FRAGMENT_KEY, false);
+            StationFragment stationFragment = new StationFragment();
+            stationFragment.setArguments(bundle);
+            setFragment(stationFragment);
+        }
 
         mMediaBrowserClient = new MediaBrowserClient(this, MediaService.class);
         mMediaBrowserClient.registerCallback(new MediaBrowserClientCallback());
@@ -141,16 +157,24 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         //test data
         MyDbHelper db = new MyDbHelper(this.getApplicationContext());
         List<RadioStationModel> stationModels = new ArrayList<>();
+        @SuppressLint("CheckResult")
         Disposable disposable = db.getRadioStationList().subscribe(stations -> {
+
             if (stations.isEmpty()) {
                 for (String[] aData : testData) {
                     RadioStationModel station = new RadioStationModel(aData[0], aData[1],
                             Boolean.parseBoolean(aData[2]));
                     stationModels.add(station);
                 }
-                db.insert(stationModels);
+               db.insert(stationModels).subscribe(
+                       () -> {},
+                       throwable -> {
+                           Log.d("myLog", "Ошибка добавление тестовых данных");
+                           throwable.printStackTrace();
+                       });
             }
-        }, e -> e.printStackTrace());
+        });
+
     }
 
 
@@ -183,36 +207,19 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         fm.beginTransaction().replace(R.id.bnav_container, fragment).commit();
     }
 
-    private boolean isReadWriteStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.d("myLog", "PERMISSION_GRANTED");
-                return true;
-            } else return false;
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            return true;
-        }
-    }
-
-    private boolean requestStoragePermission() {
-        Log.d("myLog", "REQUEST PERMISSION");
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE}, 3);
-        return isReadWriteStoragePermissionGranted();
-    }
-
     @Override
     public void onAddQueueItems(List<AudioModel> queueItems, boolean clearOldQueue) {
         mMediaBrowserClient.addToQueueItems(queueItems, clearOldQueue);
     }
 
     @Override
-    public void onAddQueueItems(RadioStationModel radioStationModel) {
-        mMediaBrowserClient.addToQueueItems(radioStationModel);
+    public void onAddQueueItem(AudioModel audioTrack, boolean cleanOldList) {
+        mMediaBrowserClient.addToQueueItem(audioTrack, cleanOldList);
+    }
+
+    @Override
+    public void onAddQueueItem(RadioStationModel radioStationModel) {
+        mMediaBrowserClient.addToQueueItem(radioStationModel);
     }
 
     private void updateBottomSheet(){
@@ -290,25 +297,34 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+            BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
+            Bundle bundle;
+            StationFragment stationFragment;
+
             switch (menuItem.getItemId()){
                 case R.id.btm_nav_channels:
-                    Log.d("myTag", "onNavigationItemSelected->channels");
-                    setFragment(new StationFragment());
+                    bundle = new Bundle();
+                    bundle.putBoolean(IS_FAVORITE_FRAGMENT_KEY, false);
+                    stationFragment = new StationFragment();
+                    stationFragment.setArguments(bundle);
+                    setFragment(stationFragment);
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     break;
                 case R.id.btm_nav_favorites:
-                    Log.d("myTag", "onNavigationItemSelected->favorites");
-                    setFragment(new FavoritesFragment());
+                    bundle = new Bundle();
+                    bundle.putBoolean(IS_FAVORITE_FRAGMENT_KEY, true);
+                    stationFragment = new StationFragment();
+                    stationFragment.setArguments(bundle);
+                    setFragment(stationFragment);
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     break;
                 case R.id.btm_nav_device_tracks:
-                    Log.d("myTag", "onNavigationItemSelected->favorites");
-
-                    if(requestStoragePermission())
-                        setFragment(new DevicesTracksFragment());
-                    else Toast.makeText(MainActivity.this, "Need access to storage",
-                            Toast.LENGTH_SHORT).show();
+                    setFragment(new DevicesTracksFragment());
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     break;
             }
-            return false;
+            return true;
         }
     }
 

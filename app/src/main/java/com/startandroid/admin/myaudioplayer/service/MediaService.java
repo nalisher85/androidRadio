@@ -176,8 +176,7 @@ public class MediaService extends MediaBrowserServiceCompat {
                         }, err -> err.printStackTrace());
             } else {
                 mediaMetadataSubscription = new MyDbHelper(MediaService.this.getApplicationContext())
-                        .getRadioStationById(Long.parseLong(mediaId))
-                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .getRadioStationById(Integer.parseInt(mediaId))
                         .subscribe(
                                 radioStationModel -> {
                                     mPreparedMedia = radioStationModel.convertToMetadata();

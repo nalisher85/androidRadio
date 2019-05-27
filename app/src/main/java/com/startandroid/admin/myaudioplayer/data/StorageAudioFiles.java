@@ -1,14 +1,18 @@
 package com.startandroid.admin.myaudioplayer.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaMetadataCompat;
 
 import com.startandroid.admin.myaudioplayer.ui.MainActivity;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +100,14 @@ public class StorageAudioFiles {
         return getAudioByIdAsync(id).map(audioModel -> makeMetadataFromAudioModel(audioModel));
     }
 
+    public void deleteAudioById(String id) {
+        String selection = MediaStore.Audio.Media._ID + " = ?";
+        mCtx.get().getContentResolver().delete(URI, selection, new String[]{id});
+    }
+
+    public Uri insertAudio(ContentValues values, Uri audioUri){
+        return mCtx.get().getContentResolver().insert(audioUri, values);
+    }
 
     @NonNull
     private MediaMetadataCompat makeMetadataFromAudioModel(@NonNull AudioModel audio) {

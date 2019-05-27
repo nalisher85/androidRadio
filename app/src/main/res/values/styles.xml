@@ -10,4 +10,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TextInputLayoutTextAppearance" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">#FF0007</item>
+    </style>
+
 </resources>

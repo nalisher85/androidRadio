@@ -35,7 +35,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/D:/Загрузки/Архивы/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_skip_next_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/D:/Загрузки/Архивы/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_playlist_add_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -70,7 +70,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="imageAsset" value="C:\Users\Admin\Desktop\record-rec\drawable-xxxhdpi\ic_record_rec_black_48dp.png" />
-                                      <entry key="outputName" value="ic_next" />
+                                      <entry key="outputName" value="ic_add_play_list" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="6d6d6d" />
                                     </map>

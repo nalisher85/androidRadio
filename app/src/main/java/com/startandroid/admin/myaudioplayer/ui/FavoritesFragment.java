@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.data.MyDataBase;
 import com.startandroid.admin.myaudioplayer.data.MyDbHelper;
 
 public class FavoritesFragment extends Fragment {
@@ -31,6 +30,7 @@ public class FavoritesFragment extends Fragment {
     private Disposable stationsSubscriber;
 
     public FavoritesFragment() {
+
     }
 
 
@@ -44,17 +44,15 @@ public class FavoritesFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mStationRecycleView.setLayoutManager(linearLayoutManager);
 
-        stationsSubscriber = mDb.getRadioStationsByField("is_favorite", "true")
+        /*stationsSubscriber = mDb.getStationsByFavoriteField(true)
                 .subscribe(stations ->
-                        mStationRecycleView.setAdapter(new StationAdapter(getActivity(), stations)),
-                        err -> err.printStackTrace());
+                        mStationRecycleView.setAdapter(new StationAdapter(getActivity(), stations, mDb)));*/
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FragmentListener fragmentListener = (FragmentListener) getActivity();
     }
 
     @Override

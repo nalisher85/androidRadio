@@ -65,9 +65,9 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="9dp"
-            android:layout_marginBottom="14dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="12dp"
             android:background="@null"
             app:srcCompat="@drawable/ic_vert_dots" />
 

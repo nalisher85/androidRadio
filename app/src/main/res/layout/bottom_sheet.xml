@@ -14,7 +14,7 @@
     android:clickable="true"
     android:focusable="true"
     app:behavior_peekHeight="100dp"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    app:layout_behavior="com.startandroid.admin.myaudioplayer.ui.PlayerBottomSheetBehavior">
 
     <ImageView
         android:id="@+id/bottomsheet_peek_logo"

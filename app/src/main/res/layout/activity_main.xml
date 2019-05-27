@@ -41,11 +41,16 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
+        android:addStatesFromChildren="true"
+        android:animationCache="false"
+        android:background="@color/colorPrimary"
+        app:elevation="24dp"
         app:itemBackground="@color/colorPrimary"
+        app:itemHorizontalTranslationEnabled="true"
+        app:itemIconSize="26dp"
         app:itemIconTint="@color/colorWhite"
         app:itemTextColor="@color/colorWhite"
-        android:background="@color/colorPrimary"
-        android:elevation="30dp"
+        app:labelVisibilityMode="selected"
         app:menu="@menu/menu_bottom_nav" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

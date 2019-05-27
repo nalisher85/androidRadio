@@ -5,6 +5,7 @@ import java.util.List;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 import io.reactivex.Flowable;
@@ -17,19 +18,23 @@ public interface RadioStationDao {
     Flowable<List<RadioStationModel>> getRadioStationList();
 
     @Query("SELECT * FROM radio_station WHERE id = :id")
-    Single<RadioStationModel> getRadioStationById(long id);
+    Single<RadioStationModel> getRadioStationById(int id);
 
     @Query("SELECT * FROM radio_station WHERE :field = :fieldValue")
-    Flowable<List<RadioStationModel>> getRadioStationsByField(String field, String fieldValue);
+    Flowable<List<RadioStationModel>> getRadioStationsByField(String field, Boolean fieldValue);
+
+    @Query("SELECT * FROM radio_station WHERE is_favorite = :isFavorite")
+    Flowable<List<RadioStationModel>> getStationsByFavoriteField(Boolean isFavorite);
+
 
     @Insert
     public void insert(RadioStationModel radioStation);
 
     @Insert
-    public void insert(List<RadioStationModel> radioStationModels);
+    public long[] insert(List<RadioStationModel> radioStationModels);
 
-    @Update
-    public  void update(RadioStationModel radioStation);
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    public int update(RadioStationModel radioStation);
 
     @Delete
     public void delete (RadioStationModel radioStation);

@@ -2,10 +2,37 @@
     <string name="app_name">MyAudioPlayer</string>
     <string name="bottom_nav_menu_radio">Радио</string>
     <string name="bottom_nav_menu_favorites">Избранные</string>
-    <string name="bottom_nav_menu_device_files">Треки с устройства</string>
+    <string name="bottom_nav_menu_device_files">Моя музыка</string>
     <string name="add">Добавить</string>
     <string name="shuffle">Перемешать</string>
+    <string name="ringtone">Мелодия звонка</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="add_queue">Добавить в очередь</string>
+    <string name="failure_to_set_ringtone">Рингтон не установлен</string>
+    <string name="set_ringtone_dialog_title">Установить мелодию звонка</string>
+    <string name="set_ringtone_dialog_message">Необходим достук к системным настройка.</string>
+    <string name="delete_audio_dialog_title">Удаление аудио!</string>
+    <string name="delete_audio_dialog_message">Вы действительное хотите удалить аудио файл?</string>
+    <string name="edit_station_dialog_title">Редактирование радио станции</string>
+    <string name="ok_btn">OK</string>
+    <string name="yes_btn">Да</string>
+    <string name="cancel_btn">Отменить</string>
+    <string name="save_btn">Сохранить</string>
+    <string name="success_add_toast">Успешно добавлено</string>
+    <string name="failure_add_toast">Ошибка добавления</string>
+    <string name="success_edit_toast">Успешно редактировано</string>
+    <string name="failure_edit_toast">Ошибка редактирования</string>
+    <string name="delete_station_dialog_title">Удаление радио станции</string>
+    <string name="delete_station_dialog_msg">Вы действительно хотите удалить радио станцию?</string>
+    <string name="add_edit_activity_title_add">Добавление станции</string>
+    <string name="add_edit_activity_title_edit">Редактирование станции</string>
+    <string name="invalid_url_err_msg">Не верный адрес ссылки</string>
+    <string name="empty_err_msg">Название не должно быть пустым</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="station_name">Названия станции</string>
+    <string name="stream_link">Ссылка на поток</string>
 </resources>

@@ -115,20 +115,30 @@ public class MediaBrowserClient {
     public void addToQueueItems(List<AudioModel> mediaItems, boolean clearOldQueue) {
         if (clearOldQueue) clearPlayList();
         for (AudioModel audio : mediaItems) {
-            addToQueueItems(buildMediaDescriptionsFrom(audio));
+            addToQueueItem(buildMediaDescriptionsFrom(audio));
         }
         mMediaController.getTransportControls().prepare();
         if (clearOldQueue) mMediaController.getTransportControls().play();
     }
 
-    public void addToQueueItems(RadioStationModel radioStationModel) {
+    public void addToQueueItem(AudioModel mediaItem, boolean clearOldQueue) {
+        if (clearOldQueue) {
+            clearPlayList();
+            addToQueueItem(buildMediaDescriptionsFrom(mediaItem));
+            mMediaController.getTransportControls().prepare();
+            mMediaController.getTransportControls().play();
+        } else addToQueueItem(buildMediaDescriptionsFrom(mediaItem));
+    }
+
+    public void addToQueueItem(RadioStationModel radioStationModel) {
         clearPlayList();
-        addToQueueItems(buildMediaDescriptionsFrom(radioStationModel));
+        MediaDescriptionCompat d = buildMediaDescriptionsFrom(radioStationModel);
+        addToQueueItem(buildMediaDescriptionsFrom(radioStationModel));
         mMediaController.getTransportControls().prepare();
         mMediaController.getTransportControls().play();
     }
 
-    private void addToQueueItems(MediaDescriptionCompat mediaDescription) {
+    private void addToQueueItem(MediaDescriptionCompat mediaDescription) {
         mMediaController.addQueueItem(mediaDescription);
     }
 
@@ -149,7 +159,6 @@ public class MediaBrowserClient {
     }
 
     private MediaDescriptionCompat buildMediaDescriptionsFrom(RadioStationModel radioStation){
-        Uri u = makeUriFromUrl(radioStation.getPath());
         MediaDescriptionCompat.Builder builder = new MediaDescriptionCompat.Builder()
                 .setMediaId(""+radioStation.getId())
                 .setTitle(radioStation.getStationName())
@@ -255,7 +264,7 @@ public class MediaBrowserClient {
                                      @NonNull List<MediaBrowserCompat.MediaItem> children) {
 
             for (final MediaBrowserCompat.MediaItem mediaItem : children) {
-                addToQueueItems(mediaItem.getDescription());
+                addToQueueItem(mediaItem.getDescription());
             }
             for (MediaBrowserCallbacks callback : mCallbackList) {
                 if (callback != null) {

@@ -2,14 +2,17 @@ package com.startandroid.admin.myaudioplayer.data;
 
 import android.support.v4.media.MediaMetadataCompat;
 
+import java.io.Serializable;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+
 @Entity(tableName = "radio_station")
-public class RadioStationModel {
+public class RadioStationModel implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
      private int id;

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface FragmentListener {
     void onAddQueueItems(List<AudioModel> audioList, boolean isNew);
-    void onAddQueueItems(RadioStationModel station);
+    void onAddQueueItem(RadioStationModel station);
+    void onAddQueueItem(AudioModel audioTrack, boolean cleanOldList);
+
 
 }

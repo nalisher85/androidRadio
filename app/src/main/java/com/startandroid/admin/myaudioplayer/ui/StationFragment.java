@@ -1,6 +1,9 @@
 package com.startandroid.admin.myaudioplayer.ui;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,12 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.data.MyDataBase;
@@ -25,20 +33,19 @@ import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 
 import java.util.List;
 
-/**
- * Use the {@link StationFragment#//newInstance} factory method to
- * create an instance of this fragment.
- */
-public class StationFragment extends Fragment {
+public class StationFragment extends Fragment implements StationAdapter.OnItemViewClickListener {
 
 
     @BindView(R.id.station_list)
     RecyclerView mStationListRecyclerView;
+
     private MyDbHelper mDb;
-    FragmentListener fragmentListener;
+    private FragmentListener fragmentListener;
+    private boolean mIsFavoriteFragment;
     private Disposable stationsSubscription;
 
     public StationFragment() {
+        super();
     }
 
 
@@ -46,6 +53,10 @@ public class StationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        assert getArguments() != null;
+        mIsFavoriteFragment = getArguments().getBoolean(MainActivity.IS_FAVORITE_FRAGMENT_KEY);
+
+
     }
 
     @Override
@@ -55,18 +66,19 @@ public class StationFragment extends Fragment {
         ButterKnife.bind(this, view);
 
 
-        List<RadioStationModel> stationList;
-
         mStationListRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mStationListRecyclerView.setLayoutManager(linearLayoutManager);
 
-        stationsSubscription = mDb.getRadioStationList().subscribe(
-                stations -> {
-            StationAdapter stationAdapter = new StationAdapter(getActivity(), stations);
-            mStationListRecyclerView.setAdapter(stationAdapter);
-            }
-        );
+        if (mIsFavoriteFragment) {
+            stationsSubscription = mDb.getStationsByFavoriteField(true).subscribe(
+                    stations ->
+                            mStationListRecyclerView.setAdapter(new StationAdapter(stations, this)));
+        } else {
+            stationsSubscription = mDb.getRadioStationList().subscribe(
+                    stations ->
+                            mStationListRecyclerView.setAdapter(new StationAdapter(stations, this)));
+        }
 
         return view;
     }
@@ -78,29 +90,11 @@ public class StationFragment extends Fragment {
         menu.findItem(R.id.action_shuffle).setVisible(false);
     }
 
-    /**
-     * Called when the Fragment is visible to the user.  This is generally
-     * tied to {@link Activity#onStart() Activity.onStart} of the containing
-     * Activity's lifecycle.
-     */
     @Override
     public void onStart() {
         super.onStart();
     }
 
-    /**
-     * Called when the fragment's activity has been created and this
-     * fragment's view hierarchy instantiated.  It can be used to do final
-     * initialization once these pieces are in place, such as retrieving
-     * views or restoring state.  It is also useful for fragments that use
-     * {@link #setRetainInstance(boolean)} to retain their instance,
-     * as this callback tells the fragment when it is fully associated with
-     * the new activity instance.  This is called after {@link #onCreateView}
-     * and before {@link #onViewStateRestored(Bundle)}.
-     *
-     * @param savedInstanceState If the fragment is being re-created from
-     *                           a previous saved state, this is the state.
-     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -117,5 +111,61 @@ public class StationFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         stationsSubscription.dispose();
+    }
+
+    @SuppressLint("CheckResult")
+    private void updateStationData(RadioStationModel station){
+        mDb.update(station).subscribe(
+                () -> {},
+                throwable -> {
+                    Toast.makeText(getContext(), "Ошибка обновления!", Toast.LENGTH_SHORT).show();
+                    throwable.printStackTrace();
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    private void deleteStationData(RadioStationModel station) {
+        mDb.delete(station).subscribe(
+                () -> {},
+                throwable -> {
+                    Toast.makeText(getContext(), "Ошибка обновления!", Toast.LENGTH_SHORT).show();
+                    throwable.printStackTrace();
+                });
+    }
+
+    private void showDeleteStationDialog(RadioStationModel station){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.delete_station_dialog_title)
+                .setIcon(R.drawable.ic_delete)
+                .setMessage(R.string.delete_station_dialog_msg)
+                .setPositiveButton(R.string.yes_btn,
+                        ((dialog, which) -> {
+                            deleteStationData(station);
+                            dialog.cancel();
+                        }))
+                .setNegativeButton(R.string.cancel_btn,
+                        (dialog, which) -> dialog.cancel())
+                .show();
+    }
+
+    @Override
+    public void onItemClickListener(RadioStationModel itemData, int viewId) {
+        switch (viewId) {
+            case R.id.station_cardview:
+                fragmentListener.onAddQueueItem(itemData);
+                break;
+            case R.id.btn_favorite:
+                updateStationData(itemData);
+                break;
+            case R.id.station_edit_menu:
+                Intent intent = new Intent(getContext(), AddEditStationActivity.class);
+                intent.putExtra(AddEditStationActivity.ACTIVITY_MODE_KEY, AddEditStationActivity.EDIT_MODE);
+                intent.putExtra(AddEditStationActivity.STATION_KEY, itemData);
+                startActivity(intent);
+                break;
+            case R.id.station_delete_menu:
+                showDeleteStationDialog(itemData);
+                break;
+        }
     }
 }
