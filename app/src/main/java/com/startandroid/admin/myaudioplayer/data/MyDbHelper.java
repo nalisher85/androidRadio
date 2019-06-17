@@ -11,6 +11,7 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -23,7 +24,6 @@ public class MyDbHelper {
     public MyDbHelper(Context ctx){this.mCtx = ctx;}
 
     private static MyDataBase getDbInstance(Context context){
-        int a=6+7;
         if (database == null)
             database = Room.databaseBuilder(context, MyDataBase.class, "my_database")
                     .fallbackToDestructiveMigration()
@@ -44,6 +44,11 @@ public class MyDbHelper {
 
     public Flowable<List<RadioStationModel>> getStationsByFavoriteField(Boolean isFavorite){
         return getDbInstance(mCtx).radioStationDao().getStationsByFavoriteField(isFavorite)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Maybe<RadioStationModel> getRadioStationByLink(String link) {
+        return getDbInstance(mCtx).radioStationDao().getRadioStationByLink(link)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 

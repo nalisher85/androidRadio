@@ -3,6 +3,7 @@ package com.startandroid.admin.myaudioplayer.ui;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,24 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.data.MyDataBase;
 import com.startandroid.admin.myaudioplayer.data.MyDbHelper;
 import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
-
-import java.util.List;
 
 public class StationFragment extends Fragment implements StationAdapter.OnItemViewClickListener {
 
@@ -39,10 +33,12 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     @BindView(R.id.station_list)
     RecyclerView mStationListRecyclerView;
 
+
     private MyDbHelper mDb;
     private FragmentListener fragmentListener;
     private boolean mIsFavoriteFragment;
     private Disposable stationsSubscription;
+
 
     public StationFragment() {
         super();
@@ -55,7 +51,6 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
         setHasOptionsMenu(true);
         assert getArguments() != null;
         mIsFavoriteFragment = getArguments().getBoolean(MainActivity.IS_FAVORITE_FRAGMENT_KEY);
-
 
     }
 
@@ -86,8 +81,13 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.action_bar_menu, menu);
-        menu.findItem(R.id.action_add).setVisible(true);
+
         menu.findItem(R.id.action_shuffle).setVisible(false);
+        menu.findItem(R.id.action_add).setVisible(true)
+                .setOnMenuItemClickListener(item -> {
+                    showAddStationDialog();
+                    return true;
+                });
     }
 
     @Override
@@ -111,6 +111,30 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     public void onDetach() {
         super.onDetach();
         stationsSubscription.dispose();
+    }
+
+    private DialogInterface.OnClickListener addDialogItemClickListener = (dialog, which) -> {
+        Intent intent;
+        switch (which) {
+           case 0:
+               intent = new Intent(getContext(), AddEditStationActivity.class);
+               intent.putExtra(AddEditStationActivity.ACTIVITY_MODE_KEY, AddEditStationActivity.ADD_MODE);
+               startActivity(intent);
+               break;
+           case 1:
+               intent = new Intent(getContext(), StationsDataForAddActivity.class);
+               startActivity(intent);
+               break;
+       }
+    };
+
+    private void showAddStationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        String addUtl = getString(R.string.has_stream_link);
+        String fromSite = getString(R.string.add_station_from_list);
+        builder.setTitle("Добавить радио станцию");
+        builder.setItems(new String[]{addUtl, fromSite}, addDialogItemClickListener);
+        builder.show();
     }
 
     @SuppressLint("CheckResult")

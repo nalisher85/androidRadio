@@ -14,8 +14,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.data.AudioModel;
-import com.startandroid.admin.myaudioplayer.data.MyDbHelper;
 import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 
 import java.util.List;
@@ -25,12 +23,11 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
 
     private List<RadioStationModel> mStationList;
-    OnItemViewClickListener mRecyclerItemClickListener;
+    private OnItemViewClickListener mRecyclerItemClickListener;
 
     public StationAdapter(List<RadioStationModel> stationList, OnItemViewClickListener listener) {
         mRecyclerItemClickListener = listener;
@@ -41,7 +38,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     @NonNull
     @Override
     public StationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.radio_station_item3, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.radio_station_item, parent, false);
         return new StationViewHolder(view);
     }
 

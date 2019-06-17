@@ -23,6 +23,12 @@ public class RadioStationModel implements Serializable {
     @ColumnInfo(name = "path")
     private String path;
 
+    @ColumnInfo(name = "country")
+    private String country;
+
+    @ColumnInfo(name = "language")
+    private String language;
+
     @ColumnInfo(name = "is_favorite")
     private boolean isFavorite;
 
@@ -71,6 +77,21 @@ public class RadioStationModel implements Serializable {
         isFavorite = favorite;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
     public int getStationIcon() {
         return stationIcon;

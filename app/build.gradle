@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -41,6 +42,7 @@ dependencies {
 
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
     implementation 'com.lnikkila:extendedtouchview:0.1.1'
+    implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
 
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'

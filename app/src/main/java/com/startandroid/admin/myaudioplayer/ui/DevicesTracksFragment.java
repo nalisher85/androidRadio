@@ -49,17 +49,15 @@ public class DevicesTracksFragment extends Fragment {
     RecyclerView mTrackListRecyclerView;
     private List<AudioModel> mAudioList;
     private Disposable mAudioListSubscriber;
-    private MenuItem mMenuItem;
     private FragmentListener mFragmentListener;
     private StorageAudioFiles mStorageData;
 
     private boolean mShowMusicListAfterPermission = false;
     private AudioModel mRingtoneForSetAfterPermission = null;
 
-    MessageQueue messageQueue;
 
     public DevicesTracksFragment() {
-        messageQueue = Looper.myQueue();
+
     }
 
 
@@ -99,11 +97,11 @@ public class DevicesTracksFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.action_bar_menu, menu);
         menu.findItem(R.id.action_add).setVisible(false);
-        mMenuItem = menu.findItem(R.id.action_shuffle).setVisible(true);
-        mMenuItem.setOnMenuItemClickListener(item -> {
-            mFragmentListener.onAddQueueItems(mAudioList, true);
-            return true;
-        });
+        menu.findItem(R.id.action_shuffle).setVisible(true)
+                .setOnMenuItemClickListener(item -> {
+                    mFragmentListener.onAddQueueItems(mAudioList, true);
+                    return true;
+                });
     }
 
     @Override

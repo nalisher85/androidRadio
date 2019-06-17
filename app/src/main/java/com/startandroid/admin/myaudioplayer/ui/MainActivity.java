@@ -116,28 +116,16 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
     private MediaBrowserClient mMediaBrowserClient;
 
-    private static String[][] testData = {
-            {"Record radio", "http://air2.radiorecord.ru:9003/rr_320", "false"},
-            {"Record bighits", "http://air2.radiorecord.ru:9003/bighits_320", "false"},
-            {"Record gold", "http://air2.radiorecord.ru:9003/gold_320", "false"},
-            {"Record rap", "http://air2.radiorecord.ru:9003/rap_320 ", "false"},
-            {"Record russianhits", "http://air2.radiorecord.ru:9003/russianhits_320 ", "false"},
-            {"Record darkside", "http://air2.radiorecord.ru:9003/darkside_320", "false"},
-            {"Record маятник фуко", "http://air2.radiorecord.ru:9003/mf_320", "false"},
-            {"Record tecktonik", "http://air2.radiorecord.ru:9003/tecktonik_320", "false"},
-            {"Record 2step", "http://air2.radiorecord.ru:9003/2step_320", "false"},
-            {"Record discofunk", "http://air2.radiorecord.ru:9003/discofunk_320", "false"}
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationItemSelectedListener());
+
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
             bundle.putBoolean(IS_FAVORITE_FRAGMENT_KEY, false);
@@ -153,51 +141,24 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         bsBehavior.setBottomSheetCallback(new BottomSheetCallback());
 
         ViewCompat.setElevation(mBottomSheet, 21);
-
-        //test data
-        MyDbHelper db = new MyDbHelper(this.getApplicationContext());
-        List<RadioStationModel> stationModels = new ArrayList<>();
-        @SuppressLint("CheckResult")
-        Disposable disposable = db.getRadioStationList().subscribe(stations -> {
-
-            if (stations.isEmpty()) {
-                for (String[] aData : testData) {
-                    RadioStationModel station = new RadioStationModel(aData[0], aData[1],
-                            Boolean.parseBoolean(aData[2]));
-                    stationModels.add(station);
-                }
-               db.insert(stationModels).subscribe(
-                       () -> {},
-                       throwable -> {
-                           Log.d("myLog", "Ошибка добавление тестовых данных");
-                           throwable.printStackTrace();
-                       });
-            }
-        });
-
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("myLog", "MainActivity -> onStart");
-
         mMediaBrowserClient.connect();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("myLog", "MainActivity -> onStop");
-
         mMediaSeekBar.disconnectController();
         mMediaBrowserClient.disconnect();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("myLog", "MainActivity -> onCreateOptionsMenu");
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         return super.onCreateOptionsMenu(menu);
     }
@@ -242,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
         if (mBottomSheet.getVisibility() == View.VISIBLE &&
                 playerState.getMetadata() != null) {
             updateBottomSheet();
+
         } else if(playerState.getMetadata() != null) {
             updateBottomSheet();
             mBottomsheetPrevBtn.setOnClickListener(v -> mMediaBrowserClient.onMediaButtonClicked(v.getId()));
@@ -390,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener,
 
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
-            Log.d("myLog", "MainActivity -> onPlaybackStateChanged." +
+            Log.d("myLog", "MainActivity -> MediaBrowserClientCallback -> onPlaybackStateChanged." +
                     "state="+state.getState());
             updateBottomSheet();
         }

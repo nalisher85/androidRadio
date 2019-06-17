@@ -52,7 +52,7 @@ public class MusicLibrary {
                 103,
                 TimeUnit.SECONDS,
                 "jazz_in_paris.mp3",
-                R.drawable.album_jazz_blues,
+                R.drawable.album_youtube_audio_library_rock_2,
                 "album_jazz_blues");
         createMediaMetadataCompat(
                 "The_Coldest_Shoulder",

@@ -1,18 +1,12 @@
 package com.startandroid.admin.myaudioplayer.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaMetadataCompat;
 
-import com.startandroid.admin.myaudioplayer.ui.MainActivity;
-
-import java.io.File;
 import java.lang.ref.WeakReference;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +47,7 @@ public class StorageAudioFiles {
         return audioModels;
     }
 
-    public AudioModel getStorageAudioById(String audioId) {
+    public AudioModel getAudioById(String audioId) {
         String selection = MediaStore.Audio.Media._ID + " = ?";
         Cursor cursor = mCtx.get().getContentResolver().query(URI, COLUMNS, selection,
                 new String[]{audioId}, null);
@@ -73,7 +67,7 @@ public class StorageAudioFiles {
     public Observable<AudioModel> getAudioByIdAsync(String id){
         return Observable.create((ObservableOnSubscribe<AudioModel>)emitter -> {
             try {
-                AudioModel audioModel = getStorageAudioById(id);
+                AudioModel audioModel = getAudioById(id);
                 if (!emitter.isDisposed()) emitter.onNext(audioModel);
             } catch (Throwable e) {
                 emitter.onError(e);
@@ -105,21 +99,17 @@ public class StorageAudioFiles {
         mCtx.get().getContentResolver().delete(URI, selection, new String[]{id});
     }
 
-    public Uri insertAudio(ContentValues values, Uri audioUri){
-        return mCtx.get().getContentResolver().insert(audioUri, values);
-    }
-
     @NonNull
     private MediaMetadataCompat makeMetadataFromAudioModel(@NonNull AudioModel audio) {
-        MediaMetadataCompat.Builder mediaMetadataBuilder = new MediaMetadataCompat.Builder().
+        MediaMetadataCompat.Builder builder = new MediaMetadataCompat.Builder().
                 putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, audio.getId()).
                 putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, audio.getPath()).
                 putString(MediaMetadataCompat.METADATA_KEY_TITLE, audio.getName()).
                 putString(MediaMetadataCompat.METADATA_KEY_ALBUM, audio.getAlbum()).
                 putString(MediaMetadataCompat.METADATA_KEY_ARTIST, audio.getArtist()).
                 putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audio.getDuration());
-        MediaMetadataCompat md = mediaMetadataBuilder.build();
-        return mediaMetadataBuilder.build();
+
+        return builder.build();
     }
 
     @NonNull
@@ -137,7 +127,7 @@ public class StorageAudioFiles {
     }
 
     public MediaMetadataCompat getAudioMetadataById (String id) {
-        return makeMetadataFromAudioModel(getStorageAudioById(id));
+        return makeMetadataFromAudioModel(getAudioById(id));
     }
     //-----------
 

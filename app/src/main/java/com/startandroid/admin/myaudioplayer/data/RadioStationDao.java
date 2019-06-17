@@ -9,6 +9,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 @Dao
@@ -26,6 +27,8 @@ public interface RadioStationDao {
     @Query("SELECT * FROM radio_station WHERE is_favorite = :isFavorite")
     Flowable<List<RadioStationModel>> getStationsByFavoriteField(Boolean isFavorite);
 
+    @Query("SELECT * FROM radio_station WHERE path = :link")
+    Maybe<RadioStationModel> getRadioStationByLink(String link);
 
     @Insert
     public void insert(RadioStationModel radioStation);

@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.StationsDataForAddActivity">
+
+        </activity>
         <activity
             android:name=".ui.AddEditStationActivity"
             android:label="Edit/Add"
