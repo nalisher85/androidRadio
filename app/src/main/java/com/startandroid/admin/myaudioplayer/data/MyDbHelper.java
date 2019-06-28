@@ -68,7 +68,6 @@ public class MyDbHelper {
 
     public Completable update(RadioStationModel radioStation){
         return Completable.fromCallable(() -> {
-            RadioStationModel s = radioStation;
             int b = getDbInstance(mCtx).radioStationDao().update(radioStation);
             return null;
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

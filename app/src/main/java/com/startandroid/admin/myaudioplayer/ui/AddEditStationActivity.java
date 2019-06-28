@@ -68,7 +68,7 @@ public class AddEditStationActivity extends AppCompatActivity implements Validat
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_edit_station2);
+        setContentView(R.layout.activity_add_edit_station);
         ButterKnife.bind(this);
         myDb = new MyDbHelper(this.getApplicationContext());
 

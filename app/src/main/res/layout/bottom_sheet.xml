@@ -1,92 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
-    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bottom_sheet_background"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingBottom="50dp"
+    android:background="#FFFFFF"
     android:clickable="true"
     android:focusable="true"
+    android:paddingBottom="50dp"
+    android:visibility="gone"
     app:behavior_peekHeight="100dp"
     app:layout_behavior="com.startandroid.admin.myaudioplayer.ui.PlayerBottomSheetBehavior">
 
-    <ImageView
-        android:id="@+id/bottomsheet_peek_logo"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@null"
-        app:srcCompat="@drawable/logo_europe_plus" />
-
-    <TextView
-        android:id="@+id/bottomsheet_peek_title"
-        android:layout_width="0dp"
-        android:layout_height="22dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text=""
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_peek_button"
-        app:layout_constraintStart_toEndOf="@+id/bottomsheet_peek_logo"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/bottomsheet_peek_subtitle"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text=""
-        android:textSize="10sp"
-        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_peek_button"
-        app:layout_constraintStart_toEndOf="@+id/bottomsheet_peek_logo"
-        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_peek_title" />
-
-    <ToggleButton
-        android:id="@+id/bottomsheet_peek_button"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/ic_play_pause_toggle"
-        android:text=""
-        android:textOff=""
-        android:textOn=""/>
-
-    <ImageView
-        android:id="@+id/bottomsheet_media_img"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:background="@null"
-        app:layout_constraintBottom_toTopOf="@+id/media_panel"
-        app:layout_constraintTop_toBottomOf="@+id/bottomsheet_peek_subtitle"
-        app:srcCompat="@drawable/europaplus"
-        tools:layout_editor_absoluteX="8dp" />
-
-
-    <FrameLayout
-        android:id="@+id/media_panel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="10dp">
-        <include layout="@layout/radio_media_panel"/>
-        <include layout="@layout/audio_media_panel"/>
-    </FrameLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

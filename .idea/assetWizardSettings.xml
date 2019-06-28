@@ -35,7 +35,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/D:/Загрузки/Архивы/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_arrow_drop_down_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/D:/Загрузки/Архивы/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/toggle/ic_star_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -69,11 +69,10 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="assetType" value="IMAGE" />
                                       <entry key="imageAsset" value="C:\Users\Admin\Desktop\aHHiD.9.png" />
-                                      <entry key="outputName" value="ic_drop_down" />
+                                      <entry key="outputName" value="ic_star_active" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="6d6d6d" />
+                                      <entry key="themeColor" value="ff6600" />
                                     </map>
                                   </option>
                                 </PersistentState>

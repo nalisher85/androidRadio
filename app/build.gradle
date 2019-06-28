@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.setUseSupportLibrary(false)
         applicationId "com.startandroid.admin.myaudioplayer"
         minSdkVersion 19
         targetSdkVersion 28
@@ -31,10 +31,13 @@ allprojects {
 }
 
 dependencies {
+
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
+    implementation 'com.jakewharton.rxbinding3:rxbinding-appcompat:3.0.0-alpha2'
 
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
@@ -42,7 +45,7 @@ dependencies {
 
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
     implementation 'com.lnikkila:extendedtouchview:0.1.1'
-    implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
 
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'

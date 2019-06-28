@@ -9,6 +9,7 @@
     <string name="delete">Удалить</string>
     <string name="edit">Редактировать</string>
     <string name="add_queue">Добавить в очередь</string>
+    <string name="remove_queue_item">Удалить из очереди</string>
     <string name="failure_to_set_ringtone">Рингтон не установлен</string>
     <string name="set_ringtone_dialog_title">Установить мелодию звонка</string>
     <string name="set_ringtone_dialog_message">Необходим достук к системным настройка.</string>
@@ -40,7 +41,7 @@
     <string name="country_and_language">Страна/Язык:</string>
     <string name="select_country_filter_tv">[Выберите страну…]</string>
     <string name="select_language_filter_tv">[Выберите язык…]</string>
-    <string name="select_all">Выбрать все</string>
     <string name="has_stream_link">Есть ссылка на поток</string>
     <string name="add_station_from_list">Добавить из списка</string>
+    <string name="select_all">Выбрать все</string>
 </resources>

@@ -1,5 +1,6 @@
-package com.startandroid.admin.myaudioplayer.ui;
+package com.startandroid.admin.myaudioplayer.util;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
@@ -9,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TouchDelegateComposite extends TouchDelegate {
-    private final List<TouchDelegate> delegates = new ArrayList<TouchDelegate>();
+    private final List<TouchDelegate> delegates = new ArrayList<>();
     private static final Rect emptyRect = new Rect();
 
-    public TouchDelegateComposite(View view) {
-        super(emptyRect, view);
+    public TouchDelegateComposite(Context ctx) {
+        super(emptyRect, new View(ctx.getApplicationContext()));
     }
 
     public void addDelegate(TouchDelegate delegate) {

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -64,6 +65,8 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
         mStationListRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mStationListRecyclerView.setLayoutManager(linearLayoutManager);
+        mStationListRecyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(),
+                LinearLayoutManager.VERTICAL));
 
         if (mIsFavoriteFragment) {
             stationsSubscription = mDb.getStationsByFavoriteField(true).subscribe(
@@ -173,9 +176,9 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     }
 
     @Override
-    public void onItemClickListener(RadioStationModel itemData, int viewId) {
+    public void onItemClicked(RadioStationModel itemData, int viewId) {
         switch (viewId) {
-            case R.id.station_cardview:
+            case R.id.station_item:
                 fragmentListener.onAddQueueItem(itemData);
                 break;
             case R.id.btn_favorite:

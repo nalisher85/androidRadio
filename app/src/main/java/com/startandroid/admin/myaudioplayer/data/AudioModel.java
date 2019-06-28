@@ -15,7 +15,8 @@ public class AudioModel {
     private long mDuration;
     private int mIcon;
 
-    public AudioModel(){}
+    public AudioModel(){
+    }
 
     public AudioModel(String id, String name, String artist, String album, @NonNull String path, long duration){
         mId = id;
@@ -25,6 +26,7 @@ public class AudioModel {
         mPath = path;
         mDuration = duration;
     }
+
 
     public String getId() {
         return mId;

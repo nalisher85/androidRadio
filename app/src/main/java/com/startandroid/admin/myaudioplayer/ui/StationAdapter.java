@@ -1,10 +1,6 @@
 package com.startandroid.admin.myaudioplayer.ui;
 
-import android.content.Context;
-import android.graphics.Rect;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -15,14 +11,18 @@ import android.widget.ToggleButton;
 
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
+import com.startandroid.admin.myaudioplayer.util.EditorViewHitArea;
+import com.startandroid.admin.myaudioplayer.util.TouchDelegateComposite;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.droidsonroids.gif.GifImageView;
 
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
 
@@ -53,13 +53,13 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     }
 
     interface OnItemViewClickListener {
-        void onItemClickListener(RadioStationModel itemData, int viewId);
+        void onItemClicked(RadioStationModel itemData, int viewId);
     }
 
     class StationViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.station_cardview)
-        CardView mStationCardView;
+        @BindView(R.id.station_item)
+        ConstraintLayout mStationCardView;
         @BindView(R.id.station_icon)
         ImageView mStationIcon;
         @BindView(R.id.station_name)
@@ -69,52 +69,34 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         @BindView(R.id.btn_favorite)
         ToggleButton mBtnFavorite;
 
-        private TouchDelegateComposite touchDelegate;
+        private EditorViewHitArea editorViewHitArea;
 
         StationViewHolder (View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            touchDelegate = new TouchDelegateComposite(itemView);
-            increaseBtnHitArea(mBtnFavorite, 13, 5, 13, 5);
-            increaseBtnHitArea(mStationOptionsBtn, 13, 5, 13, 5);
-        }
 
-        private void increaseBtnHitArea(@NonNull final View btn, int top, int left, int bottom, int right) {
-            View parent = (View) btn.getParent();
-
-            parent.post(() -> {
-               final Rect rect = new Rect();
-               btn.getHitRect(rect);
-               rect.top -= convertDpToPixel(top, btn.getContext());
-               rect.left -= convertDpToPixel(left, btn.getContext());
-               rect.bottom += convertDpToPixel(bottom, btn.getContext());
-               rect.right += convertDpToPixel(right, btn.getContext());
-               touchDelegate.addDelegate(new TouchDelegate(rect, btn));
-               parent.setTouchDelegate(touchDelegate);
-            });
-        }
-
-        private float convertDpToPixel(float dp, Context context){
-            return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+            editorViewHitArea = new EditorViewHitArea(new TouchDelegateComposite(itemView.getContext()));
+            editorViewHitArea.increaseViewHitArea(mBtnFavorite, 13, 5, 13, 5);
+            editorViewHitArea.increaseViewHitArea(mStationOptionsBtn, 13, 5, 13, 5);
         }
 
         void bind (final RadioStationModel itemData) {
             mStationName.setText(itemData.getStationName());
 
             mStationCardView.setOnClickListener(v ->
-                    mRecyclerItemClickListener.onItemClickListener(itemData, v.getId()));
+                    mRecyclerItemClickListener.onItemClicked(itemData, v.getId()));
 
             mBtnFavorite.setChecked(itemData.isFavorite());
             mBtnFavorite.setOnClickListener(v -> {
                 itemData.setFavorite(!itemData.isFavorite());
-                mRecyclerItemClickListener.onItemClickListener(itemData, v.getId());
+                mRecyclerItemClickListener.onItemClicked(itemData, v.getId());
             });
 
             mStationOptionsBtn.setOnClickListener(v -> {
                 PopupMenu menu = new PopupMenu(mStationCardView.getContext(), v);
                 menu.inflate(R.menu.station_item_menu);
                 menu.setOnMenuItemClickListener(item -> {
-                    mRecyclerItemClickListener.onItemClickListener(itemData, item.getItemId());
+                    mRecyclerItemClickListener.onItemClicked(itemData, item.getItemId());
                     return true;
                 });
                 menu.show();

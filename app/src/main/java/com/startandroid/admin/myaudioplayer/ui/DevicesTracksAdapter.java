@@ -8,7 +8,6 @@ import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -18,7 +17,7 @@ import com.startandroid.admin.myaudioplayer.data.AudioModel;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,10 +25,10 @@ import butterknife.ButterKnife;
 public class DevicesTracksAdapter extends RecyclerView.Adapter<DevicesTracksAdapter.DevicesTracksViewHolder> {
 
     private List<AudioModel> mTrackList;
-    private OnItemViewClickListener mViewItemClickListener;
+    private TrackItemClickListener mViewItemClickListener;
 
 
-    public DevicesTracksAdapter (List<AudioModel> trackList, OnItemViewClickListener listener) {
+    public DevicesTracksAdapter (List<AudioModel> trackList, TrackItemClickListener listener) {
         mTrackList = trackList;
         mViewItemClickListener = listener;
     }
@@ -38,12 +37,13 @@ public class DevicesTracksAdapter extends RecyclerView.Adapter<DevicesTracksAdap
     @NonNull
     @Override
     public DevicesTracksViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.device_track_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.device_track_item, parent, false);
         return new DevicesTracksViewHolder(view) ;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DevicesTracksViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DevicesTracksViewHolder holder, int position){
         holder.bind(mTrackList.get(position));
     }
 
@@ -52,16 +52,14 @@ public class DevicesTracksAdapter extends RecyclerView.Adapter<DevicesTracksAdap
         return mTrackList.size();
     }
 
-    interface OnItemViewClickListener {
+    interface TrackItemClickListener {
         void onItemClickListener(AudioModel itemData, int viewId);
     }
 
     class DevicesTracksViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.track_cardview)
-        CardView trackCardView;
-        @BindView(R.id.track_icon)
-        ImageView mTrackIcon;
+        @BindView(R.id.track_item)
+        ConstraintLayout trackCardView;
         @BindView(R.id.track_name)
         TextView mTrackName;
         @BindView(R.id.artist)
@@ -101,16 +99,16 @@ public class DevicesTracksAdapter extends RecyclerView.Adapter<DevicesTracksAdap
             trackCardView.setOnClickListener((view) ->
                     mViewItemClickListener.onItemClickListener(itemData, trackCardView.getId()));
 
-            mBtnTrackOptions.setOnClickListener(
-                    v -> {
-                PopupMenu menu = new PopupMenu(trackCardView.getContext(), v);
-                menu.inflate(R.menu.audio_track_menu);
-                menu.setOnMenuItemClickListener(menuItem -> {
-                    mViewItemClickListener.onItemClickListener(itemData, menuItem.getItemId());
-                    return true;
-                });
-                menu.show();
-            });
+                mBtnTrackOptions.setOnClickListener(
+                        v -> {
+                            PopupMenu menu = new PopupMenu(trackCardView.getContext(), v);
+                            menu.inflate(R.menu.audio_track_menu);
+                            menu.setOnMenuItemClickListener(menuItem -> {
+                                mViewItemClickListener.onItemClickListener(itemData, menuItem.getItemId());
+                                return true;
+                            });
+                            menu.show();
+                        });
         }
     }
 }

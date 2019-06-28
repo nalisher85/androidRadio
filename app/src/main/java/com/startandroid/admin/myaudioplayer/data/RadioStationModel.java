@@ -35,7 +35,8 @@ public class RadioStationModel implements Serializable {
     @Ignore
     private int stationIcon;
 
-    public RadioStationModel(){}
+    public RadioStationModel(){
+    }
 
     public RadioStationModel (String stationName,
                               @NonNull String path, boolean isFavorite){

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/bottom_sheet_background">
+
+    <ImageButton
+        android:id="@+id/bottomsheet_media_menu"
+        android:background="@null"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_vert_dots" />
+
+    <TextView
+        android:id="@+id/peek_title"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="50dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomsheet_media_menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bottomsheet_media_menu"
+        app:layout_constraintTop_toTopOf="@+id/bottomsheet_media_menu" />
+
+    <ToggleButton
+        android:id="@+id/peek_play_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/ic_play_pause_toggle"
+        android:text=""
+        android:textOff=""
+        android:textOn=""/>
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/line"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <!--    _-_-_-_-_-_-_-_-_-_-_-_       -->
+
+    <FrameLayout
+        android:id="@+id/middle_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@null"
+        app:layout_constraintBottom_toTopOf="@+id/view2"
+        app:layout_constraintTop_toBottomOf="@+id/view3"
+        tools:layout_editor_absoluteX="8dp">
+
+        <ImageView
+            android:id="@+id/middle_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_radio" />
+
+        <TextView
+            android:id="@+id/middle_text"
+            android:layout_width="139dp"
+            android:layout_height="129dp"
+            android:layout_gravity="bottom|start"
+            android:text="text text text text text text"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <!--    _-_-_-_-_-_-_-_-_-_-_-_       -->
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/line"
+        app:layout_constraintBottom_toTopOf="@+id/play_btn"
+        tools:layout_editor_absoluteX="0dp" />
+
+
+    <ToggleButton
+        android:id="@+id/play_btn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/ic_play_pause_bottomsheet_toggle"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ToggleButton
+        android:id="@+id/bottomsheet_favorite_button"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="100dp"
+        android:background="@drawable/ic_favorite_toggle"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
+        app:layout_constraintBottom_toBottomOf="@+id/play_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/play_btn" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -22,14 +24,12 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
-import android.os.Looper;
-import android.os.MessageQueue;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -55,6 +55,13 @@ public class DevicesTracksFragment extends Fragment {
     private boolean mShowMusicListAfterPermission = false;
     private AudioModel mRingtoneForSetAfterPermission = null;
 
+    ContentObserver mContentObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            showMusicList();
+        }
+    };
+
 
     public DevicesTracksFragment() {
 
@@ -66,6 +73,7 @@ public class DevicesTracksFragment extends Fragment {
         super.onAttach(ctx);
         Log.d("myLog", "DevicesTracksFragment -> onAttach");
         mStorageData = new StorageAudioFiles(ctx);
+        mStorageData.registerContentObserver(mContentObserver);
     }
 
     @Override
@@ -111,32 +119,33 @@ public class DevicesTracksFragment extends Fragment {
     }
 
     private void showMusicList() {
+
         if (mTrackListRecyclerView != null && mStorageData != null) {
+
+            mTrackListRecyclerView.addItemDecoration(new DividerItemDecoration(mTrackListRecyclerView.getContext(),
+                    LinearLayoutManager.VERTICAL));
             mTrackListRecyclerView.setHasFixedSize(true);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             mTrackListRecyclerView.setLayoutManager(linearLayoutManager);
+
             mAudioListSubscriber = mStorageData.getAudiosAsync(null, null)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(audioList -> {
                                 mAudioList = audioList;
                                 mTrackListRecyclerView.setAdapter(
-                                        new DevicesTracksAdapter(audioList, new RecyclerViewItemClickListener()));
+                                        new DevicesTracksAdapter(audioList, new TrackItemClickListener()));
                             },
                             err -> err.printStackTrace());
         }
     }
 
-    private void setAudioTrackAsRingtone(AudioModel audioTrack){
+    private void setAudioTrackAsRingtone(@NonNull AudioModel audioTrack){
         String path = audioTrack.getPath();
         Uri uriAbs = new Uri.Builder().scheme("file").path(path).build(); //Absolute uri
         RingtoneManager.setActualDefaultRingtoneUri(getContext(), RingtoneManager.TYPE_RINGTONE, uriAbs);
     }
 
-    private void deleteAudioTrackFromStorage(AudioModel audioTrack){
-        mStorageData.deleteAudioById(audioTrack.getId());
-    }
-
-    private void showDeleteAudioDialog(AudioModel audio) {
+    private void deleteAudioTrackFromStorage(@NonNull AudioModel audioTrack){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.delete_audio_dialog_title)
                 .setIcon(R.drawable.ic_delete)
@@ -145,7 +154,7 @@ public class DevicesTracksFragment extends Fragment {
                         (dialog, which) -> dialog.cancel())
                 .setPositiveButton("Да" ,
                         ((dialog, which) -> {
-                            deleteAudioTrackFromStorage(audio);
+                            mStorageData.deleteAudioById(audioTrack.getId());
                             dialog.cancel();
                         })).show();
     }
@@ -227,8 +236,10 @@ public class DevicesTracksFragment extends Fragment {
 
     private boolean checkExternalStoragePermission(@NonNull Context ctx) {
         if (Build.VERSION.SDK_INT < 23) return true;
+
         if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
+
             if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 //Show dialog
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -243,12 +254,12 @@ public class DevicesTracksFragment extends Fragment {
         return false;
     }
 
-    class RecyclerViewItemClickListener implements DevicesTracksAdapter.OnItemViewClickListener {
+    class TrackItemClickListener implements DevicesTracksAdapter.TrackItemClickListener {
 
         @Override
         public void onItemClickListener(AudioModel item, int viewId) {
             switch (viewId) {
-                case R.id.track_cardview:
+                case R.id.track_item:
                     mFragmentListener.onAddQueueItem(item, true);
                     break;
                 case R.id.set_as_ring_menu:
@@ -260,7 +271,7 @@ public class DevicesTracksFragment extends Fragment {
                     mFragmentListener.onAddQueueItem(item, false);
                     break;
                 case R.id.track_delete_menu:
-                    showDeleteAudioDialog(item);
+                    deleteAudioTrackFromStorage(item);
                     break;
             }
         }

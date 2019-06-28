@@ -1,6 +1,8 @@
 package com.startandroid.admin.myaudioplayer.data;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -11,25 +13,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
 public class StorageAudioFiles {
+
     private final static Uri URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
     private final static String[] COLUMNS = {MediaStore.Audio.AudioColumns.DATA,
             MediaStore.Audio.AudioColumns.TITLE, MediaStore.Audio.AudioColumns.ALBUM,
             MediaStore.Audio.ArtistColumns.ARTIST, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media._ID};
     private WeakReference<Context> mCtx;
+    private ContentResolver mContentResolver;
 
     public StorageAudioFiles(@NonNull Context ctx) {
         mCtx = new WeakReference<>(ctx);
+        mContentResolver = mCtx.get().getContentResolver();
+    }
+
+    public void registerContentObserver(ContentObserver observer) {
+        mContentResolver.registerContentObserver(URI, true, observer);
     }
 
     public List<AudioModel> getStorageAudios(String selection, String[] selectionArgs){
         List<AudioModel> audioModels = new ArrayList<>();
-        Cursor cursor = mCtx.get().getContentResolver().query(URI, COLUMNS, selection, selectionArgs, null);
+        Cursor cursor = mContentResolver.query(URI, COLUMNS, selection, selectionArgs, null);
 
         if (cursor != null){
             while (cursor.moveToNext()) {
@@ -49,7 +59,7 @@ public class StorageAudioFiles {
 
     public AudioModel getAudioById(String audioId) {
         String selection = MediaStore.Audio.Media._ID + " = ?";
-        Cursor cursor = mCtx.get().getContentResolver().query(URI, COLUMNS, selection,
+        Cursor cursor = mContentResolver.query(URI, COLUMNS, selection,
                 new String[]{audioId}, null);
         AudioModel audioModel = new AudioModel();
         if (cursor != null && cursor.moveToNext()) {
@@ -64,39 +74,37 @@ public class StorageAudioFiles {
         return audioModel;
     }
 
-    public Observable<AudioModel> getAudioByIdAsync(String id){
-        return Observable.create((ObservableOnSubscribe<AudioModel>)emitter -> {
-            try {
-                AudioModel audioModel = getAudioById(id);
-                if (!emitter.isDisposed()) emitter.onNext(audioModel);
-            } catch (Throwable e) {
-                emitter.onError(e);
-            }
-            emitter.onComplete();
-        }).subscribeOn(Schedulers.io());
+    public Maybe<AudioModel> getAudioByIdAsync(String id){
+
+        return Maybe.fromCallable(() -> getAudioById(id))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
 
-    public Observable<List<AudioModel>> getAudiosAsync (String selection, String[] selectionArgs) {
-        return Observable.create((ObservableOnSubscribe<List<AudioModel>>) emitter -> {
-            List<AudioModel> audios = getStorageAudios(selection, selectionArgs);
-            if(!emitter.isDisposed()) emitter.onNext(audios);
-        }).subscribeOn(Schedulers.io());
+    public Flowable<List<AudioModel>> getAudiosAsync (String selection, String[] selectionArgs) {
+        Flowable<List<AudioModel>> flowable= Flowable.fromCallable(
+                () -> getStorageAudios(selection, selectionArgs))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        return flowable;
     }
 
-    public Observable<List<MediaMetadataCompat>> getAudioMetadatasAsync (String selection, String[] selectionArgs) {
+    public Flowable<List<MediaMetadataCompat>> getAudioMetadatasAsync (String selection, String[] selectionArgs) {
         //noinspection Convert2MethodRef
-        return getAudiosAsync(selection, selectionArgs).map(audioModels ->
-                makeMetadataFromAudioModel(audioModels));
+        return getAudiosAsync(selection, selectionArgs)
+                .map(audioModels -> makeMetadataFromAudioModel(audioModels));
     }
 
-    public Observable<MediaMetadataCompat> getAudioMetadataByIdAsync (String id) {
+    public Maybe<MediaMetadataCompat> getAudioMetadataByIdAsync (String id) {
         //noinspection Convert2MethodRef
         return getAudioByIdAsync(id).map(audioModel -> makeMetadataFromAudioModel(audioModel));
     }
 
     public void deleteAudioById(String id) {
         String selection = MediaStore.Audio.Media._ID + " = ?";
-        mCtx.get().getContentResolver().delete(URI, selection, new String[]{id});
+        mContentResolver.delete(URI, selection, new String[]{id});
+        mContentResolver.notifyChange(URI, null);
     }
 
     @NonNull

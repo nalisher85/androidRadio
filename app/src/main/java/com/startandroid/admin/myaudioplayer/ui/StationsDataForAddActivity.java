@@ -98,6 +98,9 @@ public class StationsDataForAddActivity extends AppCompatActivity implements Sta
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_selected_menu, menu);
         addStationsOptionsMenuItem = menu.findItem(R.id.add_selected).setOnMenuItemClickListener(item -> {
+            Log.d("myLog", "StationsDataForAddActivity->onOptionsMenuClick->selectedStationSize = "
+                    +mSelectedStations.size());
+
             if (mSelectedStations != null) addStationsToDb(mSelectedStations);
             return true;
         });
@@ -106,6 +109,7 @@ public class StationsDataForAddActivity extends AppCompatActivity implements Sta
 
     @SuppressLint("CheckResult")
     private void addStationsToDb (@NonNull List<RadioStationModel> stations) {
+
         for (RadioStationModel station : stations) {
 
             myDbHelper.getRadioStationByLink(station.getPath()).subscribe(
@@ -232,17 +236,23 @@ public class StationsDataForAddActivity extends AppCompatActivity implements Sta
 
     @Override
     public void onItemViewChecked(RadioStationModel item, boolean isChecked) {
-        if (isChecked) {
-            mSelectedStations.add(item);
-        } else {
-            mSelectedStations.remove(item);
-        }
 
-        onSelectedStationsChanged();
+        if (isChecked && !mSelectedStations.contains(item)) {
+            mSelectedStations.add(item);
+            onSelectedStationsChanged();
+
+        } else if (!isChecked){
+            mSelectedStations.remove(item);
+            onSelectedStationsChanged();
+        }
     }
 
     @OnCheckedChanged(R.id.check_all_chbx)
     void checkAllChbx(CompoundButton buttonView, boolean isChecked){
+
+        Log.d("myLog", "StationsDataForAddActivity-> =checkAllChbx->mSelectedStations.size = "
+                +mSelectedStations.size());
+
         adapter.setIsViewsChecked(isChecked);
         adapter.notifyDataSetChanged();
         if (isChecked) mSelectedStations.addAll(mStations);
@@ -254,6 +264,8 @@ public class StationsDataForAddActivity extends AppCompatActivity implements Sta
     private void onSelectedStationsChanged(){
         if (mSelectedStations.isEmpty()) addStationsOptionsMenuItem.setVisible(false);
         else addStationsOptionsMenuItem.setVisible(true);
+        Log.d("myLog", "StationsDataForAddActivity->onSelectedStationsChanged->mSelectedStations.size = "
+                +mSelectedStations.size());
     }
 
     private List<RadioStationModel> parseXmlToRadioStations() {

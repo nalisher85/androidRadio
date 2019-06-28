@@ -4,18 +4,20 @@ package com.startandroid.admin.myaudioplayer.service.players;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.media.TimedText;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.SystemClock;
 import androidx.annotation.NonNull;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
 import com.startandroid.admin.myaudioplayer.service.PlaybackInfoListener;
 import com.startandroid.admin.myaudioplayer.service.PlayerAdapter;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class MediaPlayerAdapter extends PlayerAdapter {
 
@@ -40,12 +42,47 @@ public class MediaPlayerAdapter extends PlayerAdapter {
     private void initializeMediaPlayer(){
         if(mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
+
             mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
-                mPlaybackInfoListener.onPlaybackCompleted();
-                setNewState(PlaybackStateCompat.STATE_PAUSED);
+                Log.d("mediaPlayer", "mMediaPlayer->onCompleate");
                 mCurrentMediaPlayedToCompletion = true;
+                setNewState(PlaybackStateCompat.STATE_PAUSED);
+                mPlaybackInfoListener.onPlaybackCompleted();
             });
-            mMediaPlayer.setOnPreparedListener(listener -> play());
+
+            mMediaPlayer.setOnTimedTextListener(new MediaPlayer.OnTimedTextListener() {
+                @Override
+                public void onTimedText(MediaPlayer mp, TimedText text) {
+                    Log.d("mediaPlayer", "mMediaPlayer->onTimedText = "+text);
+                }
+            });
+
+            mMediaPlayer.setOnPreparedListener(listener -> {
+                Log.d("mediaPlayer", "mMediaPlayer->OnPrepared");
+                play();
+            });
+            mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                @Override
+                public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                    Log.d("mediaPlayer", "mMediaPlayer->onBufferingUpdate = "+percent+" percent");
+                }
+            });
+
+            mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Log.d("mediaPlayer", "mMediaPlayer->onError->what = "+what+", extra = "+extra);
+                    return false;
+                }
+            });
+
+            mMediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                @Override
+                public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                    Log.d("mediaPlayer", "mMediaPlayer->onInfo->what = "+what+", extra = "+extra);
+                    return false;
+                }
+            });
         }
     }
 
@@ -74,6 +111,11 @@ public class MediaPlayerAdapter extends PlayerAdapter {
                             reportPosition,
                             1.0f,
                             SystemClock.elapsedRealtime());
+        if (mCurrentMediaPlayedToCompletion) {
+            Bundle extras = new Bundle();
+            extras.putBoolean(KEY_IS_PLAYBACK_COMPLETED, true);
+            stateBuilder.setExtras(extras);
+        }
         mPlaybackInfoListener.onPlaybackStateChange(stateBuilder.build());
     }
 
@@ -160,6 +202,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
         }
     }
 
+    //----------test methods------------------------------------------
     @Override
     public void playFromMedia(MediaMetadataCompat metadata) {
         mCurrentMedia = metadata;
@@ -207,6 +250,8 @@ public class MediaPlayerAdapter extends PlayerAdapter {
 
         play();
     }
+//------------------------------------------------------------------------
+
 
     private void release() {
         if(mMediaPlayer != null){
@@ -243,19 +288,6 @@ public class MediaPlayerAdapter extends PlayerAdapter {
             mMediaPlayer.setVolume(volume, volume);
         }
 
-    }
-
-    class MediaPlayerOnPrepereListner implements MediaPlayer.OnPreparedListener {
-
-        /**
-         * Called when the media file is ready for playback.
-         *
-         * @param mp the MediaPlayer that is ready for playback
-         */
-        @Override
-        public void onPrepared(MediaPlayer mp) {
-            play();
-        }
     }
 }
 
