@@ -80,7 +80,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
                 @Override
                 public boolean onInfo(MediaPlayer mp, int what, int extra) {
                     Log.d("mediaPlayer", "mMediaPlayer->onInfo->what = "+what+", extra = "+extra);
-                    return false;
+                    return true;
                 }
             });
         }

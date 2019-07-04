@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -730,13 +731,13 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
             @BindView(R.id.peek_title)
             TextView mPeekTitle;
             @BindView(R.id.peek_play_btn)
-            ToggleButton mPeekPlayBtn;
+            PlayButton mPeekPlayBtn;
 
             @BindView(R.id.middle_container)
             FrameLayout mMiddleContainer;
 
             @BindView(R.id.play_btn)
-            ToggleButton mPlayBtn;
+            PlayButton mPlayBtn;
             @BindView(R.id.bottomsheet_favorite_button)
             ToggleButton mFavoriteBtn;
 
@@ -755,14 +756,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
 
                 mMediaMenu.setOnClickListener(v -> showMediaMenu());
 
-                mPlayBtn.setOnClickListener(v -> {
-                    mMediaBrowserClient.onMediaButtonClicked(v);
-                });
-
-                mPeekPlayBtn.setOnClickListener(v -> {
-                    mMediaBrowserClient.onMediaButtonClicked(v);
-                });
-
                 mDisposable.add(
                         mMediaBrowserClient.getPlayerStateObservable().getMetadata()
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -779,9 +772,17 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 state -> {
+                                    Log.d("mediaPlayer", "getPlayerStateObservable changed="+state);
                                     boolean isPlaying = state.getState() == PlaybackStateCompat.STATE_PLAYING;
-                                    mPeekPlayBtn.setChecked(isPlaying);
-                                    mPlayBtn.setChecked(isPlaying);
+
+                                    if (isPlaying) {
+                                        mPeekPlayBtn.setMode(PlayButton.PAUSE_MODE);
+                                        mPlayBtn.setMode(PlayButton.PAUSE_MODE);
+                                    } else {
+                                        mPlayBtn.setMode(PlayButton.PLAY_MODE);
+                                        mPeekPlayBtn.setMode(PlayButton.PLAY_MODE);
+                                    }
+
                                 },
                                 Throwable::printStackTrace
                         )
@@ -798,8 +799,25 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
                 mBSBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
 
-            void showMediaMenu(){
+            @OnClick({R.id.peek_play_btn, R.id.play_btn})
+            void onPlayBtnClick(View v){
 
+                PlayButton playBtn = (PlayButton) v;
+                if (playBtn.getMode() == PlayButton.BUFFERING_MODE) {
+
+                    mPlayBtn.setMode(PlayButton.PLAY_MODE);
+                    mPeekPlayBtn.setMode(PlayButton.PLAY_MODE);
+
+                } else if (playBtn.getMode() == PlayButton.PLAY_MODE) {
+
+                    mPlayBtn.setMode(PlayButton.BUFFERING_MODE);
+                    mPeekPlayBtn.setMode(PlayButton.BUFFERING_MODE);
+                }
+
+                mMediaBrowserClient.onMediaButtonClicked(v);
+            }
+
+            void showMediaMenu(){
             }
 
             @Override
@@ -807,9 +825,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
                 switch (i) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         mPeekPlayBtn.setVisibility(View.VISIBLE);
-                        boolean isPlaying = mMediaBrowserClient.getMediaController().getPlaybackState()
-                                .getState() == PlaybackStateCompat.STATE_PLAYING;
-                        mPeekPlayBtn.setChecked(isPlaying);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                         mPeekPlayBtn.setVisibility(View.GONE);
@@ -819,12 +834,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener 
                         break;
                     case BottomSheetBehavior.STATE_HALF_EXPANDED:
                         mPeekPlayBtn.setVisibility(View.GONE);
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        mPeekPlayBtn.setVisibility(View.VISIBLE);
-                        isPlaying = mMediaBrowserClient.getMediaController().getPlaybackState()
-                                .getState() == PlaybackStateCompat.STATE_PLAYING;
-                        mPeekPlayBtn.setChecked(isPlaying);
                         break;
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;

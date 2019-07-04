@@ -8,7 +8,9 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.media.MediaMetadataCompat;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +45,14 @@ public class StorageAudioFiles {
 
         if (cursor != null){
             while (cursor.moveToNext()) {
+
                 String path = cursor.getString(0);
                 String title = cursor.getString(1);
                 String album = cursor.getString(2);
                 String artist = cursor.getString(3);
                 long duration = cursor.getLong(4);
                 String id = cursor.getString(5);
+
                 AudioModel audioModel = new AudioModel(id, title, artist, album, path, duration);
                 audioModels.add(audioModel);
             }

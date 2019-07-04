@@ -14,11 +14,13 @@ import com.startandroid.admin.myaudioplayer.data.RadioStationModel;
 import com.startandroid.admin.myaudioplayer.util.EditorViewHitArea;
 import com.startandroid.admin.myaudioplayer.util.TouchDelegateComposite;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,12 +28,11 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
 
-    private List<RadioStationModel> mStationList;
+    private List<RadioStationModel> mStationList = new ArrayList<>();
     private OnItemViewClickListener mRecyclerItemClickListener;
 
-    public StationAdapter(List<RadioStationModel> stationList, OnItemViewClickListener listener) {
+    public StationAdapter(OnItemViewClickListener listener) {
         mRecyclerItemClickListener = listener;
-        mStationList = stationList;
     }
 
 
@@ -50,6 +51,11 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     @Override
     public int getItemCount() {
         return mStationList.size();
+    }
+
+    public void setStationList(List<RadioStationModel> stationList) {
+        mStationList.clear();
+        mStationList.addAll(stationList);
     }
 
     interface OnItemViewClickListener {

@@ -210,9 +210,10 @@ public class MediaBrowserClient {
 
             case R.id.peek_play_btn:
             case R.id.play_btn:
-                boolean isPlaying = mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING;
-                if (isPlaying) {
+                if (mMediaController.getPlaybackState() == null
+                        || mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
                     mMediaController.getTransportControls().pause();
+
                 } else {
                     mMediaController.getTransportControls().play();
                 }

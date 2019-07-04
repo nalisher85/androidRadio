@@ -68,14 +68,20 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
         mStationListRecyclerView.addItemDecoration(new DividerItemDecoration(container.getContext(),
                 LinearLayoutManager.VERTICAL));
 
+        StationAdapter adapter = new StationAdapter(this);
+        mStationListRecyclerView.setAdapter(adapter);
         if (mIsFavoriteFragment) {
             stationsSubscription = mDb.getStationsByFavoriteField(true).subscribe(
-                    stations ->
-                            mStationListRecyclerView.setAdapter(new StationAdapter(stations, this)));
+                    stations -> {
+                        adapter.setStationList(stations);
+                        adapter.notifyDataSetChanged();
+                    });
         } else {
             stationsSubscription = mDb.getRadioStationList().subscribe(
-                    stations ->
-                            mStationListRecyclerView.setAdapter(new StationAdapter(stations, this)));
+                    stations ->{
+                        adapter.setStationList(stations);
+                        adapter.notifyDataSetChanged();
+                    });
         }
 
         return view;
