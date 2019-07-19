@@ -2,7 +2,6 @@ package com.startandroid.admin.myaudioplayer.service.players;
 
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.TimedText;
 import android.net.Uri;
@@ -13,9 +12,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
-import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
 import com.startandroid.admin.myaudioplayer.service.PlaybackInfoListener;
-import com.startandroid.admin.myaudioplayer.service.PlayerAdapter;
 
 import java.io.IOException;
 
@@ -23,7 +20,6 @@ public class MediaPlayerAdapter extends PlayerAdapter {
 
     private final Context mContext;
     private MediaPlayer mMediaPlayer;
-    private String mFileName;
     private MediaMetadataCompat mCurrentMedia;
     private String mMediaUri;
     private int mState;
@@ -201,57 +197,6 @@ public class MediaPlayerAdapter extends PlayerAdapter {
             e.printStackTrace();
         }
     }
-
-    //----------test methods------------------------------------------
-    @Override
-    public void playFromMedia(MediaMetadataCompat metadata) {
-        mCurrentMedia = metadata;
-        final String mediaId = metadata.getDescription().getMediaId();
-        playFile(MusicLibrary.getMusicFilename(mediaId));
-
-    }
-
-    private void playFile(String musicFilename) {
-        boolean mediaChanged = (mFileName == null || !musicFilename.equals(mFileName));
-        if (mCurrentMediaPlayedToCompletion) {
-            // Last audio file was played to completion, the resourceId hasn't changed, but the
-            // player was released, so force a reload of the media file for playback.
-            mediaChanged = true;
-            mCurrentMediaPlayedToCompletion = false;
-        }
-        if (!mediaChanged) {
-            if (!isPlaying()) {
-                play();
-            }
-            return;
-        } else {
-            release();
-        }
-
-        mFileName = musicFilename;
-
-        initializeMediaPlayer();
-
-        try {
-            AssetFileDescriptor assetFileDescriptor = mContext.getAssets().openFd(mFileName);
-            mMediaPlayer.setDataSource(
-                    assetFileDescriptor.getFileDescriptor(),
-                    assetFileDescriptor.getStartOffset(),
-                    assetFileDescriptor.getLength());
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to open file: " + mFileName, e);
-        }
-
-        try {
-            mMediaPlayer.prepare();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to open file: " + mFileName, e);
-        }
-
-        play();
-    }
-//------------------------------------------------------------------------
-
 
     private void release() {
         if(mMediaPlayer != null){

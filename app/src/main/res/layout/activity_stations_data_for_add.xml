@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".ui.StationsDataForAddActivity">
+    tools:context=".stationdataforadd.StationsDataForAddActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
 
 
             <TextView
-                android:id="@+id/country_filter"
+                android:id="@+id/country_filter_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -51,9 +51,9 @@
                 android:layout_height="20dp"
                 android:background="@null"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="@+id/country_filter"
-                app:layout_constraintEnd_toEndOf="@+id/country_filter"
-                app:layout_constraintTop_toTopOf="@+id/country_filter"
+                app:layout_constraintBottom_toBottomOf="@+id/country_filter_tv"
+                app:layout_constraintEnd_toEndOf="@+id/country_filter_tv"
+                app:layout_constraintTop_toTopOf="@+id/country_filter_tv"
                 app:srcCompat="@drawable/btn_dropdown" />
 
             <View
@@ -66,10 +66,10 @@
                 android:background="@drawable/line"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/country_filter" />
+                app:layout_constraintTop_toBottomOf="@+id/country_filter_tv" />
 
             <TextView
-                android:id="@+id/language_filter"
+                android:id="@+id/language_filter_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -90,9 +90,9 @@
                 android:layout_height="20dp"
                 android:background="@null"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="@+id/language_filter"
-                app:layout_constraintEnd_toEndOf="@+id/language_filter"
-                app:layout_constraintTop_toTopOf="@+id/language_filter"
+                app:layout_constraintBottom_toBottomOf="@+id/language_filter_tv"
+                app:layout_constraintEnd_toEndOf="@+id/language_filter_tv"
+                app:layout_constraintTop_toTopOf="@+id/language_filter_tv"
                 app:srcCompat="@drawable/btn_dropdown" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

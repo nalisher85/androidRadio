@@ -21,9 +21,8 @@ import android.util.Log;
 
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.contentcatalogs.MusicLibrary;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
-import com.startandroid.admin.myaudioplayer.ui.MainActivity;
+import com.startandroid.admin.myaudioplayer.main.MainActivity;
 
 public class MediaNotificationManager {
 
@@ -51,26 +50,40 @@ public class MediaNotificationManager {
                 R.drawable.ic_play,
                 "Play",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        mService, PlaybackStateCompat.ACTION_PLAY));
+                        mService,
+                        PlaybackStateCompat.ACTION_PLAY
+                )
+        );
 
         mPauseAction = new NotificationCompat.Action(
                 R.drawable.ic_pause,
                 "Pause",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        mService, PlaybackStateCompat.ACTION_PAUSE));
+                        mService,
+                        PlaybackStateCompat.ACTION_PAUSE
+                )
+        );
 
         mNextAction = new NotificationCompat.Action(
                 R.drawable.ic_next,
                 "Next",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        mService, PlaybackStateCompat.ACTION_SKIP_TO_NEXT));
+                        mService,
+                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                )
+        );
 
         mPrevAction = new NotificationCompat.Action(
                 R.drawable.ic_previous,
                 "Previous",
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        mService, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
+                        mService,
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                )
+        );
 
+        // Cancel all notifications to handle the case where the Service was killed and
+        // restarted by the system.
         mNotificationManager.cancelAll();
     }
 
@@ -114,19 +127,18 @@ public class MediaNotificationManager {
                 setContentIntent(createContentIntent()).
                 setContentTitle(description.getTitle()).
                 setContentText(description.getSubtitle())
-                .setLargeIcon(MusicLibrary.getAlbumBitmap(mService, description.getMediaId()))
                 .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(
                         mService, PlaybackStateCompat.ACTION_STOP))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-        if((state.getActions() & PlaybackStateCompat.ACTION_SKIP_TO_NEXT) != 0) {
-            builder.addAction(mNextAction);
+        if((state.getActions() & PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS) != 0) {
+            builder.addAction(mPrevAction);
         }
 
         builder.addAction(isPlaying ? mPauseAction : mPlayAction);
 
-        if((state.getActions() & PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS) != 0) {
-            builder.addAction(mPrevAction);
+        if((state.getActions() & PlaybackStateCompat.ACTION_SKIP_TO_NEXT) != 0) {
+            builder.addAction(mNextAction);
         }
 
         return builder;
@@ -146,7 +158,7 @@ public class MediaNotificationManager {
             mChannel.enableLights(true);
             // Sets the notification light color for notifications posted to this
             // channel, if the device supports this feature.
-            mChannel.setLightColor(Color.RED);
+            mChannel.setLightColor(Color.BLUE);
             mChannel.enableVibration(true);
             mChannel.setVibrationPattern(
                     new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
@@ -166,6 +178,4 @@ public class MediaNotificationManager {
     private boolean isAndroidOorHigher() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
-
-
 }

@@ -10,6 +10,6 @@
     android:paddingBottom="50dp"
     android:visibility="gone"
     app:behavior_peekHeight="100dp"
-    app:layout_behavior="com.startandroid.admin.myaudioplayer.ui.PlayerBottomSheetBehavior">
+    app:layout_behavior="com.startandroid.admin.myaudioplayer.main.PlayerBottomSheetBehavior">
 
 </FrameLayout>

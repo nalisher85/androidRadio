@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="notification_bg">#e91e63</color>
+    <color name="notification_bg">#3F51B5</color>
     <color name="colorWhite">#ffffff</color>
 
     <color name="bottom_sheet_background">#F9F9F9</color>

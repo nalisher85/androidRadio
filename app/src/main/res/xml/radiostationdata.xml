@@ -4,7 +4,7 @@
 	
 		<name>Radio Record</name>
 		
-		<link>http://air2.radiorecord.ru:9003/rr_320</link>
+		<path>http://air2.radiorecord.ru:9003/rr_320</path>
 		
 		<country>Россия</country>
 		
@@ -17,7 +17,7 @@
 	
 		<name>Record Big Hits</name>
 		
-		<link>http://air2.radiorecord.ru:9003/bighits_320</link>
+		<path>http://air2.radiorecord.ru:9003/bighits_320</path>
 		
 		<country>Таджикистан</country>
 		
@@ -30,7 +30,7 @@
 	
 		<name>Record Gold</name>
 		
-		<link>http://air2.radiorecord.ru:9003/gold_320</link>
+		<path>http://air2.radiorecord.ru:9003/gold_320</path>
 		
 		<country>Англия</country>
 		
@@ -43,7 +43,7 @@
 	
 		<name>Record Rap</name>
 		
-		<link>http://air2.radiorecord.ru:9003/rap_320</link>
+		<path>http://air2.radiorecord.ru:9003/rap_320</path>
 		
 		<country>США</country>
 		
@@ -56,7 +56,7 @@
 	
 		<name>Record Russian Hits</name>
 		
-		<link>http://air2.radiorecord.ru:9003/russianhits_320</link>
+		<path>http://air2.radiorecord.ru:9003/russianhits_320</path>
 		
 		<country>Германия</country>
 		
@@ -69,7 +69,7 @@
 	
 		<name>Record Dark Side</name>
 		
-		<link>http://air2.radiorecord.ru:9003/darkside_320</link>
+		<path>http://air2.radiorecord.ru:9003/darkside_320</path>
 		
 		<country>Таджикистан</country>
 		
@@ -82,7 +82,7 @@
 	
 		<name>Record Маятник Фуко</name>
 		
-		<link>http://air2.radiorecord.ru:9003/mf_320</link>
+		<path>http://air2.radiorecord.ru:9003/mf_320</path>
 		
 		<country>Россия</country>
 		
@@ -95,7 +95,7 @@
 	
 		<name>Record Tecktonik</name>
 		
-		<link>http://air2.radiorecord.ru:9003/tecktonik_320</link>
+		<path>http://air2.radiorecord.ru:9003/tecktonik_320</path>
 		
 		<country>Узбекистан</country>
 		
@@ -108,7 +108,7 @@
 	
 		<name>Record 2step</name>
 		
-		<link>http://air2.radiorecord.ru:9003/2step_320</link>
+		<path>http://air2.radiorecord.ru:9003/2step_320</path>
 		
 		<country>Россия</country>
 		
@@ -121,7 +121,7 @@
 	
 		<name>Record Discofunk</name>
 		
-		<link>http://air2.radiorecord.ru:9003/discofunk_320</link>
+		<path>http://air2.radiorecord.ru:9003/discofunk_320</path>
 		
 		<country>Россия</country>
 		

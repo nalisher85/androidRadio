@@ -8,7 +8,7 @@
     android:background="@color/bottom_sheet_background">
 
     <ImageButton
-        android:id="@+id/bottomsheet_media_menu"
+        android:id="@+id/r_bottomsheet_media_menu"
         android:background="@null"
         android:layout_width="35dp"
         android:layout_height="35dp"
@@ -19,7 +19,7 @@
         app:srcCompat="@drawable/ic_vert_dots" />
 
     <TextView
-        android:id="@+id/peek_title"
+        android:id="@+id/r_b_sh_peek_title"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
@@ -30,21 +30,21 @@
         android:textAlignment="center"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomsheet_media_menu"
+        app:layout_constraintBottom_toBottomOf="@+id/r_bottomsheet_media_menu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bottomsheet_media_menu"
-        app:layout_constraintTop_toTopOf="@+id/bottomsheet_media_menu" />
+        app:layout_constraintStart_toEndOf="@+id/r_bottomsheet_media_menu"
+        app:layout_constraintTop_toTopOf="@+id/r_bottomsheet_media_menu" />
 
-    <com.startandroid.admin.myaudioplayer.ui.PlayButton
-        android:id="@+id/peek_play_btn"
+    <com.startandroid.admin.myaudioplayer.main.PlayButton
+        android:id="@+id/r_b_sh_peek_play_btn"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginEnd="8dp"
         android:background="@null"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@+id/peek_title"
+        app:layout_constraintBottom_toBottomOf="@+id/r_b_sh_peek_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/peek_title" />
+        app:layout_constraintTop_toTopOf="@+id/r_b_sh_peek_title" />
 
     <View
         android:id="@+id/view3"
@@ -58,7 +58,7 @@
     <!--    _-_-_-_-_-_-_-_-_-_-_-_       -->
 
     <FrameLayout
-        android:id="@+id/middle_container"
+        android:id="@+id/r_b_sh_middle_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@null"
@@ -67,7 +67,7 @@
         tools:layout_editor_absoluteX="8dp">
 
         <ImageView
-            android:id="@+id/middle_img"
+            android:id="@+id/r_b_sh_middle_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#ffffff"
@@ -75,7 +75,7 @@
             app:srcCompat="@drawable/ic_radio" />
 
         <TextView
-            android:id="@+id/middle_text"
+            android:id="@+id/r_b_sh_middle_text"
             android:layout_width="139dp"
             android:layout_height="129dp"
             android:layout_gravity="bottom|start"
@@ -92,12 +92,12 @@
         android:layout_height="2dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/line"
-        app:layout_constraintBottom_toTopOf="@+id/play_btn"
+        app:layout_constraintBottom_toTopOf="@+id/r_b_sh_play_btn"
         tools:layout_editor_absoluteX="0dp" />
 
 
-    <com.startandroid.admin.myaudioplayer.ui.PlayButton
-        android:id="@+id/play_btn"
+    <com.startandroid.admin.myaudioplayer.main.PlayButton
+        android:id="@+id/r_b_sh_play_btn"
         android:scaleType="fitXY"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -116,9 +116,9 @@
         android:text=""
         android:textOff=""
         android:textOn=""
-        app:layout_constraintBottom_toBottomOf="@+id/play_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/r_b_sh_play_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/play_btn" />
+        app:layout_constraintTop_toTopOf="@+id/r_b_sh_play_btn" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
