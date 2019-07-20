@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 
@@ -22,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -199,6 +197,11 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void setCheckAllChbx(boolean checked) {
+        mCheckAllChbxBtn.setChecked(checked);
+    }
+
+    @Override
     public void onItemViewChecked(RadioStation item, boolean isChecked) {
 
         if (isChecked){
@@ -208,15 +211,14 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
         }
     }
 
-    @OnCheckedChanged(R.id.check_all_chbx)
-    void checkAllChbx(CompoundButton buttonView, boolean isChecked){
-
+    @OnClick(R.id.check_all_chbx)
+    void checkAllChbx(View view){
+        boolean isChecked = ((CheckBox) view).isChecked();
         StationsDataForAddAdapter adapter = (StationsDataForAddAdapter) mStationListRecyclerView.getAdapter();
-        if (adapter != null){
 
+        if (adapter != null){
             adapter.setIsViewsChecked(isChecked);
             adapter.notifyDataSetChanged();
-
         }
 
         if (isChecked) mPresenter.setAllStationsSelected();

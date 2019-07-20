@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.TouchDelegate;
 import android.view.View;
 
-import com.startandroid.admin.myaudioplayer.MyApplication;
-
 import androidx.annotation.NonNull;
 
 public class EditorViewHitArea {

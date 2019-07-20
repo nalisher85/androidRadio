@@ -43,6 +43,7 @@ import com.startandroid.admin.myaudioplayer.data.storageaudiosource.MusicStorage
 import com.startandroid.admin.myaudioplayer.devicetrack.DeviceTrackFragment;
 import com.startandroid.admin.myaudioplayer.radiostation.StationFragment;
 import com.startandroid.admin.myaudioplayer.service.MediaService;
+import com.startandroid.admin.myaudioplayer.util.DimensionConverter;
 import com.startandroid.admin.myaudioplayer.util.EditorViewHitArea;
 import com.startandroid.admin.myaudioplayer.util.TouchDelegateComposite;
 
@@ -124,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         RadioStationSource radioStationRepository =
                 RadioStationRepository.getInstance(RadioStationLocalDataSource.getInstance(), null);
         MusicDataSource musicRepository = MusicStorageDataSource.getInstance();
-        //IMediaBrowser mediaBrowser = MediaBrowserHelper.getInstance(MediaService.class);
         IMediaBrowser mediaBrowser = new MediaBrowserHelper(MediaService.class);
         mPresenter = new MainActivityPresenter(mediaBrowser, radioStationRepository, musicRepository, this);
 
@@ -244,17 +244,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         if (mBottomSheetContainer.getVisibility() == View.GONE) {
 
             mBottomSheetContainer.setVisibility(View.VISIBLE);
-            ((ViewGroup.MarginLayoutParams) mFragmentContainer.getLayoutParams()).bottomMargin += 150;
+            float bottomMargin = DimensionConverter.convertDpToPixel(50, this.getApplicationContext());
+            ((ViewGroup.MarginLayoutParams) mFragmentContainer.getLayoutParams()).bottomMargin += bottomMargin;
         }
-
     }
 
     @Override
     public void destroyBottomSheet() {
+        Log.d("myLog", "MainActivity->destroyBottomSheet");
         if (mBottomSheetContainer.getVisibility() == View.VISIBLE){
             collapseBottomSheet();
             mBottomSheetContainer.setVisibility(View.GONE);
-            ((ViewGroup.MarginLayoutParams) mFragmentContainer.getLayoutParams()).bottomMargin -= 150;
+            float bottomMargin = DimensionConverter.convertDpToPixel(50, this.getApplicationContext());
+            ((ViewGroup.MarginLayoutParams) mFragmentContainer.getLayoutParams()).bottomMargin -= bottomMargin;
             mBottomSheetContainer.removeAllViews();
         }
     }
@@ -560,6 +562,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
     @Override
     public void collapseBottomSheet() {
+        Log.d("myLog", "MainActivity->collapseBottomSheet");
         mBSBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
@@ -613,8 +616,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         @Override
         public void onStateChanged(@NonNull View view, int i) {
 
+            if (!isBottomSheetInitialized()) return;
             switch (i) {
                 case BottomSheetBehavior.STATE_COLLAPSED:
+                    Log.d("myLog", "MainActivity->BottomSheetCallBack->STATE_COLLAPSED");
                     mPresenter.switchOffAudioBottomSheetPlayList();
                     setVisibilityPeekPlayBtn(View.VISIBLE);
                     break;

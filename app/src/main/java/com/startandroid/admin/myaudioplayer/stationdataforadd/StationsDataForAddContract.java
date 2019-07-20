@@ -19,6 +19,8 @@ public interface StationsDataForAddContract {
 
         void showLanguageFilterDialog(String[] languages);
 
+        void setCheckAllChbx(boolean checked);
+
     }
 
     interface Presenter extends BasePresenter {

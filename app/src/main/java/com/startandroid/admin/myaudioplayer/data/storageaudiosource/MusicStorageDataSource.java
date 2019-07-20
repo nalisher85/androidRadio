@@ -2,7 +2,6 @@ package com.startandroid.admin.myaudioplayer.data.storageaudiosource;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;

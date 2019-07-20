@@ -2,6 +2,7 @@ package com.startandroid.admin.myaudioplayer.main;
 
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
+import android.util.Log;
 
 import com.startandroid.admin.myaudioplayer.client.IMediaBrowser;
 import com.startandroid.admin.myaudioplayer.data.MusicDataSource;
@@ -39,6 +40,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
         mRadioStationRepository = radioRepository;
         mMusicDataSourceRepository = musicRepository;
         mView = view;
+        Log.d("myLog", "MainActivityPresenter->created");
     }
 
     @Override
@@ -48,6 +50,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
 
     @Override
     public void stop() {
+        Log.d("myLog", "MainActivityPresenter->stop");
         mView.destroyBottomSheet();
         mBShDisposable.clear();
         mABShDisposable.clear();
@@ -55,10 +58,12 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
         mRBShDisposable.clear();
 
         disconnectMediaBrowser();
+        Log.d("myLog", "MainActivityPresenter->stop END");
     }
 
     @Override
     public void onDestroy() {
+        Log.d("myLog", "MainActivityPresenter->onDestroy");
         mView = null;
     }
 
@@ -215,6 +220,8 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
     //mAudioBottomSheetMiddleSwitcher == true ? playlist will show, else will show Image
     @Override
     public void switchAudioBottomSheetMiddle() {
+        //if (mView == null) return;
+
         if (mAudioBottomSheetMiddleSwitcher) {
             mAudioBottomSheetMiddleSwitcher = false;
             mView.clearABShMiddleContainer();
@@ -239,6 +246,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
             );
 
         } else {
+            Log.d("myLog", "MainActivityPresenter->switchAudioBottomSheetMiddle = false");
             mAudioBottomSheetMiddleSwitcher = true;
             mQueueListDisposable.clear();
             mView.clearABShMiddleContainer();
@@ -248,6 +256,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
 
     @Override
     public void switchOffAudioBottomSheetPlayList() {
+        Log.d("myLog", "MainActivityPresenter->switchOffAudioBottomSheetPlayList");
         mAudioBottomSheetMiddleSwitcher = false;
         switchAudioBottomSheetMiddle();
     }

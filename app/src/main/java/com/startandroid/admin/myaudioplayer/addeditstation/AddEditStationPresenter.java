@@ -20,10 +20,6 @@ public class AddEditStationPresenter implements AddEditStationContract.Presenter
         mView = addEditStationView;
     }
 
-    /*
-     * TODO: Везде создать методы connect/disconnect mediabrowser
-     */
-
     @SuppressLint("CheckResult")
     @Override
     public void start() {

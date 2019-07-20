@@ -4,7 +4,7 @@ import android.content.res.XmlResourceParser;
 
 import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
 import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
-import com.startandroid.admin.myaudioplayer.util.XMLdata;
+import com.startandroid.admin.myaudioplayer.util.XmlData;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -103,13 +103,22 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
         if (!mSelectedStations.contains(item)){
             mSelectedStations.add(item);
             mView.showAddStationsBtn();
+
+            if (mSelectedStations.size() == mStations.size()) {
+                mView.setCheckAllChbx(true);
+            }
         }
     }
 
     @Override
     public void removeFromSelectedStation(RadioStation item) {
         mSelectedStations.remove(item);
-        if (mSelectedStations.isEmpty()) mView.hideAddStationsBtn();
+        mView.setCheckAllChbx(false);
+
+        if (mSelectedStations.isEmpty()) {
+            mView.hideAddStationsBtn();
+        }
+
     }
 
     @Override
@@ -117,10 +126,13 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
         mSelectedStations.clear();
         mSelectedStations.addAll(mStations);
         mView.showAddStationsBtn();
+        mView.setCheckAllChbx(true);
     }
 
     @Override
     public void clearSelectedStations() {
+        mView.hideAddStationsBtn();
+        mView.setCheckAllChbx(false);
         mSelectedStations.clear();
     }
 
@@ -131,7 +143,7 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
     }
 
     private void loadData(){
-        mStations = parseXmlToRadioStations(XMLdata.getData());
+        mStations = parseXmlToRadioStations(XmlData.getData());
     }
 
     private void setCountriesAndLanguages(List<RadioStation> stations){

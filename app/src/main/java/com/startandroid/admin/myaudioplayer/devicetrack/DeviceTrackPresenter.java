@@ -1,7 +1,5 @@
 package com.startandroid.admin.myaudioplayer.devicetrack;
 
-import android.util.Log;
-
 import com.startandroid.admin.myaudioplayer.client.IMediaBrowser;
 import com.startandroid.admin.myaudioplayer.data.MusicDataSource;
 import com.startandroid.admin.myaudioplayer.data.model.Audio;
@@ -40,6 +38,7 @@ public class DeviceTrackPresenter implements DeviceTrackContract.Presenter {
     @Override
     public void onDestroy() {
         mView = null;
+        mAudioListSubscriber.dispose();
     }
 
 

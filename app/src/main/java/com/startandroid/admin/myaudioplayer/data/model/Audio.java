@@ -1,10 +1,7 @@
 package com.startandroid.admin.myaudioplayer.data.model;
 
-import android.net.Uri;
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
-
-import com.startandroid.admin.myaudioplayer.util.UrlConverter;
 
 import androidx.annotation.NonNull;
 
