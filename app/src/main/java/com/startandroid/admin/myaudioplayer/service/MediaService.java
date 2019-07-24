@@ -25,6 +25,7 @@ import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
 import com.startandroid.admin.myaudioplayer.data.localsource.RadioStationLocalDataSource;
 import com.startandroid.admin.myaudioplayer.data.storageaudiosource.MusicStorageDataSource;
 import com.startandroid.admin.myaudioplayer.service.notifications.MediaNotificationManager;
+import com.startandroid.admin.myaudioplayer.service.players.ExoPlayerAdapter;
 import com.startandroid.admin.myaudioplayer.service.players.MediaPlayerAdapter;
 import com.startandroid.admin.myaudioplayer.service.players.PlayerAdapter;
 
@@ -84,7 +85,8 @@ public class MediaService extends MediaBrowserServiceCompat {
 
         mMediaNotificationManager = new MediaNotificationManager(this);
 
-        mMediaPayer = new MediaPlayerAdapter(this, new MediaPlayerListener());
+        //mMediaPayer = new MediaPlayerAdapter(this, new MediaPlayerListener());
+        mMediaPayer = new ExoPlayerAdapter(this, new MediaPlayerListener());
     }
 
     @Override
@@ -351,7 +353,6 @@ public class MediaService extends MediaBrowserServiceCompat {
                                             mPreparedMedia = radioStationModel.convertToMetadata();
                                             mMediaPayer.setCurrentMedia(mPreparedMedia);
                                             mMediaSession.setMetadata(mPreparedMedia);
-
                                             if (playOnPreparedMedia) onPlay();
                                             playOnPreparedMedia = false;
                                         }

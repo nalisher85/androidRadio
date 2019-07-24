@@ -432,17 +432,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         mPeekTitleRBSh.setOnClickListener(v -> expandBottomSheet());
         mPeekPlayBtnRBSh.setOnClickListener(this::onRadioPlayBtnClick);
         mPlayBtnRBSh.setOnClickListener(this::onRadioPlayBtnClick);
+
         mFavoriteBtnRBSh.setOnClickListener(v -> {
+            mFavoriteBtnRBSh.setChecked(!mFavoriteBtnRBSh.isChecked());
+            mPresenter.setCurrantStationFavorite(mFavoriteBtnRBSh.isChecked());
         });
     }
 
-    @Override
-    public void clearBottomSheet() {
-        mBottomSheetContainer.removeAllViews();
-    }
-
     public void onRadioPlayBtnClick(View v) {
-        PlayButton playBtn = (PlayButton) v;
+        /*PlayButton playBtn = (PlayButton) v;
         if (playBtn.getMode() == PlayMode.BUFFERING) {
 
             mPlayBtnRBSh.setMode(PlayMode.PLAY);
@@ -453,9 +451,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
             mPlayBtnRBSh.setMode(PlayMode.BUFFERING);
             mPeekPlayBtnRBSh.setMode(PlayMode.BUFFERING);
         }
-
+        */
         mPresenter.playPause();
     }
+
+    @Override
+    public void clearBottomSheet() {
+        mBottomSheetContainer.removeAllViews();
+    }
+
 
     QueueListAdapter.QueueItemClickListener mQueueItemClickListener = (item, position, viewId) -> {
         switch (viewId) {
@@ -519,6 +523,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     @Override
     public void showRadioBShPeekTitle(String title) {
         mPeekTitleRBSh.setText(title);
+    }
+
+    @Override
+    public void setRadioBShFavoriteBtn(boolean isFavorite) {
+        if (mFavoriteBtnRBSh != null) {
+            mFavoriteBtnRBSh.setChecked(isFavorite);
+        }
     }
 
     @Override

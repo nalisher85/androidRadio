@@ -30,7 +30,7 @@ public abstract class PlayerAdapter {
                 public void onReceive(Context context, Intent intent) {
                     if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
                         if (isPlaying()) {
-
+                            pause();
                         }
                     }
                 }
@@ -133,10 +133,11 @@ public abstract class PlayerAdapter {
             }
         }
 
-        private int requestAudioFocus() {
+        int requestAudioFocus() {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
                 return requestAudioFocusForPreApi26();
-            else return requestAudioFocusForApi26();
+            else
+                return requestAudioFocusForApi26();
         }
 
         @RequiresApi(api = Build.VERSION_CODES.O)

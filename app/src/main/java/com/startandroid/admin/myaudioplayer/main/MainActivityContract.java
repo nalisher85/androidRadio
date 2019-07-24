@@ -33,6 +33,8 @@ public interface MainActivityContract {
 
         void showRadioBShPeekTitle(String title);
 
+        void setRadioBShFavoriteBtn(boolean isFavorite);
+
         void showAudioBShProgressDurationTime(String duration);
 
         void setAudioPlayBtnStatus(boolean isPlaying);
@@ -95,6 +97,8 @@ public interface MainActivityContract {
         void deleteRadioStation(String id);
 
         void deleteCurrantRadioStation();
+
+        void setCurrantStationFavorite(boolean isFavorite);
 
         void deleteMusic(String id);
 

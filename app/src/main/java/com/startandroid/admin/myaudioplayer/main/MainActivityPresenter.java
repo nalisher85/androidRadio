@@ -2,15 +2,18 @@ package com.startandroid.admin.myaudioplayer.main;
 
 import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 import com.startandroid.admin.myaudioplayer.client.IMediaBrowser;
 import com.startandroid.admin.myaudioplayer.data.MusicDataSource;
 import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
 import com.startandroid.admin.myaudioplayer.data.model.MediaType;
+import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -174,16 +177,30 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
                         metadata -> {
                             String title = (String) metadata.getDescription().getTitle();
                             mView.showRadioBShPeekTitle(title);
+
+                            String id = metadata.getDescription().getMediaId();
+                            int intId = Integer.parseInt(Objects.requireNonNull(id));
+
+                            mRadioStationRepository.getRadioStationById(intId).subscribe(
+                                    station -> {
+                                        mView.setRadioBShFavoriteBtn(station.isFavorite());
+                                    }
+                            );
                         }
                 )
         );
 
         mRBShDisposable.add(
-                mMediaBrowser.getMediaControllerSubscription().getIsPlaying().subscribe(
-                        isPlaying -> {
-                            PlayMode mode = isPlaying
-                                    ? PlayMode.PAUSE
-                                    : PlayMode.PLAY;
+                mMediaBrowser.getMediaControllerSubscription().getPlaybackState().subscribe(
+                        state -> {
+                            PlayMode mode;
+                            if (state.getState() == PlaybackStateCompat.STATE_PLAYING){
+                                mode = PlayMode.PAUSE;
+                            } else if (state.getState() == PlaybackStateCompat.STATE_BUFFERING){
+                                mode = PlayMode.BUFFERING;
+                            } else {
+                                mode = PlayMode.PLAY;
+                            }
                             mView.setRadioPlayBtnMode(mode);
                         }
                 )
@@ -317,6 +334,23 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
     public void deleteCurrantRadioStation() {
         String id = mMediaBrowser.getCurrantMetadata().getDescription().getMediaId();
         mRadioStationRepository.delete(id);
+    }
+
+    @Override
+    public void setCurrantStationFavorite(boolean isFavorite) {
+        if (mCurrantMediaType == MediaType.AUDIO) return;
+
+        String currantId = mMediaBrowser.getCurrantMetadata().getDescription().getMediaId();
+        int intId = Integer.parseInt(Objects.requireNonNull(currantId));
+
+        mRBShDisposable.add(
+                mRadioStationRepository.getRadioStationById(intId).subscribe(
+                        station -> {
+                            station.setFavorite(isFavorite);
+                            mRadioStationRepository.update(station).subscribe();
+                        }
+                )
+        );
     }
 
     @Override

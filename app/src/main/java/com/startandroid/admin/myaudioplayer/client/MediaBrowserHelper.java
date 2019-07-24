@@ -138,7 +138,9 @@ public class MediaBrowserHelper implements IMediaBrowser {
     @Override
     public void playPause() {
         if (mMediaController.getPlaybackState() == null
-                || mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING) {
+                || mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING
+                || mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_BUFFERING) {
+
             mMediaController.getTransportControls().pause();
 
         } else {

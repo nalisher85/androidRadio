@@ -57,6 +57,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
                 Log.d("mediaPlayer", "mMediaPlayer->OnPrepared");
                 play();
             });
+
             mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
                 @Override
                 public void onBufferingUpdate(MediaPlayer mp, int percent) {
@@ -181,7 +182,7 @@ public class MediaPlayerAdapter extends PlayerAdapter {
             mediaChanged = true;
             mCurrentMediaPlayedToCompletion = false;
         }
-        if ( !mediaChanged) {
+        if (!mediaChanged) {
             if (!isPlaying()) {
                 play();
             }
