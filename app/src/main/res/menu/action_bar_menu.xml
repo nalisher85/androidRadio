@@ -5,6 +5,14 @@
     tools:context="com.startandroid.admin.myaudioplayer.main.MainActivity">
 
     <item
+        android:id="@+id/send_email"
+        android:title="@string/send_feedback"
+        android:icon="@drawable/ic_send_feed_back"
+        android:enabled="true"
+        app:showAsAction="always"
+        />
+
+    <item
         android:id="@+id/action_add"
         android:title="@string/add"
         android:icon="@drawable/ic_add"

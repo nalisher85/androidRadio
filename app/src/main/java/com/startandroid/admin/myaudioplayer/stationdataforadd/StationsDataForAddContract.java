@@ -13,11 +13,13 @@ public interface StationsDataForAddContract {
 
         void showAddStationsBtn();
 
+        void showMessage(String msg);
+
         void hideAddStationsBtn();
 
-        void showCountryFilterDialog(String[] countries);
+        void showCountryFilterDialog(List<String> countries);
 
-        void showLanguageFilterDialog(String[] languages);
+        void showLanguageFilterDialog(List<String> languages);
 
         void setCheckAllChbx(boolean checked);
 
@@ -25,7 +27,7 @@ public interface StationsDataForAddContract {
 
     interface Presenter extends BasePresenter {
 
-        void addSelectedStationsToDb();
+        void addSelectedStationsToLocalDb();
 
         void filterStations();
 
@@ -44,8 +46,6 @@ public interface StationsDataForAddContract {
         void setAllStationsSelected();
 
         void clearSelectedStations();
-
-        void onDestroy();
 
     }
 

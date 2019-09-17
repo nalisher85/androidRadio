@@ -2,18 +2,18 @@ package com.startandroid.admin.myaudioplayer.addeditstation;
 
 import android.annotation.SuppressLint;
 
-import com.startandroid.admin.myaudioplayer.data.RadioStationRepository;
+import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
 import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
 
 public class AddEditStationPresenter implements AddEditStationContract.Presenter {
 
     private boolean isDataValid;
-    private RadioStationRepository mRepository;
+    private RadioStationSource mRepository;
     private String mStationId;
     private AddEditStationContract.View mView;
     private RadioStation mRadioStation = null;
 
-    public AddEditStationPresenter(String stationId, RadioStationRepository repository,
+    public AddEditStationPresenter(String stationId, RadioStationSource repository,
                                    AddEditStationContract.View addEditStationView) {
         mStationId = stationId;
         mRepository = repository;

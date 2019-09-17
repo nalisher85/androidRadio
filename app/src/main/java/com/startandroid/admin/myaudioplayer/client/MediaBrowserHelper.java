@@ -136,6 +136,11 @@ public class MediaBrowserHelper implements IMediaBrowser {
     }
 
     @Override
+    public void stop() {
+        mMediaController.getTransportControls().stop();
+    }
+
+    @Override
     public void playPause() {
         if (mMediaController.getPlaybackState() == null
                 || mMediaController.getPlaybackState().getState() == PlaybackStateCompat.STATE_PLAYING
@@ -192,7 +197,7 @@ public class MediaBrowserHelper implements IMediaBrowser {
         if (description.getMediaUri() == null) return null;
         String uriScheme = description.getMediaUri().getScheme();
 
-        if (Objects.equals(uriScheme, "http")) {
+        if (Objects.equals(uriScheme, "http") || Objects.equals(uriScheme, "https")) {
             return MediaType.RADIO;
         } else {
             return MediaType.AUDIO;

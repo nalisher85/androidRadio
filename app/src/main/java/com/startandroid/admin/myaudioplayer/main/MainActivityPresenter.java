@@ -179,11 +179,20 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
                             mView.showRadioBShPeekTitle(title);
 
                             String id = metadata.getDescription().getMediaId();
-                            int intId = Integer.parseInt(Objects.requireNonNull(id));
+                            int intId = -1;
+                            try {
+                                intId = Integer.parseInt(id);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }
 
                             mRadioStationRepository.getRadioStationById(intId).subscribe(
                                     station -> {
                                         mView.setRadioBShFavoriteBtn(station.isFavorite());
+                                    },
+                                    err -> {
+                                        Log.e("myLog", "Error to get station in MainActivityPresenter line 185");
+                                        err.printStackTrace();
                                     }
                             );
                         }

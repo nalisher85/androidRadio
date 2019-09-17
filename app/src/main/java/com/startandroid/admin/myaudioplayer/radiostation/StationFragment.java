@@ -3,6 +3,7 @@ package com.startandroid.admin.myaudioplayer.radiostation;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,7 +25,6 @@ import com.startandroid.admin.myaudioplayer.MyApplication;
 import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.client.IMediaBrowser;
 import com.startandroid.admin.myaudioplayer.client.MediaBrowserHelper;
-import com.startandroid.admin.myaudioplayer.data.RadioStationRepository;
 import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
 import com.startandroid.admin.myaudioplayer.data.localsource.RadioStationLocalDataSource;
 import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
@@ -43,12 +43,10 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     RecyclerView mStationListRecyclerView;
 
     private RadioStationContract.Presenter mPresenter;
-    private StationAdapter mStationAdapter;
 
     public StationFragment() {
         super();
-        RadioStationSource repository = RadioStationRepository.getInstance(
-                RadioStationLocalDataSource.getInstance(), null);
+        RadioStationSource repository = RadioStationLocalDataSource.getInstance();
         //IMediaBrowser mediaBrowser = MediaBrowserHelper.getInstance(MediaService.class);
         IMediaBrowser mediaBrowser = new MediaBrowserHelper(MediaService.class);
         mPresenter = new RadioStationPresenter(repository, mediaBrowser, this);
@@ -101,6 +99,14 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
                     showAddStationDialog();
                     return true;
                 });
+        menu.findItem(R.id.send_email).setOnMenuItemClickListener(
+                item -> {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", "a.nuraliev85@gmail.com", null));
+                    startActivity(Intent.createChooser(emailIntent, null));
+                    return true;
+                }
+        );
     }
 
     @Override

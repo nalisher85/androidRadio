@@ -29,6 +29,8 @@ public interface IMediaBrowser {
 
     void pause();
 
+    void stop();
+
     void playPause();
 
     void seekTo(int position);

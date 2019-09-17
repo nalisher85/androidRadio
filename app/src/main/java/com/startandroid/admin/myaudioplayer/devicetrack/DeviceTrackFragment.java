@@ -114,6 +114,14 @@ public class DeviceTrackFragment extends Fragment implements DeviceTrackContract
                     mPresenter.addAllToQueue(true);
                     return true;
                 });
+        menu.findItem(R.id.send_email).setOnMenuItemClickListener(
+                item -> {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", "a.nuraliev85@gmail.com", null));
+                    startActivity(Intent.createChooser(emailIntent, null));
+                    return true;
+                }
+        );
     }
 
     @Override

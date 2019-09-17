@@ -19,13 +19,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".stationdataforadd.StationsDataForAddActivity">
+        <activity
+            android:name=".stationdataforadd.StationsDataForAddActivity"
+            android:screenOrientation="portrait">
 
         </activity>
         <activity
             android:name=".addeditstation.AddEditStationActivity"
             android:label="Edit/Add"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".main.MainActivity"
             android:screenOrientation="portrait">

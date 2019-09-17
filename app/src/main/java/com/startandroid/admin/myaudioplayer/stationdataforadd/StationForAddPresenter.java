@@ -11,65 +11,118 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.CompositeDisposable;
+
 
 public class StationForAddPresenter implements StationsDataForAddContract.Presenter {
 
-    private RadioStationSource mRepository;
+    private RadioStationSource mLocalRepository;
+    private RadioStationSource mRemoteRepository;
     private StationsDataForAddContract.View mView;
 
-    private List<RadioStation> mStations;
+    private List<RadioStation> mStationsForShow;
     private List<RadioStation> mSelectedStations;
-    private String[] mCountries;
-    private String[] mLanguages;
+    private ArrayList<String> mCountries;
+    private ArrayList<String> mLanguages;
     private String mFilterWithCountry = "";
     private String mFilterWithLanguage = "";
-    private Disposable mDisposable;
+    private CompositeDisposable mDisposable = new CompositeDisposable();
 
-    public StationForAddPresenter(RadioStationSource repository, StationsDataForAddContract.View view) {
-        mRepository = repository;
+    public StationForAddPresenter(RadioStationSource localRepository,
+                                  RadioStationSource remoteRepasitory,
+                                  StationsDataForAddContract.View view) {
+        mLocalRepository = localRepository;
+        mRemoteRepository = remoteRepasitory;
         mView = view;
         mSelectedStations = new ArrayList<>();
     }
 
     @Override
     public void start() {
-        loadData();
+        mView.showMessage("Заргузка...");
+        mDisposable.add(
+                mRemoteRepository.getAllRadioStation().subscribe(
+                        remoteStations -> {
 
-        if (mStations != null) {
-            mView.showStations(mStations);
-            setCountriesAndLanguages(mStations);
-        }
+                            if (remoteStations.isEmpty())
+                                mView.showMessage("Нет данных.");
+                            mDisposable.add(
+                                    mLocalRepository.getAllRadioStation().subscribe(
+                                            localStations -> {
+
+                                                mStationsForShow = filterRemoteData(remoteStations, localStations);
+                                                mView.showStations(mStationsForShow);
+                                                setCountriesAndLanguages(mStationsForShow);
+
+                                                if (mStationsForShow.isEmpty())
+                                                    mView.showMessage("Нет новых станции.");
+                                            },
+                                            err -> {
+                                                mView.showMessage(err.getMessage());
+                                                err.printStackTrace();
+                                            }
+                                    )
+                            );
+                        },
+                        err -> {
+                            mView.showMessage(err.getMessage());
+                            err.printStackTrace();
+                        }
+                )
+        );
     }
 
+    private List<RadioStation> filterRemoteData(List<RadioStation> remoteData, List<RadioStation> localData){
+
+        List<RadioStation> forRemove = new ArrayList<>();
+
+        for (RadioStation remoteStation : remoteData) {
+
+            for (RadioStation localStation : localData) {
+                if (remoteStation.getPath().equals(localStation.getPath())) {
+                    forRemove.add(remoteStation);
+                }
+            }
+
+        }
+
+        remoteData.removeAll(forRemove);
+
+        return remoteData;
+    }
+
+
     @Override
-    public void addSelectedStationsToDb() {
+    public void addSelectedStationsToLocalDb() {
 
         for (RadioStation station : mSelectedStations) {
 
-            mDisposable = mRepository.getRadioStationByLink(station.getPath())
-                    .subscribe(respStation -> {
-                                respStation.setStationName(station.getStationName());
-                                respStation.setPath(station.getPath());
-                                mRepository.update(respStation).subscribe();
-                            },
+            mDisposable.add(
+                    mLocalRepository.getRadioStationByLink(station.getPath())
+                            .subscribe(respStation -> {
+                                        respStation.setStationName(station.getStationName());
+                                        respStation.setPath(station.getPath());
+                                        mLocalRepository.update(respStation).subscribe();
+                                    },
 
-                            Throwable::printStackTrace,
+                                    Throwable::printStackTrace,
 
-                            () -> mRepository.insert(station).subscribe()
-                    );
+                                    () -> mLocalRepository.insert(station).subscribe()
+                            )
+            );
         }
     }
 
     @Override
     public void filterStations() {
 
-
         List<RadioStation> filteredStations = new ArrayList<>();
 
-        for (RadioStation station : mStations) {
+        for (RadioStation station : mStationsForShow) {
             boolean isEquals = (mFilterWithLanguage.isEmpty() || mFilterWithLanguage.equals(station.getLanguage()))
                     && (mFilterWithCountry.isEmpty() || mFilterWithCountry.equals(station.getCountry()));
             if (isEquals) filteredStations.add(station);
@@ -104,7 +157,7 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
             mSelectedStations.add(item);
             mView.showAddStationsBtn();
 
-            if (mSelectedStations.size() == mStations.size()) {
+            if (mSelectedStations.size() == mStationsForShow.size()) {
                 mView.setCheckAllChbx(true);
             }
         }
@@ -123,8 +176,9 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
 
     @Override
     public void setAllStationsSelected() {
+        if (mStationsForShow == null) return;
         mSelectedStations.clear();
-        mSelectedStations.addAll(mStations);
+        mSelectedStations.addAll(mStationsForShow);
         mView.showAddStationsBtn();
         mView.setCheckAllChbx(true);
     }
@@ -138,22 +192,30 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
 
     @Override
     public void onDestroy() {
-        mDisposable.dispose();
+        mDisposable.clear();
         mView = null;
     }
 
-    private void loadData(){
-        mStations = parseXmlToRadioStations(XmlData.getData());
-    }
-
     private void setCountriesAndLanguages(List<RadioStation> stations){
-        mCountries = new String[stations.size()];
-        mLanguages = new String[stations.size()];
+        mCountries = new ArrayList<>();
+        mLanguages = new ArrayList<>();
+        Set<String> uniqCountries = new HashSet<>();
+        Set<String> uniqLanguage = new HashSet<>();
+
 
         for (int i = 0; i < stations.size(); i++) {
-            mCountries[i] = stations.get(i).getCountry();
-            mLanguages[i] = stations.get(i).getLanguage();
+            uniqCountries.add(stations.get(i).getCountry());
+            uniqLanguage.add(stations.get(i).getLanguage());
         }
+
+        mCountries.addAll(uniqCountries);
+        mLanguages.addAll(uniqLanguage);
+    }
+
+    //----------------------------------------------------------------------
+
+    private void loadData(){
+        mStationsForShow = parseXmlToRadioStations(XmlData.getData());
     }
 
     private List<RadioStation> parseXmlToRadioStations(XmlPullParser parser) {

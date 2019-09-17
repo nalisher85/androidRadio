@@ -23,7 +23,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Url;
 import com.mobsandgeeks.saripaar.exception.ConversionException;
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.data.RadioStationRepository;
+import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
 import com.startandroid.admin.myaudioplayer.data.localsource.RadioStationLocalDataSource;
 import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
 
@@ -72,9 +72,7 @@ public class AddEditStationActivity extends AppCompatActivity implements Validat
         mValidator.registerAdapter(TextInputLayout.class, new TextInputLayoutAdapter());
 
         String stationId = getIntent().getStringExtra(STATION_ID_KEY);
-        RadioStationRepository repository = RadioStationRepository.getInstance(
-                RadioStationLocalDataSource.getInstance(), null
-        );
+        RadioStationSource repository = RadioStationLocalDataSource.getInstance();
         mPresenter = new AddEditStationPresenter(stationId, repository, this);
 
         mStationNameEt.addTextChangedListener(new TextWatcher() {

@@ -1,5 +1,6 @@
 package com.startandroid.admin.myaudioplayer.data;
 
+
 import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public class RadioStationRepository implements RadioStationSource {
     private RadioStationSource mLocalDataSource;
     private RadioStationSource mRemoteDataSource;
 
+    private boolean mLoadDataFromServer = false;
+
     private RadioStationRepository(RadioStationSource localDataSource, RadioStationSource remoteDataSource) {
         mLocalDataSource = localDataSource;
         mRemoteDataSource = remoteDataSource;
@@ -31,7 +34,10 @@ public class RadioStationRepository implements RadioStationSource {
 
     @Override
     public Flowable<List<RadioStation>> getAllRadioStation() {
-        return mLocalDataSource.getAllRadioStation();
+        Flowable<List<RadioStation>> data;
+        if (mLoadDataFromServer) data = mRemoteDataSource.getAllRadioStation();
+        else data = mLocalDataSource.getAllRadioStation();
+        return data;
     }
 
     @Override
@@ -72,6 +78,10 @@ public class RadioStationRepository implements RadioStationSource {
     @Override
     public Completable delete(String id) {
         return mLocalDataSource.delete(id);
+    }
+
+    public void loadDataFromServer(boolean loadFromServer){
+        mLoadDataFromServer = loadFromServer;
     }
 
 }

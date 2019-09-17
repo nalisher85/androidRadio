@@ -36,7 +36,6 @@ import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.client.IMediaBrowser;
 import com.startandroid.admin.myaudioplayer.client.MediaBrowserHelper;
 import com.startandroid.admin.myaudioplayer.data.MusicDataSource;
-import com.startandroid.admin.myaudioplayer.data.RadioStationRepository;
 import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
 import com.startandroid.admin.myaudioplayer.data.localsource.RadioStationLocalDataSource;
 import com.startandroid.admin.myaudioplayer.data.storageaudiosource.MusicStorageDataSource;
@@ -122,8 +121,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationItemSelectedListener());
 
         //set presenter
-        RadioStationSource radioStationRepository =
-                RadioStationRepository.getInstance(RadioStationLocalDataSource.getInstance(), null);
+        RadioStationSource radioStationRepository = RadioStationLocalDataSource.getInstance();
         MusicDataSource musicRepository = MusicStorageDataSource.getInstance();
         IMediaBrowser mediaBrowser = new MediaBrowserHelper(MediaService.class);
         mPresenter = new MainActivityPresenter(mediaBrowser, radioStationRepository, musicRepository, this);

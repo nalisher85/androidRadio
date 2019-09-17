@@ -23,13 +23,15 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.startandroid.admin.myaudioplayer.R;
-import com.startandroid.admin.myaudioplayer.data.RadioStationRepository;
 import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
+import com.startandroid.admin.myaudioplayer.data.firebase.FirebaseDB;
 import com.startandroid.admin.myaudioplayer.data.localsource.RadioStationLocalDataSource;
 import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -69,9 +71,10 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
         setStationsRecyclerView();
 
         //set Presenter
-        RadioStationSource repository = RadioStationRepository
-                .getInstance(RadioStationLocalDataSource.getInstance(), null);
-        mPresenter = new StationForAddPresenter(repository, this);
+        RadioStationSource localRepository = RadioStationLocalDataSource.getInstance();
+        RadioStationSource remoteRepository = FirebaseDB.getInstance();
+        mPresenter = new StationForAddPresenter(localRepository, remoteRepository, this);
+
     }
 
     @Override
@@ -81,10 +84,16 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_selected_menu, menu);
         addStationsOptionsMenuItem = menu.findItem(R.id.add_selected).setOnMenuItemClickListener(item -> {
-            mPresenter.addSelectedStationsToDb();
+            mPresenter.addSelectedStationsToLocalDb();
             finish();
             return true;
         });
@@ -150,18 +159,24 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void hideAddStationsBtn() {
         addStationsOptionsMenuItem.setVisible(false);
     }
 
     @Override
-    public void showCountryFilterDialog(@NonNull String[] countries) {
+    public void showCountryFilterDialog(@NonNull List<String> countries) {
+        if (countries == null) return;
         DialogInterface.OnClickListener clickListener = (dialog, which) -> {
 
-            mPresenter.setCountryFilter(countries[which]);
+            mPresenter.setCountryFilter(countries.get(which));
             mPresenter.filterStations();
 
-            mCountryFilter.setText(countries[which]);
+            mCountryFilter.setText(countries.get(which));
             mCountryFilterBtn.setSelected(true);
             dialog.dismiss();
 
@@ -177,13 +192,14 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void showLanguageFilterDialog(@NonNull String[] languages) {
+    public void showLanguageFilterDialog(@NonNull List<String> languages) {
+        if (languages == null) return;
         DialogInterface.OnClickListener clickListener = (dialog, which) -> {
 
-            mPresenter.setLanguageFilter(languages[which]);
+            mPresenter.setLanguageFilter(languages.get(which));
             mPresenter.filterStations();
 
-            mLanguageFilter.setText(languages[which]);
+            mLanguageFilter.setText(languages.get(which));
             mLanguageFilterBtn.setSelected(true);
             dialog.dismiss();
         };

@@ -20,13 +20,12 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 import com.startandroid.admin.myaudioplayer.data.MusicDataSource;
-import com.startandroid.admin.myaudioplayer.data.RadioStationRepository;
 import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
 import com.startandroid.admin.myaudioplayer.data.localsource.RadioStationLocalDataSource;
+import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
 import com.startandroid.admin.myaudioplayer.data.storageaudiosource.MusicStorageDataSource;
 import com.startandroid.admin.myaudioplayer.service.notifications.MediaNotificationManager;
 import com.startandroid.admin.myaudioplayer.service.players.ExoPlayerAdapter;
-import com.startandroid.admin.myaudioplayer.service.players.MediaPlayerAdapter;
 import com.startandroid.admin.myaudioplayer.service.players.PlayerAdapter;
 
 
@@ -70,9 +69,7 @@ public class MediaService extends MediaBrowserServiceCompat {
         Log.d("myLog1", "MediaService->onCreate."+this.hashCode());
 
         mMusicDataSource = MusicStorageDataSource.getInstance();
-        mStationRepository = RadioStationRepository.getInstance(
-                RadioStationLocalDataSource.getInstance(), null);
-
+        mStationRepository = RadioStationLocalDataSource.getInstance();
 
         mMediaSession = new MediaSessionCompat(this, LOG_TAG);
         mMediaSession.setCallback(new MediaSessionCallback());
@@ -282,6 +279,8 @@ public class MediaService extends MediaBrowserServiceCompat {
 
         @Override
         public void onAddQueueItem(MediaDescriptionCompat description) {
+            Log.d("myLog", "MediaService->onAddQueueItem");
+
             addPlayList(new MediaSessionCompat.QueueItem(description, description.hashCode()));
             mQueueIndex = (mQueueIndex == -1) ? 0 : mQueueIndex;
             setMediaSessionExtras(KEY_QUEUE_INDEX);
@@ -329,13 +328,17 @@ public class MediaService extends MediaBrowserServiceCompat {
             MediaDescriptionCompat mediaDescription = getPlayList().get(mQueueIndex).getDescription();
             final String mediaId = mediaDescription.getMediaId();
             Uri uri = mediaDescription.getMediaUri();
+            if (uri == null) return;
 
-            assert mediaId != null;
-            if(uri != null && !Objects.equals(uri.getScheme(), "http")) {
+            boolean isHTTP = Objects.equals(uri.getScheme(), "http")
+                    || Objects.equals(uri.getScheme(), "https");
+
+            if(!isHTTP) {
                 mCompositeDisposable.add(
                         mMusicDataSource.getMusicById(mediaId)
                                 .subscribe(music -> {
-                                    mPreparedMedia = music.convertToMetadata();
+
+                                            mPreparedMedia = music.convertToMetadata();
                                     mMediaPayer.setCurrentMedia(mPreparedMedia);
                                     mMediaSession.setMetadata(mPreparedMedia);
 
@@ -350,9 +353,11 @@ public class MediaService extends MediaBrowserServiceCompat {
                         mStationRepository.getRadioStationById(Integer.parseInt(mediaId))
                                 .subscribe(
                                         radioStationModel -> {
+
                                             mPreparedMedia = radioStationModel.convertToMetadata();
                                             mMediaPayer.setCurrentMedia(mPreparedMedia);
                                             mMediaSession.setMetadata(mPreparedMedia);
+                                            onSetRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
                                             if (playOnPreparedMedia) onPlay();
                                             playOnPreparedMedia = false;
                                         }
