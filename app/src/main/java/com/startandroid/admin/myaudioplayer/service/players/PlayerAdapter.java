@@ -12,6 +12,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import android.support.v4.media.MediaMetadataCompat;
+import android.util.Log;
 
 public abstract class PlayerAdapter {
 
@@ -58,6 +59,7 @@ public abstract class PlayerAdapter {
     public abstract void setVolume(float volume);
 
     protected void play() {
+        Log.d("myLog", "PlayerAdapter->play");
         int res = mAudioFocusHelper.requestAudioFocus();
 
         if (res == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
@@ -142,6 +144,7 @@ public abstract class PlayerAdapter {
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         private int requestAudioFocusForApi26() {
+            Log.d("myLog", "PlayerAdapter->requestAudioFocusForApi26");
             if (audioFocusRequest == null) setAudioFocusRequest(null);
             return mAudioManager.requestAudioFocus(audioFocusRequest);
         }
@@ -161,7 +164,10 @@ public abstract class PlayerAdapter {
 
         @RequiresApi(Build.VERSION_CODES.O)
         private void abandonAudioFocusForApi26() {
-            mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
+            Log.d("myLog", "PlayerAdapter->abandonAudioFocusForApi26");
+            if (audioFocusRequest != null) {
+                mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.KITKAT)

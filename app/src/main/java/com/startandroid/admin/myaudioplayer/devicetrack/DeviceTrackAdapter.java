@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +62,7 @@ public class DeviceTrackAdapter extends RecyclerView.Adapter<DeviceTrackAdapter.
     class DevicesTracksViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.track_item)
-        ConstraintLayout trackCardView;
+        LinearLayout trackItem;
         @BindView(R.id.track_name)
         TextView mTrackName;
         @BindView(R.id.artist)
@@ -71,7 +71,7 @@ public class DeviceTrackAdapter extends RecyclerView.Adapter<DeviceTrackAdapter.
         ImageButton mBtnTrackOptions;
 
 
-        DevicesTracksViewHolder(View itemView){
+        DevicesTracksViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -80,23 +80,22 @@ public class DeviceTrackAdapter extends RecyclerView.Adapter<DeviceTrackAdapter.
                     13, 5, 13, 10);
         }
 
-            void bind (final Audio itemData){
+        void bind(final Audio itemData) {
             mTrackName.setText(itemData.getName());
             mSinger.setText(itemData.getArtist());
 
-            trackCardView.setOnClickListener((view) ->
-                    mViewItemClickListener.onItemClickListener(itemData, trackCardView.getId()));
+            trackItem.setOnClickListener((view) ->
+                    mViewItemClickListener.onItemClickListener(itemData, trackItem.getId()));
 
-                mBtnTrackOptions.setOnClickListener(
-                        v -> {
-                            PopupMenu menu = new PopupMenu(trackCardView.getContext(), v);
-                            menu.inflate(R.menu.audio_track_menu);
-                            menu.setOnMenuItemClickListener(menuItem -> {
-                                mViewItemClickListener.onItemClickListener(itemData, menuItem.getItemId());
-                                return true;
-                            });
-                            menu.show();
-                        });
+            mBtnTrackOptions.setOnClickListener(v -> {
+                PopupMenu menu = new PopupMenu(trackItem.getContext(), v);
+                menu.inflate(R.menu.audio_track_menu);
+                menu.setOnMenuItemClickListener(menuItem -> {
+                    mViewItemClickListener.onItemClickListener(itemData, menuItem.getItemId());
+                    return true;
+                });
+                menu.show();
+            });
         }
     }
 }

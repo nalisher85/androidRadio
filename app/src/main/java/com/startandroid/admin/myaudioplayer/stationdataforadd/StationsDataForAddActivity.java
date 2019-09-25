@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pl.droidsonroids.gif.GifImageView;
 
 
 import android.annotation.SuppressLint;
@@ -52,10 +53,11 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
     RecyclerView mStationListRecyclerView;
     @BindView(R.id.check_all_chbx)
     CheckBox mCheckAllChbxBtn;
+    @BindView(R.id.loadingGif)
+    GifImageView mLoadingGif;
 
     private MenuItem addStationsOptionsMenuItem;
     private StationsDataForAddContract.Presenter mPresenter;
-
 
     @SuppressLint("CheckResult")
     @Override
@@ -164,13 +166,24 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void showLoadingStatus(boolean isLoading) {
+        if (isLoading) {
+            mStationListRecyclerView.setVisibility(View.GONE);
+            mLoadingGif.setVisibility(View.VISIBLE);
+        } else {
+            mLoadingGif.setVisibility(View.GONE);
+            mStationListRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void hideAddStationsBtn() {
         addStationsOptionsMenuItem.setVisible(false);
     }
 
     @Override
     public void showCountryFilterDialog(@NonNull List<String> countries) {
-        if (countries == null) return;
+        if (countries == null || countries.isEmpty()) return;
         DialogInterface.OnClickListener clickListener = (dialog, which) -> {
 
             mPresenter.setCountryFilter(countries.get(which));
@@ -193,7 +206,7 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
 
     @Override
     public void showLanguageFilterDialog(@NonNull List<String> languages) {
-        if (languages == null) return;
+        if (languages == null || languages.isEmpty()) return;
         DialogInterface.OnClickListener clickListener = (dialog, which) -> {
 
             mPresenter.setLanguageFilter(languages.get(which));

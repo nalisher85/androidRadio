@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +62,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     class StationViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.station_item)
-        ConstraintLayout mStationCardView;
+        LinearLayout mStationItem;
         @BindView(R.id.station_icon)
         ImageView mStationIcon;
         @BindView(R.id.station_name)
@@ -86,7 +86,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         void bind (final RadioStation itemData) {
             mStationName.setText(itemData.getStationName());
 
-            mStationCardView.setOnClickListener(v ->
+            mStationItem.setOnClickListener(v ->
                     mItemClickListener.onItemClicked(itemData, v.getId()));
 
             mBtnFavorite.setChecked(itemData.isFavorite());
@@ -96,7 +96,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
             });
 
             mStationOptionsBtn.setOnClickListener(v -> {
-                PopupMenu menu = new PopupMenu(mStationCardView.getContext(), v);
+                PopupMenu menu = new PopupMenu(mStationItem.getContext(), v);
                 menu.inflate(R.menu.station_item_menu);
                 menu.setOnMenuItemClickListener(item -> {
                     mItemClickListener.onItemClicked(itemData, item.getItemId());

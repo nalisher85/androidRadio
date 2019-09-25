@@ -360,7 +360,8 @@ public class MediaService extends MediaBrowserServiceCompat {
                                             onSetRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
                                             if (playOnPreparedMedia) onPlay();
                                             playOnPreparedMedia = false;
-                                        }
+                                        },
+                                        Throwable::printStackTrace
                                 )
                 );
             }

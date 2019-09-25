@@ -12,4 +12,13 @@
         android:layout_height="match_parent"
         app:layout_behavior="androidx.design.widget.AppBarLayout$ScrollingViewBehavior"/>
 
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@null"
+        android:id="@+id/add_btn"
+        android:src="@drawable/ic_playlist_add_black_48dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
 </FrameLayout>

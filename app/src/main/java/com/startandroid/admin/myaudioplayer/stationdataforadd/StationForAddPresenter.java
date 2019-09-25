@@ -43,33 +43,40 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
 
     @Override
     public void start() {
-        mView.showMessage("Заргузка...");
+        mView.showLoadingStatus(true);
         mDisposable.add(
                 mRemoteRepository.getAllRadioStation().subscribe(
                         remoteStations -> {
 
-                            if (remoteStations.isEmpty())
+                            if (remoteStations.isEmpty()) {
                                 mView.showMessage("Нет данных.");
+                                return;
+                            }
                             mDisposable.add(
                                     mLocalRepository.getAllRadioStation().subscribe(
                                             localStations -> {
 
                                                 mStationsForShow = filterRemoteData(remoteStations, localStations);
-                                                mView.showStations(mStationsForShow);
                                                 setCountriesAndLanguages(mStationsForShow);
 
-                                                if (mStationsForShow.isEmpty())
+                                                mView.showLoadingStatus(false);
+                                                if (mStationsForShow.isEmpty()) {
                                                     mView.showMessage("Нет новых станции.");
+                                                } else {
+                                                    mView.showStations(mStationsForShow);
+                                                }
                                             },
                                             err -> {
-                                                mView.showMessage(err.getMessage());
+                                                mView.showLoadingStatus(false);
+                                                mView.showMessage("Ошибка: " + err.getMessage());
                                                 err.printStackTrace();
                                             }
                                     )
                             );
                         },
                         err -> {
-                            mView.showMessage(err.getMessage());
+                            mView.showLoadingStatus(false);
+                            mView.showMessage("Ошибка: " + err.getMessage());
                             err.printStackTrace();
                         }
                 )

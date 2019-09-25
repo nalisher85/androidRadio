@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.startandroid.admin.myaudioplayer.MyApplication;
 import com.startandroid.admin.myaudioplayer.R;
@@ -41,6 +42,8 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
 
     @BindView(R.id.station_list)
     RecyclerView mStationListRecyclerView;
+    @BindView(R.id.add_btn)
+    ImageButton mAddBtn;
 
     private RadioStationContract.Presenter mPresenter;
 
@@ -78,6 +81,8 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
         View view = inflater.inflate(R.layout.fragment_radio, container, false);
         ButterKnife.bind(this, view);
 
+        mAddBtn.setOnClickListener(v -> mPresenter.openStationDataForAdd());
+
         //set RecyclerView
         mStationListRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -85,7 +90,6 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
         mStationListRecyclerView.addItemDecoration(new DividerItemDecoration(MyApplication.getContext(),
                 LinearLayoutManager.VERTICAL));
         mStationListRecyclerView.setAdapter(new StationAdapter(this));
-
         return view;
     }
 
@@ -146,6 +150,12 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     public void showStationsDataForAdd() {
         Intent intent = new Intent(getContext(), StationsDataForAddActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void setAddButtonVisibility(boolean isVisible) {
+        if (isVisible) mAddBtn.setVisibility(View.VISIBLE);
+        else mAddBtn.setVisibility(View.GONE);
     }
 
     private DialogInterface.OnClickListener addDialogItemClickListener = (dialog, which) -> {

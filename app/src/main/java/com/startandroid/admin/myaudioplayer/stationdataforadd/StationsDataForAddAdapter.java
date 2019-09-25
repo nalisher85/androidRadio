@@ -1,5 +1,7 @@
 package com.startandroid.admin.myaudioplayer.stationdataforadd;
 
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,9 @@ import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +26,7 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
 
     private List<RadioStation> mStations;
     private OnItemViewCheckedListener onItemViewCheckedListener;
+    private SparseBooleanArray mCheckedPosition = new SparseBooleanArray();
     private boolean mIsViewsChecked = false;
 
     public StationsDataForAddAdapter(OnItemViewCheckedListener listener) {
@@ -40,14 +45,15 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
     public StationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.station_item_for_add, parent, false);
-
         return new StationViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
-        holder.bind(mStations.get(position));
-        holder.mCheckItem.setChecked(mIsViewsChecked);
+        holder.bind(mStations.get(position), position);
+
+        if (mIsViewsChecked) holder.mCheckItem.setChecked(true);
+        else holder.mCheckItem.setChecked(mCheckedPosition.get(position));
     }
 
     @Override
@@ -55,7 +61,7 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
         return mStations.size();
     }
 
-    public void setIsViewsChecked(boolean isViewsChecked) {
+    void setIsViewsChecked(boolean isViewsChecked) {
         mIsViewsChecked = isViewsChecked;
     }
 
@@ -77,14 +83,16 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
         CheckBox mCheckItem;
 
         private RadioStation mStation;
+        private int mPosition;
 
         StationViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        void bind (final RadioStation station) {
+        void bind (final RadioStation station, int position) {
             mStation = station;
+            mPosition = position;
             mTitle.setText(station.getStationName());
             mCountry.setText(station.getCountry());
             mLanguage.setText(station.getLanguage());
@@ -92,6 +100,7 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
 
         @OnCheckedChanged(R.id.station_for_add_chbx)
         void onCheckedChanged(CheckBox buttonView, boolean isChecked) {
+            mCheckedPosition.put(mPosition, isChecked);
             onItemViewCheckedListener.onItemViewChecked(mStation, isChecked);
         }
     }
