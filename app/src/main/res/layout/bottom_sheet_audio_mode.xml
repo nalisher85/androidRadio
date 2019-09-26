@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/audio_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bottom_sheet_background">
+
+    <ImageButton
+        android:id="@+id/a_bottomsheet_media_menu"
+        android:background="@null"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_vert_dots" />
+
+    <TextView
+        android:id="@+id/a_b_sh_peek_title"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text=""
+        android:textAlignment="viewStart"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/a_b_sh_peek_play_btn"
+        app:layout_constraintStart_toEndOf="@+id/a_bottomsheet_media_menu"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/a_b_sh_peek_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text=""
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@+id/a_b_sh_peek_play_btn"
+        app:layout_constraintStart_toEndOf="@+id/a_bottomsheet_media_menu"
+        app:layout_constraintTop_toBottomOf="@+id/a_b_sh_peek_title" />
+
+    <ToggleButton
+        android:id="@+id/a_b_sh_peek_play_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/ic_play_pause_toggle"
+        android:text=""
+        android:textOff=""
+        android:textOn=""/>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/line"
+        app:layout_constraintTop_toBottomOf="@+id/a_b_sh_peek_subtitle" />
+
+    <!--  _-_-_-_-_-_-_-_-_-_  -->
+
+    <FrameLayout
+        android:id="@+id/a_b_sh_middle_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/view1"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="254dp">
+
+        <ImageButton
+            android:id="@+id/queuelist_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="#F9F9F9"
+            app:srcCompat="@drawable/ic_playlist" />
+
+    </FrameLayout>
+
+
+    <!--  _-_-_-_-_-_-_-_-_-_  -->
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/line"
+        app:layout_constraintBottom_toTopOf="@+id/a_b_sh_play_btn"
+        tools:layout_editor_absoluteX="16dp" />
+
+
+    <ImageButton
+        android:id="@+id/bottomsheet_prev_button"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="25dp"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/a_b_sh_play_btn"
+        app:layout_constraintEnd_toStartOf="@+id/a_b_sh_play_btn"
+        app:layout_constraintTop_toTopOf="@+id/a_b_sh_play_btn"
+        app:srcCompat="@drawable/ic_previous" />
+
+    <ToggleButton
+        android:id="@+id/a_b_sh_play_btn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/ic_play_pause_bottomsheet_toggle"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
+        app:layout_constraintBottom_toTopOf="@+id/mediaSeekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/bottomsheet_next_button"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="25dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/a_b_sh_play_btn"
+        app:layout_constraintStart_toEndOf="@+id/a_b_sh_play_btn"
+        app:layout_constraintTop_toTopOf="@+id/a_b_sh_play_btn"
+        app:srcCompat="@drawable/ic_next" />
+
+    <com.startandroid.admin.myaudioplayer.main.MediaRepeatModeButton
+        android:id="@+id/bottomsheet_repeat_btn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="30dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomsheet_prev_button"
+        app:layout_constraintEnd_toStartOf="@+id/bottomsheet_prev_button"
+        app:layout_constraintTop_toTopOf="@+id/bottomsheet_prev_button"
+        app:srcCompat="@drawable/ic_repeat_off" />
+
+    <ImageButton
+        android:id="@+id/bottomsheet_shuffle_btn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="30dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomsheet_next_button"
+        app:layout_constraintStart_toEndOf="@+id/bottomsheet_next_button"
+        app:layout_constraintTop_toTopOf="@+id/bottomsheet_next_button"
+        app:srcCompat="@drawable/ic_shuffle_toggle" />
+
+    <com.startandroid.admin.myaudioplayer.main.MediaSeekBar
+        android:id="@+id/mediaSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/progress_duration_time"
+        app:layout_constraintStart_toEndOf="@+id/currant_time_progress" />
+
+    <TextView
+        android:id="@+id/currant_time_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="00:00"
+        app:layout_constraintBottom_toBottomOf="@+id/mediaSeekBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mediaSeekBar" />
+
+    <TextView
+        android:id="@+id/progress_duration_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="00:00"
+        app:layout_constraintBottom_toBottomOf="@+id/mediaSeekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mediaSeekBar" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

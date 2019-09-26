@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<radiostations>
+	<radiostation>
+	
+		<name>Radio Record</name>
+		
+		<path>http://air2.radiorecord.ru:9003/rr_320</path>
+		
+		<country>Россия</country>
+		
+		<language>Русский</language>
+		
+		<isfavorite>false</isfavorite>
+
+	</radiostation>
+	<radiostation>
+	
+		<name>Record Big Hits</name>
+		
+		<path>http://air2.radiorecord.ru:9003/bighits_320</path>
+		
+		<country>Таджикистан</country>
+		
+		<language>Таджикский</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+	<radiostation>
+	
+		<name>Record Gold</name>
+		
+		<path>http://air2.radiorecord.ru:9003/gold_320</path>
+		
+		<country>Англия</country>
+		
+		<language>Английский</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+	<radiostation>
+	
+		<name>Record Rap</name>
+		
+		<path>http://air2.radiorecord.ru:9003/rap_320</path>
+		
+		<country>США</country>
+		
+		<language>Английский</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+	<radiostation>
+	
+		<name>Record Russian Hits</name>
+		
+		<path>http://air2.radiorecord.ru:9003/russianhits_320</path>
+		
+		<country>Германия</country>
+		
+		<language>Немецкий</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+	<radiostation>
+	
+		<name>Record Dark Side</name>
+		
+		<path>http://air2.radiorecord.ru:9003/darkside_320</path>
+		
+		<country>Таджикистан</country>
+		
+		<language>Русский</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+	<radiostation>
+	
+		<name>Record Маятник Фуко</name>
+		
+		<path>http://air2.radiorecord.ru:9003/mf_320</path>
+		
+		<country>Россия</country>
+		
+		<language>Русский</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+	<radiostation>
+	
+		<name>Record Tecktonik</name>
+		
+		<path>http://air2.radiorecord.ru:9003/tecktonik_320</path>
+		
+		<country>Узбекистан</country>
+		
+		<language>Узбекский</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+	<radiostation>
+	
+		<name>Record 2step</name>
+		
+		<path>http://air2.radiorecord.ru:9003/2step_320</path>
+		
+		<country>Россия</country>
+		
+		<language>Русский</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+	<radiostation>
+	
+		<name>Record Discofunk</name>
+		
+		<path>http://air2.radiorecord.ru:9003/discofunk_320</path>
+		
+		<country>Россия</country>
+		
+		<language>Русский</language>
+		
+		<isfavorite>false</isfavorite>
+		
+	</radiostation>
+</radiostations>
+

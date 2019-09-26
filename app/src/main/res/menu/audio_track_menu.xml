@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/set_as_ring_menu"
+        android:icon="@drawable/ic_ringtone"
+        android:title="@string/ringtone"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/add_to_queue_menu"
+        android:icon="@drawable/ic_add_play_list"
+        android:title="@string/add_queue"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/track_delete_menu"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"
+        app:showAsAction="ifRoom"/>
+
+</menu>

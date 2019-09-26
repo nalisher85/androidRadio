@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">MyRadio</string>
+    <string name="bottom_nav_menu_radio">Радио</string>
+    <string name="bottom_nav_menu_favorites">Избранные</string>
+    <string name="bottom_nav_menu_device_files">Моя музыка</string>
+    <string name="add">Добавить</string>
+    <string name="send_feedback">Отправить отзыв</string>
+    <string name="shuffle">Перемешать</string>
+    <string name="ringtone">Мелодия звонка</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="add_queue">Добавить в очередь</string>
+    <string name="remove_queue_item">Удалить из очереди</string>
+    <string name="request_denied">Запрос отклонен</string>
+    <string name="request_write_settings_permission_dialog_title">Запрос доступа</string>
+    <string name="request_write_settings_permission_dialog_message">Необходим достук к системным настройка.</string>
+    <string name="delete_audio_dialog_title">Удаление аудио!</string>
+    <string name="delete_audio_dialog_message">Вы действительное хотите удалить аудио файл?</string>
+    <string name="edit_station_dialog_title">Редактирование радио станции</string>
+    <string name="ok">OK</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="cancel_btn">Отменить</string>
+    <string name="save_btn">Сохранить</string>
+    <string name="success_add_toast">Успешно добавлено</string>
+    <string name="failure_add_toast">Ошибка добавления</string>
+    <string name="success_edit_toast">Успешно редактировано</string>
+    <string name="failure_edit_toast">Ошибка редактирования</string>
+    <string name="delete_station_dialog_title">Удаление радио станции</string>
+    <string name="delete_station_dialog_msg">Вы действительно хотите удалить радио станцию?</string>
+    <string name="add_edit_activity_title_add">Добавление станции</string>
+    <string name="add_edit_activity_title_edit">Редактирование станции</string>
+    <string name="invalid_url_err_msg">Не верный адрес ссылки</string>
+    <string name="empty_err_msg">Название не должно быть пустым</string>
+    <string name="stations_data_link">https://cloud.mail.ru/public/xf1A/2Ud8DjVTj</string>
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="station_name">Названия станции</string>
+    <string name="stream_link">Ссылка на поток</string>
+    <string name="add_selected_action_title">Добавить выбранные</string>
+    <string name="country_and_language">Страна/Язык:</string>
+    <string name="select_country_filter_tv">[Выберите страну…]</string>
+    <string name="select_language_filter_tv">[Выберите язык…]</string>
+    <string name="has_stream_link">Есть ссылка на поток</string>
+    <string name="add_station_from_list">Добавить из списка</string>
+    <string name="select_all">Выбрать все</string>
+</resources>

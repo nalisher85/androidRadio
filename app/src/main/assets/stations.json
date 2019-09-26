@@ -1,0 +1,664 @@
+[
+    {
+      "id": 0,
+      "station_name": "Radio Record",
+      "station_link": "http://air2.radiorecord.ru:9003/rr_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "id": 0,
+      "station_name": "Record Big Hits",
+      "station_link": "http://air2.radiorecord.ru:9003/bighits_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Gold",
+      "station_link": "http://air2.radiorecord.ru:9003/gold_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Rap",
+      "station_link": "http://air2.radiorecord.ru:9003/rap_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Russian Hits",
+      "station_link": "http://air2.radiorecord.ru:9003/russianhits_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Dark Side",
+      "station_link": "http://air2.radiorecord.ru:9003/darkside_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Маятник Фуко",
+      "station_link": "http://air2.radiorecord.ru:9003/mf_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Tecktonik",
+      "station_link": "http://air2.radiorecord.ru:9003/tecktonik_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record 2step",
+      "station_link": "http://air2.radiorecord.ru:9003/2step_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Discofunk",
+      "station_link": "http://air2.radiorecord.ru:9003/discofunk_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Супердискотека 90-х",
+      "station_link": "http://air.radiorecord.ru:8102/sd90_320 ",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Trancemission",
+      "station_link": "http://air.radiorecord.ru:8102/tm_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Russian Mix",
+      "station_link": "http://air.radiorecord.ru:8102/rus_320 ",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "",
+      "station_link": "",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record Медляк FM",
+      "station_link": "http://air.radiorecord.ru:8102/mdl_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Record MegaMix",
+      "station_link": "http://air2.radiorecord.ru:805/mix_320",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Зайцев ФМ",
+      "station_link": "https://zaycevfm.cdnvideo.ru/ZaycevFM_pop_128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Premium",
+      "station_link": "http://listen.rpfm.ru:9000/premium128",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Dance",
+      "station_link": "http://stream.nonstopplay.co.uk/nsp-128k-mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Joyradio",
+      "station_link": "http://airtime.joyradio.cc:8000/airtime_192.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Русское радио2",
+      "station_link": "http://play.russianradio.eu/stream",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Ambient",
+      "station_link": "http://radiorivendell.ddns.net:8000/128kbit.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Классическая музыка",
+      "station_link": "http://stream.srg-ssr.ch/m/rsc_de/mp3_128",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio Zabawa",
+      "station_link": "http://listen.myradio24.com:9000/8020",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Рок, альтернативный рок, металл",
+      "station_link": "http://galnet.ru:8000/hard",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Дорожное радио",
+      "station_link": "http://dorognoe.hostingradio.ru:8000/dorognoe",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Наше Радио",
+      "station_link": "http://nashe.streamr.ru/nashe-128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Наше Радио",
+      "station_link": "http://nashe.streamr.ru/nashe-128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Play FM",
+      "station_link": "http://178.33.138.231:8052/playfm",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио ОК",
+      "station_link": "http://radiook.nlink.ru:8000/OKradio128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Инструментальная музыка",
+      "station_link": "http://82.146.35.241:8000/instr",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Романтика",
+      "station_link": "http://ic3.101.ru:8000/v4_1",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Dream Dance Gold Radio",
+      "station_link": "http://82.146.35.241:8000/dream",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "",
+      "station_link": "",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "500 HITS Radio",
+      "station_link": "http://212.109.193.133:8000/500hits",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио музыки для сна",
+      "station_link": "http://radio.stereoscenic.com/asp-h",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Вести FM",
+      "station_link": "http://icecast.vgtrk.cdnvideo.ru/vestifm_mp3_192kbps",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "FFH Lounge Radio",
+      "station_link": "http://mp3.ffh.de/ffhchannels/hqlounge.mp3",
+      "station_country": "Германия",
+      "station_language": "Немецкий"
+    },
+    {
+      "station_name": "Love Times",
+      "station_link": "https://streamingv2.shoutcast.com/lovetimes",
+      "station_country": "Европа",
+      "station_language": "Европа"
+    },
+    {
+      "station_name": "Relax FM",
+      "station_link": "http://193.232.148.42:8000/v13_1",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Сибирь",
+      "station_link": "http://stream.radiosibir.ru:8090/HQ",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio Borneo, Воронеж",
+      "station_link": "http://live.borneo.ru:8888/128",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "ChelRockRadio, Челябинск",
+      "station_link": "https://listen6.myradio24.com/crr",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio Kronehit  Fresh, Вена",
+      "station_link": "http://onair-ha1.krone.at/kronehit-fresh.mp3",
+      "station_country": "Австрия",
+      "station_language": "Немецкий"
+    },
+    {
+      "station_name": "Радио Relax Electronic",
+      "station_link": "http://82.146.35.241:8000/relax",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio Fresh, София",
+      "station_link": "http://193.108.24.21:8000/fresh",
+      "station_country": "Болгария",
+      "station_language": "Болгарский"
+    },
+    {
+      "station_name": "Aplus Rock, Минск",
+      "station_link": "http://shoutcast.aplus.by:9000/aplus_rock_256",
+      "station_country": "Белоруссия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio Super Instrumental",
+      "station_link": "http://82.146.35.241:8000/instr",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Милицейская волна",
+      "station_link": "http://radio.mvd.ru:8000/mv128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Эхо Москвы",
+      "station_link": "http://ice912.echo.msk.ru:9120/32.aac",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Slow Radio",
+      "station_link": "http://agnes.torontocast.com:8191/slowradio",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Кекс FM",
+      "station_link": "http://emg02.hostingradio.ru/keksfm64.aac",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Европа плюс",
+      "station_link": "http://ep128server.streamr.ru:8030/ep128",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio 1FM Top 40",
+      "station_link": "http://strm112.1.fm/top40_mobile_mp3",
+      "station_country": "Европа",
+      "station_language": "Европа"
+    },
+    {
+      "station_name": "Новое Чистое Радио",
+      "station_link": "http://live.ncradio.ru/256.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio EDGE",
+      "station_link": "http://air.radioedge.ru:8000/radio_edge",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Русская реклама",
+      "station_link": "http://rs3.radiostreamer.com:8030/;amp",
+      "station_country": "США",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Storm FM",
+      "station_link": "http://radio.storm.fm:8000/storm_mp3",
+      "station_country": "Сингапур",
+      "station_language": "Английский"
+    },
+    {
+      "station_name": "Радио Monte Carlo, Питер",
+      "station_link": "http://78.140.251.2:8104/monte",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио России",
+      "station_link": "http://icecast.vgtrk.cdnvideo.ru/rrzonam_mp3_192kbps",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "SKY Радио",
+      "station_link": "http://sky.babahhcdn.com/SKY?/skyradio_hi.mp3",
+      "station_country": "Эстония",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Неслучайное радио",
+      "station_link": "http://46.105.180.202:8006/stream",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio Eurodance 90s",
+      "station_link": "https://listen1.myradio24.com/5967",
+      "station_country": "Европа",
+      "station_language": "Европа"
+    },
+    {
+      "station_name": "Чё - CheZaRadio",
+      "station_link": "http://s1.radio-hoster.ru:8126/stream",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "RMF Chillout",
+      "station_link": "http://217.74.72.4:8000/rmf_chillout",
+      "station_country": "Польша",
+      "station_language": "Польский"
+    },
+    {
+      "station_name": "Radio Gold",
+      "station_link": "http://radiogold-dg-ais-eco-http-fra-eco-cdn.cast.addradio.de/radiogold/live/mp3/high/stream.mp3",
+      "station_country": "Германия",
+      "station_language": "Немецкий"
+    },
+    {
+      "station_name": "Lounge-Radio",
+      "station_link": "http://fr1.lounge-radio.com/lounge128.mp3",
+      "station_country": "Швейцария",
+      "station_language": "Немецкий"
+    },
+    {
+      "station_name": "Imagine Только музыка",
+      "station_link": "http://212.116.112.147:8000/light_stream256.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Вышка, Екатеринбург",
+      "station_link": "http://stream.vyshka24.ru/256",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио для двоих, Петербург",
+      "station_link": "http://95.188.107.89:8008/Radio_Dlya_Dvoih.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio Sputnik, English",
+      "station_link": "http://audio1.video.ria.ru/voiceeng",
+      "station_country": "Европа",
+      "station_language": "Английский"
+    },
+    {
+      "station_name": "Радио Звезда",
+      "station_link": "https://icecast-zvezda.cdnvideo.ru/zvezda_128",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Говорит Москва",
+      "station_link": "http://media.govoritmoskva.ru:8880/rufm.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Маяк",
+      "station_link": "http://icecast.vgtrk.cdnvideo.ru/mayakfm_mp3_192kbps",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Коммерсантъ FM",
+      "station_link": "http://kommersant77.hostingradio.ru:8016/kommersant128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Business FM",
+      "station_link": "http://bfm.hostingradio.ru:8004/fm",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Спутник",
+      "station_link": "http://icecast-ruvr.cdnvideo.ru/rian.voicerus",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Комсомольская правда",
+      "station_link": "http://kpradio.hostingradio.ru:8000/russia.radiokp128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Авторадио",
+      "station_link": "http://ic3.101.ru:8000/v3_1",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Европа плюс ТОП 40",
+      "station_link": "http://eptop128server.streamr.ru:8033/eptop128",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Black Star Radio",
+      "station_link": "http://blackstarradio.hostingradio.ru:8024/blackstarradio128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Макс FM, Сочи",
+      "station_link": "http://mxsel.maksmedia.ru:8000/maksfm192",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Русское радио",
+      "station_link": "http://95.188.107.89:8008/Russkoe_Radio.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Дача",
+      "station_link": "https://stream.gakku.tv/dacha",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Mega Radio",
+      "station_link": "http://stream.megaradio.pro/MegaRadio48",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Отличное радио",
+      "station_link": "http://radio.oneex.ru:9000/8234",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио 1/1",
+      "station_link": "http://212.109.193.133:8000/vs",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "TOP Radio",
+      "station_link": "http://radio02-cn03.akadostream.ru:8102/topradio128.mp3",
+      "station_country": "Литва",
+      "station_language": "Литовский"
+    },
+    {
+      "station_name": "Европа плюс New",
+      "station_link": "http://emg02.hostingradio.ru/ep-new128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио добрых советских песен",
+      "station_link": "http://82.146.35.241:8000/dobroe",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "TNT Radio 1",
+      "station_link": "http://149.56.175.167:5457/stream",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Radio MNM",
+      "station_link": "http://icecast.vrtcdn.be/mnm-high.mp3",
+      "station_country": "Бельгия",
+      "station_language": "Английский"
+    },
+    {
+      "station_name": "DFM",
+      "station_link": "https://dfm.hostingradio.ru/dfm96.aacp?0.9263726632468969",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Новое Радио",
+      "station_link": "https://icecast-newradio.cdnvideo.ru/newradio3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "LIFE-FM",
+      "station_link": "http://s3.radioboss.fm:8037/stream",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Energy",
+      "station_link": "http://ic2.101.ru:8000/v1_1",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "ТНТ MUSIC RADIO",
+      "station_link": "http://tntradio.hostingradio.ru:8027/tntradio128.mp3",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Хит FM",
+      "station_link": "https://hitfm.hostingradio.ru/hitfm96.aacp",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Маруся ФМ",
+      "station_link": "http://radio-holding.ru:9000/marusya_aac_64",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "МегаБайт",
+      "station_link": "http://77.234.212.71:8002/live",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "UFM",
+      "station_link": "http://cast.ufmradio.ru/ufm",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Свобода",
+      "station_link": "https://ample-03.radiojar.com/hcrb063nn3quv?rj-ttl=5&rj-token=AAABbPh_S7UO-Ee507C29qwenr6UNXniCG_t1crJlqsZtaqPue15dA",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Культура",
+      "station_link": "http://icecast.vgtrk.cdnvideo.ru/kulturafm_mp3_128kbps",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Кавказ",
+      "station_link": "http://radio.alania.net:8000/kvk",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Мир",
+      "station_link": "http://icecast.mirtv.cdnvideo.ru:8000/radio_mir128",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Ватан, Махачкала",
+      "station_link": "http://stream2.radiostyle.ru:8001/radiovatan",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Радио Москвы",
+      "station_link": "http://icecast.vgtrk.cdnvideo.ru/moscowtalk128",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Азия плюс",
+      "station_link": "http://eu.asiaplusradio.tj:8020/Asia-Plus-128.mp3",
+      "station_country": "Таджикистан",
+      "station_language": "Таджикский"
+    },
+    {
+      "station_name": "Love Radio",
+      "station_link": "http://stream2.n340.com/12_love_28_reg_44?type=.aac&UID=317F94BDC3E4C1F0600EAC9208F3CD61",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    },
+    {
+      "station_name": "Юмор FM",
+      "station_link": "http://ic4.101.ru:8000/a102?setst=0ec6fbd51e1019285d71bf1a52abe71a&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpcCI6IjE3Ni41OS4zNi4xMjMiLCJ1c2VyYWdlbnQiOiJNb3ppbGxhXC81LjAgKFdpbmRvd3MgTlQgNi4xKSBBcHBsZVdlYktpdFwvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lXC83Ni4wLjM4MDkuMTMyIFNhZmFyaVwvNTM3LjM2IiwidWlkX2NoYW5uZWwiOiIxMDIiLCJ0eXBlX2NoYW5uZWwiOiJjaGFubmVsIiwiZXhwIjoxNTY3NTkwODQ4fQ.nbFskO5dPSVv5ETBSr4JYRI_w_A_69WGyQ_arBNgizg",
+      "station_country": "Россия",
+      "station_language": "Русский"
+    }
+  ]

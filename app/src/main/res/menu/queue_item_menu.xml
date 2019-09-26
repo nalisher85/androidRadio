@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/set_as_ring_menu"
+        android:icon="@drawable/ic_ringtone"
+        android:title="@string/ringtone"/>
+
+    <item android:id="@+id/remove_from_queue"
+        android:icon="@drawable/ic_add_play_list"
+        android:title="@string/remove_queue_item"/>
+
+    <item
+        android:id="@+id/track_delete_menu"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"/>
+
+</menu>
