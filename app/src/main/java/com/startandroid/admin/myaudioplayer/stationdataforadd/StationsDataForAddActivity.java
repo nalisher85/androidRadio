@@ -125,9 +125,9 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
                     mCountryFilter.setText(R.string.select_country_filter_tv);
                     mCountryFilterBtn.setSelected(false);
 
+                    setAllStationsCheckedStatus(false);
                     mPresenter.setCountryFilter("");
                     mPresenter.filterStations();
-
                 } else {
                     mPresenter.filterWithCountry();
                 }
@@ -137,9 +137,9 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
                     mLanguageFilter.setText(R.string.select_language_filter_tv);
                     mLanguageFilterBtn.setSelected(false);
 
+                    setAllStationsCheckedStatus(false);
                     mPresenter.setLanguageFilter("");
                     mPresenter.filterStations();
-
                 } else {
                     mPresenter.filterWithLanguage();
                 }
@@ -147,6 +147,7 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
 
         }
     }
+
 
     @Override
     public void showStations(List<RadioStation> stations) {
@@ -241,17 +242,21 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
     }
 
     @OnClick(R.id.check_all_chbx)
-    void checkAllChbx(View view){
+    void onClickCheckAllChbxBtn(View view){
         boolean isChecked = ((CheckBox) view).isChecked();
+        setAllStationsCheckedStatus(isChecked);
+
+        if (isChecked) mPresenter.setAllStationsSelected();
+        else mPresenter.clearSelectedStations();
+    }
+
+    private void setAllStationsCheckedStatus (boolean isChecked){
         StationsDataForAddAdapter adapter = (StationsDataForAddAdapter) mStationListRecyclerView.getAdapter();
 
         if (adapter != null){
             adapter.setIsViewsChecked(isChecked);
             adapter.notifyDataSetChanged();
         }
-
-        if (isChecked) mPresenter.setAllStationsSelected();
-        else mPresenter.clearSelectedStations();
     }
 
 }

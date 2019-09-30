@@ -146,4 +146,21 @@ public class RadioStationLocalDataSource implements RadioStationSource {
         }).subscribeOn(Schedulers.io());
     }
 
+    @SuppressLint("CheckResult")
+    @Override
+    public Completable deleteAll (){
+        return Completable.create(new CompletableOnSubscribe() {
+            @Override
+            public void subscribe(CompletableEmitter emitter) throws Exception {
+                try {
+                    mDatabase.radioStationDao().deleteAll();
+                    emitter.onComplete();
+                } catch (Exception err) {
+                    emitter.onError(err);
+                }
+
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
 }

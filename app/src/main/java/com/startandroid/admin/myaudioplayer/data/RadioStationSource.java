@@ -28,4 +28,6 @@ public interface RadioStationSource {
     Completable delete (RadioStation radioStation);
 
     Completable delete(String id);
+
+    Completable deleteAll();
 }

@@ -47,5 +47,7 @@ public interface RadioStationDao {
     @Query("DELETE FROM radio_station WHERE id = :id")
     void delete (String id);
 
+    @Query("DELETE FROM radio_station")
+    void deleteAll ();
 
 }

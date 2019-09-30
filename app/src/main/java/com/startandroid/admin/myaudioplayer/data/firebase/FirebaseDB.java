@@ -192,4 +192,9 @@ public class FirebaseDB implements RadioStationSource {
     public Completable delete(String id) {
         return null;
     }
+
+    @Override
+    public Completable deleteAll() {
+        return null;
+    }
 }

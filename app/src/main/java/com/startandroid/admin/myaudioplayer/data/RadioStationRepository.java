@@ -80,6 +80,11 @@ public class RadioStationRepository implements RadioStationSource {
         return mLocalDataSource.delete(id);
     }
 
+    @Override
+    public Completable deleteAll() {
+        return mLocalDataSource.deleteAll();
+    }
+
     public void loadDataFromServer(boolean loadFromServer){
         mLoadDataFromServer = loadFromServer;
     }

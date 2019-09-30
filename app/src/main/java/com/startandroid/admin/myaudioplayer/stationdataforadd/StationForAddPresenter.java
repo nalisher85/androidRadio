@@ -43,44 +43,46 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
 
     @Override
     public void start() {
-        mView.showLoadingStatus(true);
-        mDisposable.add(
-                mRemoteRepository.getAllRadioStation().subscribe(
-                        remoteStations -> {
+        if (mStationsForShow == null || mStationsForShow.isEmpty()) {
+            mView.showLoadingStatus(true);
+            mDisposable.add(
+                    mRemoteRepository.getAllRadioStation().subscribe(
+                            remoteStations -> {
 
-                            if (remoteStations.isEmpty()) {
-                                mView.showMessage("Нет данных.");
-                                return;
-                            }
-                            mDisposable.add(
-                                    mLocalRepository.getAllRadioStation().subscribe(
-                                            localStations -> {
+                                if (remoteStations.isEmpty()) {
+                                    mView.showMessage("Нет данных.");
+                                    return;
+                                }
+                                mDisposable.add(
+                                        mLocalRepository.getAllRadioStation().subscribe(
+                                                localStations -> {
 
-                                                mStationsForShow = filterRemoteData(remoteStations, localStations);
-                                                setCountriesAndLanguages(mStationsForShow);
+                                                    mStationsForShow = filterRemoteData(remoteStations, localStations);
+                                                    setCountriesAndLanguages(mStationsForShow);
 
-                                                mView.showLoadingStatus(false);
-                                                if (mStationsForShow.isEmpty()) {
-                                                    mView.showMessage("Нет новых станции.");
-                                                } else {
-                                                    mView.showStations(mStationsForShow);
+                                                    mView.showLoadingStatus(false);
+                                                    if (mStationsForShow.isEmpty()) {
+                                                        mView.showMessage("Нет новых станции.");
+                                                    } else {
+                                                        mView.showStations(mStationsForShow);
+                                                    }
+                                                },
+                                                err -> {
+                                                    mView.showLoadingStatus(false);
+                                                    mView.showMessage("Ошибка: " + err.getMessage());
+                                                    err.printStackTrace();
                                                 }
-                                            },
-                                            err -> {
-                                                mView.showLoadingStatus(false);
-                                                mView.showMessage("Ошибка: " + err.getMessage());
-                                                err.printStackTrace();
-                                            }
-                                    )
-                            );
-                        },
-                        err -> {
-                            mView.showLoadingStatus(false);
-                            mView.showMessage("Ошибка: " + err.getMessage());
-                            err.printStackTrace();
-                        }
-                )
-        );
+                                        )
+                                );
+                            },
+                            err -> {
+                                mView.showLoadingStatus(false);
+                                mView.showMessage("Ошибка: " + err.getMessage());
+                                err.printStackTrace();
+                            }
+                    )
+            );
+        }
     }
 
     private List<RadioStation> filterRemoteData(List<RadioStation> remoteData, List<RadioStation> localData){

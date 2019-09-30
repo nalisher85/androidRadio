@@ -27,7 +27,6 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
     private List<RadioStation> mStations;
     private OnItemViewCheckedListener onItemViewCheckedListener;
     private SparseBooleanArray mCheckedPosition = new SparseBooleanArray();
-    private boolean mIsViewsChecked = false;
 
     public StationsDataForAddAdapter(OnItemViewCheckedListener listener) {
         mStations = new ArrayList<>();
@@ -51,9 +50,7 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
         holder.bind(mStations.get(position), position);
-
-        if (mIsViewsChecked) holder.mCheckItem.setChecked(true);
-        else holder.mCheckItem.setChecked(mCheckedPosition.get(position));
+        holder.mCheckItem.setChecked(mCheckedPosition.get(position));
     }
 
     @Override
@@ -62,7 +59,12 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
     }
 
     void setIsViewsChecked(boolean isViewsChecked) {
-        mIsViewsChecked = isViewsChecked;
+        if (!isViewsChecked) mCheckedPosition.clear();
+        else {
+            for (int i = 0; i <= mStations.size(); i++){
+                mCheckedPosition.put(i, true);
+            }
+        }
     }
 
     //-------------------------------------------------------------

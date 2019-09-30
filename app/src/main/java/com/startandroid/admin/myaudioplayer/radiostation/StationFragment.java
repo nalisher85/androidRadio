@@ -3,6 +3,8 @@ package com.startandroid.admin.myaudioplayer.radiostation;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -34,6 +36,7 @@ import com.startandroid.admin.myaudioplayer.service.MediaService;
 import com.startandroid.admin.myaudioplayer.stationdataforadd.StationsDataForAddActivity;
 
 import java.util.List;
+import java.util.Objects;
 
 public class StationFragment extends Fragment implements StationAdapter.OnItemViewClickListener,
         RadioStationContract.View {
@@ -105,8 +108,19 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
                 });
         menu.findItem(R.id.send_email).setOnMenuItemClickListener(
                 item -> {
+                    PackageInfo pinfo = null;
+                    try {
+                        pinfo = Objects.requireNonNull(getContext()).getPackageManager()
+                                .getPackageInfo(getContext().getPackageName(), 0);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    assert pinfo != null;
+                    String body = "\n Версия приложения " + pinfo.versionName + " (" + pinfo.versionCode + ")";
+
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                             "mailto", "a.nuraliev85@gmail.com", null));
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, body);
                     startActivity(Intent.createChooser(emailIntent, null));
                     return true;
                 }
