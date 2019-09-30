@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -77,7 +78,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Queu
     class QueueItemViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.track_item)
-        ConstraintLayout trackItem;
+        LinearLayout trackItem;
         @BindView(R.id.track_item_icon)
         ImageView mTrackIcon;
         @BindView(R.id.track_name)

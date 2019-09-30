@@ -36,6 +36,8 @@ public interface RadioStationContract {
         void showAddEditStation(String stationId);
 
         void showStationsDataForAdd();
+
+        void setAddButtonVisibility(boolean isVisible);
     }
 
 }

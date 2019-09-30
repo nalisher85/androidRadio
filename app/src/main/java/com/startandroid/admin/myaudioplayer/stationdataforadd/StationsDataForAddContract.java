@@ -15,6 +15,8 @@ public interface StationsDataForAddContract {
 
         void showMessage(String msg);
 
+        void showLoadingStatus(boolean isLoading);
+
         void hideAddStationsBtn();
 
         void showCountryFilterDialog(List<String> countries);

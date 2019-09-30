@@ -29,14 +29,20 @@ public class RadioStationPresenter implements RadioStationContract.Presenter {
     public void start() {
         if(mIsStationFavorite){
             mDisposable = mRepository.getStationsByFavoriteField(true).subscribe(
-                    stations -> mView.showStationList(stations)
+                    stations -> {
+                        mView.setAddButtonVisibility(false);
+                        mView.showStationList(stations);
+                    }
             );
         } else {
             mDisposable = mRepository.getAllRadioStation().subscribe(
-                    stations -> mView.showStationList(stations)
+                    stations -> {
+                        if (stations.isEmpty()) mView.setAddButtonVisibility(true);
+                        else mView.setAddButtonVisibility(false);
+                        mView.showStationList(stations);
+                    }
             );
         }
-
     }
 
     @Override
