@@ -108,7 +108,10 @@ public class DeviceTrackFragment extends Fragment implements DeviceTrackContract
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.action_bar_menu, menu);
+
         menu.findItem(R.id.action_add).setVisible(false);
+        menu.findItem(R.id.del_all).setVisible(false);
+
         menu.findItem(R.id.action_shuffle).setVisible(true)
                 .setOnMenuItemClickListener(item -> {
                     mPresenter.addAllToQueue(true);

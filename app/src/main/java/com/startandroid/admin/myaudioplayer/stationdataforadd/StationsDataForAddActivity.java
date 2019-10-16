@@ -125,7 +125,7 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
                     mCountryFilter.setText(R.string.select_country_filter_tv);
                     mCountryFilterBtn.setSelected(false);
 
-                    setAllStationsCheckedStatus(false);
+                    mPresenter.clearSelectedStations();
                     mPresenter.setCountryFilter("");
                     mPresenter.filterStations();
                 } else {
@@ -137,7 +137,7 @@ public class StationsDataForAddActivity extends AppCompatActivity implements
                     mLanguageFilter.setText(R.string.select_language_filter_tv);
                     mLanguageFilterBtn.setSelected(false);
 
-                    setAllStationsCheckedStatus(false);
+                    mPresenter.clearSelectedStations();
                     mPresenter.setLanguageFilter("");
                     mPresenter.filterStations();
                 } else {

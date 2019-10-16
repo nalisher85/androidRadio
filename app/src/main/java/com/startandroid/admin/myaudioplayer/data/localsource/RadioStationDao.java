@@ -49,5 +49,4 @@ public interface RadioStationDao {
 
     @Query("DELETE FROM radio_station")
     void deleteAll ();
-
 }

@@ -2,6 +2,7 @@ package com.startandroid.admin.myaudioplayer.data.localsource;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 
 import com.startandroid.admin.myaudioplayer.MyApplication;
 import com.startandroid.admin.myaudioplayer.data.RadioStationSource;
@@ -149,13 +150,16 @@ public class RadioStationLocalDataSource implements RadioStationSource {
     @SuppressLint("CheckResult")
     @Override
     public Completable deleteAll (){
+        Log.d("myLog", "RadioStationLocalDataSource->deleteAll");
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(CompletableEmitter emitter) throws Exception {
                 try {
+                    Log.d("myLog", "RadioStationLocalDataSource->deleteAll->onComplete");
                     mDatabase.radioStationDao().deleteAll();
                     emitter.onComplete();
                 } catch (Exception err) {
+                    Log.d("myLog", "RadioStationLocalDataSource->deleteAll->onError");
                     emitter.onError(err);
                 }
 

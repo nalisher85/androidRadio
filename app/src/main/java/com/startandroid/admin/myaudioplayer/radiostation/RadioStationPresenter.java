@@ -88,6 +88,11 @@ public class RadioStationPresenter implements RadioStationContract.Presenter {
     }
 
     @Override
+    public void deleteAllStation() {
+        mRepository.deleteAll().subscribe();
+    }
+
+    @Override
     public void addToQueueItem(RadioStation station) {
         if (!isMediaBrowserConnected) return;
 

@@ -128,7 +128,10 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
 
     @Override
     public void filterStations() {
+        mView.showStations(getFilteredStation());
+    }
 
+    private List<RadioStation> getFilteredStation(){
         List<RadioStation> filteredStations = new ArrayList<>();
 
         for (RadioStation station : mStationsForShow) {
@@ -136,8 +139,7 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
                     && (mFilterWithCountry.isEmpty() || mFilterWithCountry.equals(station.getCountry()));
             if (isEquals) filteredStations.add(station);
         }
-
-        mView.showStations(filteredStations);
+        return filteredStations;
     }
 
     @Override
@@ -187,7 +189,7 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
     public void setAllStationsSelected() {
         if (mStationsForShow == null) return;
         mSelectedStations.clear();
-        mSelectedStations.addAll(mStationsForShow);
+        mSelectedStations.addAll(getFilteredStation());
         mView.showAddStationsBtn();
         mView.setCheckAllChbx(true);
     }

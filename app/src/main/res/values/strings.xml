@@ -29,6 +29,8 @@
     <string name="failure_edit_toast">Ошибка редактирования</string>
     <string name="delete_station_dialog_title">Удаление радио станции</string>
     <string name="delete_station_dialog_msg">Вы действительно хотите удалить радио станцию?</string>
+    <string name="del_all_stations_dialog_title">Удалить все станции</string>
+    <string name="del_all_station_dialog_msg">Вы децствительно хотите удалить все станции?</string>
     <string name="add_edit_activity_title_add">Добавление станции</string>
     <string name="add_edit_activity_title_edit">Редактирование станции</string>
     <string name="invalid_url_err_msg">Не верный адрес ссылки</string>

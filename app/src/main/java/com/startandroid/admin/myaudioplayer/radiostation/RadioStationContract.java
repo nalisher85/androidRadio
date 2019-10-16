@@ -23,6 +23,8 @@ public interface RadioStationContract {
 
         void deleteStation(RadioStation station);
 
+        void deleteAllStation();
+
         void addToQueueItem(RadioStation station);
 
         void onDestroy();

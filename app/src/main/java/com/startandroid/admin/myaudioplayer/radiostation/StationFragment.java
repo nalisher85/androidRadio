@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -44,7 +45,7 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     public static final String IS_FAVORITE_FRAGMENT_KEY = "is_favorite_fragment_key";
 
     @BindView(R.id.station_list)
-    RecyclerView mStationListRecyclerView;
+    RecyclerView mStationRecyclerView;
     @BindView(R.id.add_btn)
     ImageButton mAddBtn;
 
@@ -87,18 +88,29 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
         mAddBtn.setOnClickListener(v -> mPresenter.openStationDataForAdd());
 
         //set RecyclerView
-        mStationListRecyclerView.setHasFixedSize(true);
+        mStationRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        mStationListRecyclerView.setLayoutManager(linearLayoutManager);
-        mStationListRecyclerView.addItemDecoration(new DividerItemDecoration(MyApplication.getContext(),
+        mStationRecyclerView.setLayoutManager(linearLayoutManager);
+        mStationRecyclerView.addItemDecoration(new DividerItemDecoration(MyApplication.getContext(),
                 LinearLayoutManager.VERTICAL));
-        mStationListRecyclerView.setAdapter(new StationAdapter(this));
+        mStationRecyclerView.setAdapter(new StationAdapter(this));
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.action_bar_menu, menu);
+
+        MenuItem delAllMenu = menu.findItem(R.id.del_all);
+        assert getArguments() != null;
+        if (!getArguments().getBoolean(IS_FAVORITE_FRAGMENT_KEY)) {
+            delAllMenu.setOnMenuItemClickListener(item -> {
+                showDeleteAllStationDialog();
+                return true;
+            });
+        } else {
+            delAllMenu.setVisible(false);
+        }
 
         menu.findItem(R.id.action_shuffle).setVisible(false);
         menu.findItem(R.id.action_add).setVisible(true)
@@ -145,7 +157,7 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     @Override
     public void showStationList(List<RadioStation> list) {
 
-        StationAdapter adapter = (StationAdapter) mStationListRecyclerView.getAdapter();
+        StationAdapter adapter = (StationAdapter) mStationRecyclerView.getAdapter();
 
         if (adapter != null) {
             adapter.setStationList(list);
@@ -170,6 +182,13 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
     public void setAddButtonVisibility(boolean isVisible) {
         if (isVisible) mAddBtn.setVisibility(View.VISIBLE);
         else mAddBtn.setVisibility(View.GONE);
+    }
+
+    private void delAllStations(){
+        mPresenter.deleteAllStation();
+        StationAdapter adapter = (StationAdapter)mStationRecyclerView.getAdapter();
+        assert adapter != null;
+        adapter.clearList();
     }
 
     private DialogInterface.OnClickListener addDialogItemClickListener = (dialog, which) -> {
@@ -200,6 +219,21 @@ public class StationFragment extends Fragment implements StationAdapter.OnItemVi
                 .setPositiveButton(R.string.yes,
                         ((dialog, which) -> {
                             mPresenter.deleteStation(station);
+                            dialog.cancel();
+                        }))
+                .setNegativeButton(R.string.cancel_btn,
+                        (dialog, which) -> dialog.cancel())
+                .show();
+    }
+
+    private void showDeleteAllStationDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.del_all_stations_dialog_title)
+                .setIcon(R.drawable.ic_delete)
+                .setMessage(R.string.del_all_station_dialog_msg)
+                .setPositiveButton(R.string.yes,
+                        ((dialog, which) -> {
+                            delAllStations();
                             dialog.cancel();
                         }))
                 .setNegativeButton(R.string.cancel_btn,

@@ -55,6 +55,11 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         mStationList.addAll(stationList);
     }
 
+    public void clearList(){
+        mStationList.clear();
+        notifyDataSetChanged();
+    }
+
     interface OnItemViewClickListener {
         void onItemClicked(RadioStation itemData, int viewId);
     }

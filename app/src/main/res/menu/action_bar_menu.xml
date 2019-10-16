@@ -5,6 +5,14 @@
     tools:context="com.startandroid.admin.myaudioplayer.main.MainActivity">
 
     <item
+        android:id="@+id/del_all"
+        android:title="@string/delete_all"
+        android:icon="@drawable/ic_delete_white"
+        android:enabled="true"
+        app:showAsAction="always"
+        />
+
+    <item
         android:id="@+id/send_email"
         android:title="@string/send_feedback"
         android:icon="@drawable/ic_send_feed_back"

@@ -1,7 +1,5 @@
 package com.startandroid.admin.myaudioplayer.stationdataforadd;
 
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +10,7 @@ import com.startandroid.admin.myaudioplayer.R;
 import com.startandroid.admin.myaudioplayer.data.model.RadioStation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,18 +20,19 @@ import butterknife.OnCheckedChanged;
 
 public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsDataForAddAdapter.StationViewHolder> {
 
-    private List<RadioStation> mStations;
+    private List<StationWrapper> mStations;
     private OnItemViewCheckedListener onItemViewCheckedListener;
-    private SparseBooleanArray mCheckedPosition = new SparseBooleanArray();
 
-    public StationsDataForAddAdapter(OnItemViewCheckedListener listener) {
+    StationsDataForAddAdapter(OnItemViewCheckedListener listener) {
         mStations = new ArrayList<>();
         onItemViewCheckedListener = listener;
     }
 
-    public void updateData(List<RadioStation> data){
+    void updateData(List<RadioStation> data){
         mStations.clear();
-        mStations.addAll(data);
+        for (RadioStation station : data) {
+            mStations.add(new StationWrapper(station, false));
+        }
         notifyDataSetChanged();
     }
 
@@ -50,7 +47,6 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
         holder.bind(mStations.get(position), position);
-        holder.mCheckItem.setChecked(mCheckedPosition.get(position));
     }
 
     @Override
@@ -59,11 +55,8 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
     }
 
     void setIsViewsChecked(boolean isViewsChecked) {
-        if (!isViewsChecked) mCheckedPosition.clear();
-        else {
-            for (int i = 0; i <= mStations.size(); i++){
-                mCheckedPosition.put(i, true);
-            }
+        for (StationWrapper station : mStations){
+            station.setChecked(isViewsChecked);
         }
     }
 
@@ -84,26 +77,55 @@ public class StationsDataForAddAdapter extends RecyclerView.Adapter<StationsData
         @BindView(R.id.station_for_add_chbx)
         CheckBox mCheckItem;
 
-        private RadioStation mStation;
-        private int mPosition;
+        private StationWrapper mStation;
 
         StationViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        void bind (final RadioStation station, int position) {
+        void bind (final StationWrapper station, int position) {
             mStation = station;
-            mPosition = position;
-            mTitle.setText(station.getStationName());
-            mCountry.setText(station.getCountry());
-            mLanguage.setText(station.getLanguage());
+            mTitle.setText(station.getStation().getStationName());
+            mCountry.setText(station.getStation().getCountry());
+            mLanguage.setText(station.getStation().getLanguage());
+            mCheckItem.setChecked(station.isChecked);
         }
 
         @OnCheckedChanged(R.id.station_for_add_chbx)
         void onCheckedChanged(CheckBox buttonView, boolean isChecked) {
-            mCheckedPosition.put(mPosition, isChecked);
-            onItemViewCheckedListener.onItemViewChecked(mStation, isChecked);
+            mStation.setChecked(isChecked);
+            onItemViewCheckedListener.onItemViewChecked(mStation.getStation(), isChecked);
+        }
+    }
+
+    class StationWrapper {
+
+        RadioStation station;
+        boolean isChecked;
+
+        public StationWrapper() {
+        }
+
+        StationWrapper(RadioStation station, boolean isChecked) {
+            this.station = station;
+            this.isChecked = isChecked;
+        }
+
+        RadioStation getStation() {
+            return station;
+        }
+
+        public void setStation(RadioStation station) {
+            this.station = station;
+        }
+
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
         }
     }
 }

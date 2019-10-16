@@ -36,7 +36,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/D:/Загрузки/Архивы/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_feedback_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/D:/Загрузки/Архивы/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_delete_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -83,8 +83,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="imageAsset" value="C:\Users\Admin\Desktop\aHHiD.9.png" />
-                                      <entry key="outputName" value="ic_send_feed_back" />
-                                      <entry key="theme" value="HOLO_DARK" />
+                                      <entry key="outputName" value="ic_delete_white" />
+                                      <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="ffffff" />
                                     </map>
                                   </option>
@@ -112,7 +112,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="color" value="000000" />
+                                                <entry key="color" value="ffffff" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -124,7 +124,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/D:/Загрузки/Архивы/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_more_vert_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/D:/Загрузки/Архивы/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_delete_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -172,12 +172,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="000000" />
-                                      <entry key="foregroundAssetType" value="TEXT" />
-                                      <entry key="legacyIconShape" value="NONE" />
+                                      <entry key="foregroundAssetType" value="CLIP_ART" />
                                       <entry key="outputName" value="img_for_store" />
-                                      <entry key="previewDensity" value="XXXHIGH" />
-                                      <entry key="webIconShape" value="NONE" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -256,6 +252,11 @@
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>
