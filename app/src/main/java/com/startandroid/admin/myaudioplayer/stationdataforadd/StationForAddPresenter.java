@@ -168,7 +168,7 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
             mSelectedStations.add(item);
             mView.showAddStationsBtn();
 
-            if (mSelectedStations.size() == mStationsForShow.size()) {
+            if (mSelectedStations.size() == getFilteredStation().size()) {
                 mView.setCheckAllChbx(true);
             }
         }
@@ -178,7 +178,6 @@ public class StationForAddPresenter implements StationsDataForAddContract.Presen
     public void removeFromSelectedStation(RadioStation item) {
         mSelectedStations.remove(item);
         mView.setCheckAllChbx(false);
-
         if (mSelectedStations.isEmpty()) {
             mView.hideAddStationsBtn();
         }
